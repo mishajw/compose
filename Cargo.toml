@@ -1,0 +1,11 @@
+[package]
+name = "composer"
+version = "0.1.0"
+authors = ["Misha Wagner <mishajw@gmail.com>"]
+
+[lib]
+name = "composer"
+path = "src/lib/lib.rs"
+
+[dependencies]
+error-chain = "*"
