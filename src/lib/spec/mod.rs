@@ -1,10 +1,11 @@
 //! Defines a tree of [`Player`](../core/trait.Player.html)s
 
-use core::input;
-use core::Player;
 use errors::*;
 
 use std::collections::HashMap;
+
+mod creation;
+pub use self::creation::{create_continuous_input, create_player, FromSpec};
 
 /// A key-value store for defining compositions
 pub struct Spec {
@@ -101,46 +102,4 @@ impl Spec {
             ).into())
         }
     }
-}
-
-/// Implementors can be created from a spec
-pub trait FromSpec {
-    /// The name of the value to be created, used to find the type of the
-    /// definition
-    fn name() -> &'static str;
-    /// Create the value from a spec
-    fn from_spec(spec: &mut Spec) -> Result<Box<Self>>;
-}
-
-#[allow(unused)]
-fn create_with_type<T: FromSpec>(
-    name: &str,
-    spec: &mut Spec,
-) -> Result<Option<Box<T>>>
-{
-    if name == T::name() {
-        T::from_spec(spec).map(Some)
-    } else {
-        Ok(None)
-    }
-}
-
-/// Create a player from the spec. Every creatable player has to be added to
-/// this function
-pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
-    #[allow(unused)]
-    let name = spec.use_str("name")?;
-    let player: Option<Box<Player>> = None;
-    player.ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
-}
-
-/// Create an input from the spec. Every creatable input has to be added to
-/// this function
-pub fn create_continuous_input(
-    spec: &mut Spec,
-) -> Result<Box<input::Continuous>> {
-    #[allow(unused)]
-    let name = spec.use_str("name")?;
-    let player: Option<Box<input::Continuous>> = None;
-    player.ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
 }

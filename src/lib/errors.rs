@@ -24,5 +24,9 @@ error_chain! {
         SpecUnknownName(name: String) {
             display("Unknown name in spec: {}", name)
         }
+        /// A `Spec` value was incorrect
+        SpecBadValue(value_name: String, value: String) {
+            display("Bad value for {} in spec: {}", value_name, value)
+        }
     }
 }
