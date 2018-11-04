@@ -8,7 +8,7 @@ mod creation;
 pub mod yaml;
 
 pub use self::creation::{
-    create_continuous_input, create_outputs, create_player, FromSpec,
+    create_bounded_input, create_outputs, create_player, FromSpec,
 };
 
 /// A key-value store for defining compositions

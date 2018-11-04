@@ -9,18 +9,20 @@ pub struct Wave {
     frequency: f32,
 }
 
-impl input::Continuous for Wave {
-    fn get(&self, state: &CompositionState) -> f32 {
+impl input::Bounded for Wave {
+    fn get(&mut self, state: &CompositionState) -> f32 {
         let num_ticks = state.frequency / self.frequency;
         let fn_input = state.tick as f32 / num_ticks;
         (*self.wave_fn)(fn_input)
     }
+
+    fn get_bounds(&self) -> (f32, f32) { (-1.0, 1.0) }
 }
 
-impl FromSpec<Box<input::Continuous>> for Wave {
+impl FromSpec<Box<input::Bounded>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(spec: &mut Spec) -> Result<Box<input::Continuous>> {
+    fn from_spec(spec: &mut Spec) -> Result<Box<input::Bounded>> {
         let wave_fn_name = spec.use_str("fn")?;
         let frequency = spec.use_float("frequency")?;
         let wave_fn = match wave_fn_name.as_ref() {

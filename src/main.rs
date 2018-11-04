@@ -38,11 +38,11 @@ fn run() -> Result<()> {
     let mut spec = spec::yaml::read(Path::new(spec_path))?;
     let mut player_spec = spec.use_spec("players")?;
     let output_specs = spec.use_list("outputs")?;
-    let player = spec::create_player(&mut player_spec)?;
+    let mut player = spec::create_player(&mut player_spec)?;
     let outputs = spec::create_outputs(output_specs)?;
 
     info!("Composing");
-    compose(player.as_ref(), outputs, 44100.0);
+    compose(player.as_mut(), outputs, 44100.0);
 
     info!("Finished");
     Ok(())

@@ -29,9 +29,7 @@ pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
 
 /// Create an input from the spec. Every creatable input has to be added to
 /// this function
-pub fn create_continuous_input(
-    spec: &mut Spec,
-) -> Result<Box<input::Continuous>> {
+pub fn create_bounded_input(spec: &mut Spec) -> Result<Box<input::Bounded>> {
     let name = spec.use_str("name")?;
     create_with_type::<inputs::Wave, _>(&name, spec)
         .chain_err(|| format!("Failed to create continuous input {}", name))?

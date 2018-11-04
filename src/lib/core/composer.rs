@@ -6,7 +6,7 @@ use core::Player;
 
 /// Create a composition from the `root_player` into the `output`s
 pub fn compose(
-    root_player: &Player,
+    root_player: &mut Player,
     mut outputs: Vec<Box<Output>>,
     frequency: f32,
 )
