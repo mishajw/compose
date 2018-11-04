@@ -26,6 +26,8 @@ pub enum Value {
     Spec(Spec),
     #[allow(missing_docs)]
     Bool(bool),
+    #[allow(missing_docs)]
+    List(Vec<Value>),
 }
 
 impl Spec {
@@ -105,6 +107,22 @@ impl Spec {
             Value::Bool(bool) => Ok(bool),
             _ => {
                 Err(ErrorKind::SpecTypeError(value_name.into(), "bool".into())
+                    .into())
+            }
+        }
+    }
+
+    /// Get a object from the spec, and remove it
+    pub fn use_list(&mut self, value_name: &str) -> Result<Vec<Value>> {
+        let value: Value = self
+            .values
+            .remove(value_name)
+            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+
+        match value {
+            Value::List(list) => Ok(list),
+            _ => {
+                Err(ErrorKind::SpecTypeError(value_name.into(), "list".into())
                     .into())
             }
         }

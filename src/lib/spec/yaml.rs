@@ -74,8 +74,14 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
             .parse()
             .chain_err(|| "Failed to parse float in Spec yaml")?)),
         Yaml::Boolean(boolean) => Ok(Value::Bool(boolean)),
-        _ => Err(
-            ErrorKind::BadInput("Expected object in Spec yaml".into()).into()
-        ),
+        Yaml::Array(list) => {
+            let values: Result<Vec<_>> =
+                list.into_iter().map(yaml_to_value).collect();
+            Ok(Value::List(values?))
+        }
+        yaml_value => Err(ErrorKind::BadInput(format!(
+            "Unexpected type in Spec yaml: {:?}",
+            yaml_value
+        )).into()),
     }
 }
