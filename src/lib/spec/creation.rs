@@ -23,8 +23,8 @@ pub trait FromSpec<T> {
 pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
     let name = spec.use_str("name")?;
     create_with_type::<players::Wave, _>(&name, spec)
-        .chain_err(|| format!("Failed to create player {}", name))?
-        .ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
+        .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
+        .chain_err(|| format!("Failed to create player {}", name))
 }
 
 /// Create an input from the spec. Every creatable input has to be added to
@@ -32,8 +32,8 @@ pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
 pub fn create_bounded_input(spec: &mut Spec) -> Result<Box<input::Bounded>> {
     let name = spec.use_str("name")?;
     create_with_type::<inputs::Wave, _>(&name, spec)
-        .chain_err(|| format!("Failed to create continuous input {}", name))?
-        .ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
+        .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
+        .chain_err(|| format!("Failed to create bounded input {}", name))
 }
 
 /// Create outputs from the spec.
@@ -58,18 +58,18 @@ pub fn create_outputs(values: Vec<Value>) -> Result<Vec<Box<Output>>> {
 fn create_output(spec: &mut Spec) -> Result<Box<Output>> {
     let name = spec.use_str("name")?;
     create_with_type::<outputs::Speaker, _>(&name, spec)
-        .chain_err(|| format!("Failed to create output {}", name))?
-        .ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
+        .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
+        .chain_err(|| format!("Failed to create output {}", name))
 }
 
 fn create_with_type<T: 'static + FromSpec<S>, S>(
     name: &str,
     spec: &mut Spec,
-) -> Result<Option<S>>
+) -> Option<Result<S>>
 {
     if name == T::name() {
-        Ok(Some(T::from_spec(spec)?))
+        Some(T::from_spec(spec))
     } else {
-        Ok(None)
+        None
     }
 }
