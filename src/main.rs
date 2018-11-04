@@ -25,7 +25,8 @@ fn run() -> Result<()> {
     let matches = clap_app!(composer =>
         (@arg spec_path: -s --spec +takes_value +required
          "Specification of the composition")
-    ).get_matches();
+    )
+    .get_matches();
     let spec_path = Path::new(matches.value_of("spec_path").unwrap());
 
     // Initialize logging

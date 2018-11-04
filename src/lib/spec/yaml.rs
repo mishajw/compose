@@ -44,7 +44,8 @@ fn get_yaml(path: &Path) -> Result<Yaml> {
         return Err(ErrorKind::BadInput(format!(
             "Expected one element in the Spec yaml, found {}",
             yaml_list.len()
-        )).into());
+        ))
+        .into());
     }
 
     for yaml in yaml_list {
@@ -76,9 +77,11 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
         }
         Yaml::String(string) => Ok(Value::Str(string)),
         Yaml::Integer(int) => Ok(Value::Int(int as i32)),
-        Yaml::Real(float) => Ok(Value::Float(float
-            .parse()
-            .chain_err(|| "Failed to parse float in Spec yaml")?)),
+        Yaml::Real(float) => Ok(Value::Float(
+            float
+                .parse()
+                .chain_err(|| "Failed to parse float in Spec yaml")?,
+        )),
         Yaml::Boolean(boolean) => Ok(Value::Bool(boolean)),
         Yaml::Array(list) => {
             let values: Result<Vec<_>> =
@@ -88,6 +91,7 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
         yaml_value => Err(ErrorKind::BadInput(format!(
             "Unexpected type in Spec yaml: {:?}",
             yaml_value
-        )).into()),
+        ))
+        .into()),
     }
 }

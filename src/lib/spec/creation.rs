@@ -48,7 +48,8 @@ pub fn create_outputs(values: Vec<Value>) -> Result<Vec<Box<Output>>> {
             return Err(ErrorKind::SpecTypeError(
                 "outputs[]".into(),
                 "object".into(),
-            ).into());
+            )
+            .into());
         }
     }
     Ok(outputs)

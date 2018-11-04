@@ -48,7 +48,8 @@ impl Spec {
             _ => Err(ErrorKind::SpecTypeError(
                 value_name.into(),
                 "string".into(),
-            ).into()),
+            )
+            .into()),
         }
     }
 
@@ -137,7 +138,8 @@ impl Spec {
         } else {
             Err(ErrorKind::SpecExtraValuesError(
                 self.values.keys().map(|s| s.clone()).collect(),
-            ).into())
+            )
+            .into())
         }
     }
 }
