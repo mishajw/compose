@@ -142,9 +142,9 @@ impl Drop for Speaker {
     }
 }
 
-impl FromSpec for Speaker {
+impl FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
-    fn from_spec(spec: &mut Spec) -> Result<Box<Self>> {
+    fn from_spec(spec: &mut Spec) -> Result<Box<Output>> {
         let device_number = spec.use_int("device_number")?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(device_number as usize)?))

@@ -21,10 +21,10 @@ impl Player for Wave {
     }
 }
 
-impl FromSpec for Wave {
+impl FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(spec: &mut Spec) -> Result<Box<Self>> {
+    fn from_spec(spec: &mut Spec) -> Result<Box<Player>> {
         let input_fn = inputs::Wave::from_spec(spec)?;
         spec.ensure_all_used()?;
         Ok(Box::new(Wave { input_fn }))

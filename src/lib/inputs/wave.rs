@@ -17,10 +17,10 @@ impl input::Continuous for Wave {
     }
 }
 
-impl FromSpec for Wave {
+impl FromSpec<Box<input::Continuous>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(spec: &mut Spec) -> Result<Box<Self>> {
+    fn from_spec(spec: &mut Spec) -> Result<Box<input::Continuous>> {
         let wave_fn_name = spec.use_str("fn")?;
         let frequency = spec.use_float("frequency")?;
         let wave_fn = match wave_fn_name.as_ref() {
