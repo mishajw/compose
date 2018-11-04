@@ -137,7 +137,7 @@ impl Spec {
             Ok(())
         } else {
             Err(ErrorKind::SpecExtraValuesError(
-                self.values.keys().map(|s| s.clone()).collect(),
+                self.values.keys().cloned().collect(),
             )
             .into())
         }

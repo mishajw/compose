@@ -99,8 +99,10 @@ impl Speaker {
             }
 
             let playables = buffer.unwrap();
-            for i in 0..args.frames {
-                args.buffer[i] = playables[i].get_value();
+            for (mut buffer_value, playable) in
+                args.buffer.iter_mut().zip(playables.iter())
+            {
+                *buffer_value = playable.get_value();
             }
 
             write_sender
@@ -130,7 +132,7 @@ impl Output for Speaker {
 
         // Add the current buffer to the buffer queue
         let mut audio_buffers = self.audio_buffers.lock().unwrap();
-        audio_buffers.push_back(self.current_buffer.clone());
+        audio_buffers.push_back(self.current_buffer);
         self.current_buffer_index = 0;
     }
 }

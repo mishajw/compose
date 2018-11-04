@@ -11,5 +11,5 @@ impl Playable {
     pub fn new(value: i32) -> Self { Playable { value } }
 
     #[allow(missing_docs)]
-    pub fn get_value(&self) -> i32 { self.value }
+    pub fn get_value(self) -> i32 { self.value }
 }

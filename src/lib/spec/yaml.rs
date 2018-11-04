@@ -37,10 +37,10 @@ fn get_yaml(path: &Path) -> Result<Yaml> {
         contents
     };
 
-    let yaml_list = YamlLoader::load_from_str(&yaml_contents)
+    let mut yaml_list = YamlLoader::load_from_str(&yaml_contents)
         .chain_err(|| "Failed to parse Spec yaml file")?;
 
-    if yaml_list.len() < 1 {
+    if yaml_list.len() > 1 {
         return Err(ErrorKind::BadInput(format!(
             "Expected one element in the Spec yaml, found {}",
             yaml_list.len()
@@ -48,11 +48,11 @@ fn get_yaml(path: &Path) -> Result<Yaml> {
         .into());
     }
 
-    for yaml in yaml_list {
-        return Ok(yaml);
+    if yaml_list.is_empty() {
+        return Err(ErrorKind::BadInput("Empty Spec yaml file".into()).into());
     }
 
-    return Err(ErrorKind::BadInput("Empty Spec yaml file".into()).into());
+    Ok(yaml_list.swap_remove(0))
 }
 
 fn yaml_to_value(yaml: Yaml) -> Result<Value> {

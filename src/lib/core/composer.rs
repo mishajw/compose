@@ -16,7 +16,7 @@ pub fn compose(
     loop {
         let played = root_player.play(&state);
         for output in outputs.iter_mut() {
-            output.write(played.clone());
+            output.write(played);
         }
         state.increment();
     }

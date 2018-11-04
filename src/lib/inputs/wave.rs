@@ -35,7 +35,7 @@ impl FromSpec<Box<input::Continuous>> for Wave {
         spec.ensure_all_used()?;
         Ok(Box::new(Wave {
             wave_fn: Box::new(wave_fn),
-            frequency: frequency,
+            frequency,
         }))
     }
 }
