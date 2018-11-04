@@ -10,3 +10,6 @@ path = "src/lib/lib.rs"
 [dependencies]
 error-chain = "*"
 yaml-rust = "*"
+portaudio = "*"
+log = "*"
+env_logger = "*"

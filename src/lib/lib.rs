@@ -11,7 +11,10 @@
 
 #[macro_use]
 extern crate error_chain;
+extern crate portaudio;
 extern crate yaml_rust;
+#[macro_use]
+extern crate log;
 
 pub mod core;
 pub mod errors;
