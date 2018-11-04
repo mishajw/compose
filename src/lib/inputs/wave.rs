@@ -1,7 +1,7 @@
 use core::input;
 use core::CompositionState;
 use errors::*;
-use spec::{FromSpec, Spec};
+use spec::{FromSpec, Value};
 
 /// A wave input, gets values from a function at a frequency
 pub struct Wave {
@@ -22,7 +22,8 @@ impl input::Bounded for Wave {
 impl FromSpec<Box<input::Bounded>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(spec: &mut Spec) -> Result<Box<input::Bounded>> {
+    fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
+        let mut spec = value.as_spec()?;
         let wave_fn_name = spec.use_str("fn")?;
         let frequency = spec.use_float("frequency")?;
         let wave_fn = match wave_fn_name.as_ref() {

@@ -3,7 +3,7 @@
 use core::Output;
 use core::Playable;
 use errors::*;
-use spec::{FromSpec, Spec};
+use spec::{FromSpec, Value};
 
 use std::collections::VecDeque;
 use std::sync::{mpsc, Arc, Mutex};
@@ -146,7 +146,8 @@ impl Drop for Speaker {
 
 impl FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
-    fn from_spec(spec: &mut Spec) -> Result<Box<Output>> {
+    fn from_spec(value: Value) -> Result<Box<Output>> {
+        let mut spec = value.as_spec()?;
         let device_number = spec.use_int("device_number")?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(device_number as usize)?))

@@ -15,7 +15,7 @@ pub trait FromSpec<T> {
     /// definition
     fn name() -> &'static str;
     /// Create the value from a spec
-    fn from_spec(spec: &mut Spec) -> Result<T>;
+    fn from_spec(value: Value) -> Result<T>;
 }
 
 /// Create a player from the spec. Every creatable player has to be added to
@@ -69,7 +69,7 @@ fn create_with_type<T: 'static + FromSpec<S>, S>(
 ) -> Option<Result<S>>
 {
     if name == T::name() {
-        Some(T::from_spec(spec))
+        Some(T::from_spec(Value::Spec(spec.clone())))
     } else {
         None
     }

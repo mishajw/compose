@@ -12,11 +12,13 @@ pub use self::creation::{
 };
 
 /// A key-value store for defining compositions
+#[derive(Clone)]
 pub struct Spec {
     values: HashMap<String, Value>,
 }
 
 /// A value in a [`Spec`](struct.Spec.html)
+#[derive(Clone)]
 pub enum Value {
     #[allow(missing_docs)]
     Str(String),
@@ -140,6 +142,17 @@ impl Spec {
                 self.values.keys().cloned().collect(),
             )
             .into())
+        }
+    }
+}
+
+impl Value {
+    /// Try convert the value into a `Spec`
+    pub fn as_spec(self) -> Result<Spec> {
+        if let Value::Spec(spec) = self {
+            Ok(spec)
+        } else {
+            Err(ErrorKind::BadInput("Failed cast as spec".into()).into())
         }
     }
 }

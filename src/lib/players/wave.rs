@@ -4,7 +4,7 @@ use core::Playable;
 use core::Player;
 use errors::*;
 use inputs;
-use spec::{FromSpec, Spec};
+use spec::{FromSpec, Value};
 
 use std::i32;
 
@@ -28,9 +28,8 @@ impl Player for Wave {
 impl FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(spec: &mut Spec) -> Result<Box<Player>> {
-        let input = inputs::Wave::from_spec(spec)?;
-        spec.ensure_all_used()?;
+    fn from_spec(value: Value) -> Result<Box<Player>> {
+        let input = inputs::Wave::from_spec(value)?;
         Ok(Box::new(Wave { input }))
     }
 }
