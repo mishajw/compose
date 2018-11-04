@@ -37,9 +37,10 @@ fn create_with_type<T: 'static + FromSpec>(
 /// this function
 pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
     fn to_player<T: 'static + Player>(player: Box<T>) -> Box<Player> { player }
-    #[allow(unused)]
     let name = spec.use_str("name")?;
-    let player = create_with_type::<players::Wave>(&name, spec)?.map(to_player);
+    let player = create_with_type::<players::Wave>(&name, spec)
+        .chain_err(|| format!("Failed to create {}", name))?
+        .map(to_player);
     player.ok_or_else(|| ErrorKind::SpecUnknownName(name).into())
 }
 

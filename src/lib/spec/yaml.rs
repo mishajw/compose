@@ -63,8 +63,14 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
                     ErrorKind::BadInput("Non-string key in Spec yaml".into())
                         .into()
                 });
+                let value_name: String = value_name?.into();
 
-                spec_values.insert(value_name?.into(), yaml_to_value(value)?);
+                spec_values.insert(
+                    value_name.clone(),
+                    yaml_to_value(value).chain_err(|| {
+                        format!("Error parsing \"{}\" field", value_name)
+                    })?,
+                );
             }
             Ok(Value::Spec(Spec::new(spec_values)))
         }
