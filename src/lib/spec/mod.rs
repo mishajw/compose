@@ -7,7 +7,9 @@ use std::collections::HashMap;
 mod creation;
 pub mod yaml;
 
-pub use self::creation::{create_continuous_input, create_player, FromSpec};
+pub use self::creation::{
+    create_continuous_input, create_outputs, create_player, FromSpec,
+};
 
 /// A key-value store for defining compositions
 pub struct Spec {

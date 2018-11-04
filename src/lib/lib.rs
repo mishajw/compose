@@ -16,5 +16,6 @@ extern crate yaml_rust;
 pub mod core;
 pub mod errors;
 pub mod inputs;
+pub mod outputs;
 pub mod players;
 pub mod spec;
