@@ -20,6 +20,10 @@ pub enum Value {
     Int(i32),
     #[allow(missing_docs)]
     Float(f32),
+    #[allow(missing_docs)]
+    Spec(Spec),
+    #[allow(missing_docs)]
+    Bool(bool),
 }
 
 impl Spec {
@@ -35,15 +39,9 @@ impl Spec {
 
         match value {
             Value::Str(string) => Ok(string),
-            Value::Int(_) => Err(ErrorKind::SpecTypeError(
+            _ => Err(ErrorKind::SpecTypeError(
                 value_name.into(),
                 "string".into(),
-                "int".into(),
-            ).into()),
-            Value::Float(_) => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "string".into(),
-                "float".into(),
             ).into()),
         }
     }
@@ -57,16 +55,8 @@ impl Spec {
 
         match value {
             Value::Int(int) => Ok(int),
-            Value::Str(_) => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "int".into(),
-                "string".into(),
-            ).into()),
-            Value::Float(_) => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "int".into(),
-                "float".into(),
-            ).into()),
+            _ => Err(ErrorKind::SpecTypeError(value_name.into(), "int".into())
+                .into()),
         }
     }
 
@@ -79,16 +69,42 @@ impl Spec {
 
         match value {
             Value::Float(float) => Ok(float),
-            Value::Str(_) => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "float".into(),
-                "string".into(),
-            ).into()),
-            Value::Int(_) => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "float".into(),
-                "int".into(),
-            ).into()),
+            _ => {
+                Err(ErrorKind::SpecTypeError(value_name.into(), "float".into())
+                    .into())
+            }
+        }
+    }
+
+    /// Get a object from the spec, and remove it
+    pub fn use_spec(&mut self, value_name: &str) -> Result<Spec> {
+        let value: Value = self
+            .values
+            .remove(value_name)
+            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+
+        match value {
+            Value::Spec(spec) => Ok(spec),
+            _ => {
+                Err(ErrorKind::SpecTypeError(value_name.into(), "spec".into())
+                    .into())
+            }
+        }
+    }
+
+    /// Get a object from the spec, and remove it
+    pub fn use_bool(&mut self, value_name: &str) -> Result<bool> {
+        let value: Value = self
+            .values
+            .remove(value_name)
+            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+
+        match value {
+            Value::Bool(bool) => Ok(bool),
+            _ => {
+                Err(ErrorKind::SpecTypeError(value_name.into(), "bool".into())
+                    .into())
+            }
         }
     }
 

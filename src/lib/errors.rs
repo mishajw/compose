@@ -3,14 +3,10 @@
 error_chain! {
     errors {
         /// Error in the type of a value in the `Spec`
-        SpecTypeError(
-            value_name: String,
-            expected_type: String,
-            actual_type: String
-        ) {
+        SpecTypeError(value_name: String, expected_type: String) {
             display(
-                "Bad type in spec for value {}: expected {}, actual {}",
-                value_name, expected_type, actual_type)
+                "Bad type in spec for value {}, expected {}",
+                value_name, expected_type)
         }
         /// Expected value was not found in the `Spec`
         SpecMissingError(value_name: String) {
