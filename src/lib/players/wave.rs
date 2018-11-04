@@ -19,8 +19,8 @@ impl Player for Wave {
         // range
         Playable::new(self.input.get_with_bounds(
             state,
-            i32::MIN as f32,
-            i32::MAX as f32,
+            i32::MIN as f32 * 0.5,
+            i32::MAX as f32 * 0.5,
         ) as i32)
     }
 }
