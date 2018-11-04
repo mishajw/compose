@@ -1,0 +1,12 @@
+# The players tree
+players:
+  # A simple player that plays a sine wave
+  name: wave
+  fn: sine
+  frequency: 440.0
+# All the outputs of the composition
+outputs:
+  # Play the composition to speakers
+  - name: speaker
+    # The index of the device to play to
+    device_number: 5
