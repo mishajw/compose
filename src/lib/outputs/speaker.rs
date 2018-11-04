@@ -1,5 +1,6 @@
 //! Play music to the device speaker
 
+use consts;
 use core::Output;
 use core::Playable;
 use errors::*;
@@ -11,7 +12,6 @@ use std::sync::{mpsc, Arc, Mutex};
 use portaudio;
 
 const NUM_CHANNELS: i32 = 1;
-const SAMPLE_RATE: f64 = 44100.0;
 const FRAMES: usize = 2048;
 const MAX_UNPLAYED_BUFFERS: usize = 3;
 
@@ -56,7 +56,7 @@ impl Speaker {
         let mut audio_settings = audio
             .default_output_stream_settings(
                 NUM_CHANNELS,
-                SAMPLE_RATE,
+                consts::SAMPLE_HZ as f64,
                 FRAMES as u32,
             )
             .chain_err(|| "Failed to get default audio stream settings")?;

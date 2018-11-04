@@ -42,7 +42,7 @@ fn run() -> Result<()> {
     let outputs = spec::create_outputs(output_specs)?;
 
     info!("Composing");
-    compose(player.as_mut(), outputs, 44100.0);
+    compose(player.as_mut(), outputs);
 
     info!("Finished");
     Ok(())

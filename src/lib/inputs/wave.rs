@@ -1,3 +1,4 @@
+use consts;
 use core::input;
 use core::CompositionState;
 use errors::*;
@@ -11,7 +12,7 @@ pub struct Wave {
 
 impl input::Bounded for Wave {
     fn get(&mut self, state: &CompositionState) -> f32 {
-        let num_ticks = state.frequency / self.frequency;
+        let num_ticks = consts::SAMPLE_HZ / self.frequency;
         let fn_input = state.tick as f32 / num_ticks;
         (*self.wave_fn)(fn_input)
     }
