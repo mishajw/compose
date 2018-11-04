@@ -11,6 +11,7 @@
 
 #[macro_use]
 extern crate error_chain;
+extern crate yaml_rust;
 
 pub mod core;
 pub mod errors;

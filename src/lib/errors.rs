@@ -24,5 +24,9 @@ error_chain! {
         SpecBadValue(value_name: String, value: String) {
             display("Bad value for {} in spec: {}", value_name, value)
         }
+        /// Some user input was incorrect
+        BadInput(message: String) {
+            display("Bad user input: {}", message)
+        }
     }
 }

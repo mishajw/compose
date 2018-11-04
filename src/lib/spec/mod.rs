@@ -5,6 +5,8 @@ use errors::*;
 use std::collections::HashMap;
 
 mod creation;
+pub mod yaml;
+
 pub use self::creation::{create_continuous_input, create_player, FromSpec};
 
 /// A key-value store for defining compositions
