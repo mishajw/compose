@@ -1,9 +1,16 @@
 # The players tree
 players:
-  # A simple player that plays a sine wave
-  name: wave
-  fn: sine
-  frequency: 440.0
+  # A simple player that controls the volume of its child
+  name: volume
+  input:
+    name: wave
+    fn: sine
+    frequency: 1.0
+  child:
+    # A simple player that plays a sine wave
+    name: wave
+    fn: sine
+    frequency: 440.0
 # All the outputs of the composition
 outputs:
   # Play the composition to speakers
