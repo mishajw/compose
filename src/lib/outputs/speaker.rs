@@ -148,7 +148,7 @@ impl FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value) -> Result<Box<Output>> {
         let mut spec = value.as_spec()?;
-        let device_number = spec.use_int("device_number")?;
+        let device_number: i32 = spec.consume("device_number")?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(device_number as usize)?))
     }

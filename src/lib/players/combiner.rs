@@ -24,7 +24,7 @@ impl FromSpec<Box<Player>> for Combiner {
     fn name() -> &'static str { "combiner" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec = value.as_spec()?;
-        let children_values = spec.use_list("children")?;
+        let children_values: Vec<Value> = spec.consume("children")?;
         let mut children_specs = children_values
             .into_iter()
             .map(|v| v.as_spec())

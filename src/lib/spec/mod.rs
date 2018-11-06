@@ -39,99 +39,15 @@ impl Spec {
     #[allow(missing_docs)]
     pub fn new(values: HashMap<String, Value>) -> Self { Spec { values } }
 
-    /// Get a string from the spec, and remove it
-    pub fn use_str(&mut self, value_name: &str) -> Result<String> {
+    /// Get a value from the spec, and remove it
+    pub fn consume<T: ValueType>(&mut self, value_name: &str) -> Result<T> {
         let value: Value = self
             .values
             .remove(value_name)
             .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::Str(string) => Ok(string),
-            _ => Err(ErrorKind::SpecTypeError(
-                value_name.into(),
-                "string".into(),
-            )
-            .into()),
-        }
-    }
-
-    /// Get a integer from the spec, and remove it
-    pub fn use_int(&mut self, value_name: &str) -> Result<i32> {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::Int(int) => Ok(int),
-            _ => Err(ErrorKind::SpecTypeError(value_name.into(), "int".into())
-                .into()),
-        }
-    }
-
-    /// Get a integer from the spec, and remove it
-    pub fn use_float(&mut self, value_name: &str) -> Result<f32> {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::Float(float) => Ok(float),
-            _ => {
-                Err(ErrorKind::SpecTypeError(value_name.into(), "float".into())
-                    .into())
-            }
-        }
-    }
-
-    /// Get a object from the spec, and remove it
-    pub fn use_spec(&mut self, value_name: &str) -> Result<Spec> {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::Spec(spec) => Ok(spec),
-            _ => {
-                Err(ErrorKind::SpecTypeError(value_name.into(), "spec".into())
-                    .into())
-            }
-        }
-    }
-
-    /// Get a object from the spec, and remove it
-    pub fn use_bool(&mut self, value_name: &str) -> Result<bool> {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::Bool(bool) => Ok(bool),
-            _ => {
-                Err(ErrorKind::SpecTypeError(value_name.into(), "bool".into())
-                    .into())
-            }
-        }
-    }
-
-    /// Get a object from the spec, and remove it
-    pub fn use_list(&mut self, value_name: &str) -> Result<Vec<Value>> {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-
-        match value {
-            Value::List(list) => Ok(list),
-            _ => {
-                Err(ErrorKind::SpecTypeError(value_name.into(), "list".into())
-                    .into())
-            }
-        }
+        T::get_from_value(value).ok_or_else(|| {
+            ErrorKind::SpecTypeError(value_name.into(), "string".into()).into()
+        })
     }
 
     /// Check that all values in the spec have been used
@@ -146,6 +62,32 @@ impl Spec {
         }
     }
 }
+
+/// A type that can be extracted from a `Value`
+pub trait ValueType: Sized {
+    /// Get the type from the `Value`
+    fn get_from_value(value: Value) -> Option<Self>;
+}
+
+macro_rules! impl_value_type {
+    ($extracted_type:ty, $value_pattern:tt) => {
+        impl ValueType for $extracted_type {
+            fn get_from_value(value: Value) -> Option<Self> {
+                match value {
+                    Value::$value_pattern(extracted) => Some(extracted),
+                    _ => None,
+                }
+            }
+        }
+    };
+}
+
+impl_value_type!(String, Str);
+impl_value_type!(i32, Int);
+impl_value_type!(f32, Float);
+impl_value_type!(bool, Bool);
+impl_value_type!(Spec, Spec);
+impl_value_type!(Vec<Value>, List);
 
 impl Value {
     /// Try convert the value into a `Spec`

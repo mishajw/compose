@@ -26,7 +26,7 @@ impl FromSpec<Box<input::Bool>> for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
     fn from_spec(value: Value) -> Result<Box<input::Bool>> {
         let mut spec = value.as_spec()?;
-        let mut bounded_spec = spec.use_spec("bounded")?;
+        let mut bounded_spec = spec.consume("bounded")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoundedToBool::new(create_bounded_input(
             &mut bounded_spec,
@@ -60,7 +60,7 @@ impl FromSpec<Box<input::Bounded>> for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
     fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
         let mut spec = value.as_spec()?;
-        let mut bool_spec = spec.use_spec("bool")?;
+        let mut bool_spec = spec.consume("bool")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoolToBounded::new(create_bool_input(
             &mut bool_spec,

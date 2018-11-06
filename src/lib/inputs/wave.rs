@@ -25,8 +25,8 @@ impl FromSpec<Box<input::Bounded>> for Wave {
 
     fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
         let mut spec = value.as_spec()?;
-        let wave_fn_name = spec.use_str("fn")?;
-        let frequency = spec.use_float("frequency")?;
+        let wave_fn_name: String = spec.consume("fn")?;
+        let frequency = spec.consume("frequency")?;
         let wave_fn = match wave_fn_name.as_ref() {
             "sine" => |x| f32::sin(x * 2.0 * ::std::f32::consts::PI),
             value => {

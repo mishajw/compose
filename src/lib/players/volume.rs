@@ -29,8 +29,8 @@ impl FromSpec<Box<Player>> for Volume {
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec = value.as_spec()?;
         Ok(Box::new(Volume::new(
-            create_player(&mut spec.use_spec("child")?)?,
-            create_bounded_input(&mut spec.use_spec("input")?)?,
+            create_player(&mut spec.consume("child")?)?,
+            create_bounded_input(&mut spec.consume("input")?)?,
         )))
     }
 }
