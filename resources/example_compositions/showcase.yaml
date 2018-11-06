@@ -17,6 +17,17 @@ players:
       name: wave
       fn: sine
       frequency: 523.25 # C
+  - name: toggle
+    input:
+      name: bounded-to-bool
+      bounded:
+        name: wave
+        fn: sine
+        frequency: 1.0
+    child:
+      name: wave
+      fn: sine
+      frequency: 659.25 # E
 # All the outputs of the composition
 outputs:
   # Play the composition to speakers
