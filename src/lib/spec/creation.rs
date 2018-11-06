@@ -34,8 +34,20 @@ pub fn create_player(spec: &mut Spec) -> Result<Box<Player>> {
 pub fn create_bounded_input(spec: &mut Spec) -> Result<Box<input::Bounded>> {
     let name = spec.use_str("name")?;
     create_with_type::<inputs::Wave, _>(&name, spec)
+        .or_else(|| {
+            create_with_type::<inputs::BoolToBounded, _>(&name, spec)
+        })
         .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
         .chain_err(|| format!("Failed to create bounded input {}", name))
+}
+
+/// Create an bool input from the spec. Every creatable bool input has to be
+/// added to this function
+pub fn create_bool_input(spec: &mut Spec) -> Result<Box<input::Bool>> {
+    let name = spec.use_str("name")?;
+    create_with_type::<inputs::BoundedToBool, _>(&name, spec)
+        .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
+        .chain_err(|| format!("Failed to create bool input {}", name))
 }
 
 /// Create outputs from the spec.

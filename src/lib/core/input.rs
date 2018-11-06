@@ -25,3 +25,9 @@ pub trait Bounded {
         (value - self_lower) * scaling_factor + lower
     }
 }
+
+/// Input that is either true or false
+pub trait Bool {
+    #[allow(missing_docs)]
+    fn get(&mut self, state: &CompositionState) -> bool;
+}
