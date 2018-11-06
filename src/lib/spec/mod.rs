@@ -50,6 +50,22 @@ impl Spec {
         })
     }
 
+    /// Get a value from the spec, and remove it
+    pub fn consume_with_default<T: ValueType>(
+        &mut self,
+        value_name: &str,
+        default: T,
+    ) -> Result<T>
+    {
+        match self.values.remove(value_name) {
+            Some(value) => T::get_from_value(value).ok_or_else(|| {
+                ErrorKind::SpecTypeError(value_name.into(), "string".into())
+                    .into()
+            }),
+            None => Ok(default),
+        }
+    }
+
     /// Check that all values in the spec have been used
     pub fn ensure_all_used(&self) -> Result<()> {
         if self.values.is_empty() {

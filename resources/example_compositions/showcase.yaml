@@ -5,25 +5,19 @@ players:
   children:
   # Plays a sine wave
   - name: wave
-    fn: sine
     frequency: 440.0 # A
   # Controls the volume of its child
   - name: volume
     input:
       name: wave
-      fn: sine
-      frequency: 1.0
     child:
       name: wave
-      fn: sine
       frequency: 523.25 # C
   - name: toggle
     input:
       name: bounded-to-bool
       bounded:
         name: wave
-        fn: sine
-        frequency: 1.0
     child:
       name: wave
       fn: sine
