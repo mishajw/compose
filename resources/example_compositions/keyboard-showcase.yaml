@@ -1,0 +1,19 @@
+players:
+  name: keyboard
+  children:
+    - name: wave
+      frequency: 440.0
+    - name: wave
+      frequency: 523.25
+    - name: wave
+      frequency: 659.25
+  input:
+    name: timeline-multi
+    event-tick-sec: 1
+    events: |
+      X__X
+      _X_X
+      __XX
+outputs:
+  - name: speaker
+    device_number: 5

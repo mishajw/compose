@@ -8,8 +8,8 @@ mod creation;
 pub mod yaml;
 
 pub use self::creation::{
-    create_bool_input, create_bounded_input, create_outputs, create_player,
-    FromSpec,
+    create_bool_input, create_bounded_input, create_multi_bool_input,
+    create_outputs, create_player, FromSpec,
 };
 
 /// A key-value store for defining compositions
