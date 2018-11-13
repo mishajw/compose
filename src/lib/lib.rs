@@ -16,7 +16,6 @@ extern crate yaml_rust;
 #[macro_use]
 extern crate log;
 
-pub mod consts;
 pub mod core;
 pub mod errors;
 pub mod inputs;

@@ -1,10 +1,9 @@
 //! Play music to the device speaker
 
-use consts;
 use core::Output;
 use core::Playable;
 use errors::*;
-use spec::{FromSpec, Value};
+use spec::{FromSpec, Spec, Value};
 
 use std::collections::VecDeque;
 use std::sync::{mpsc, Arc, Mutex};
@@ -37,7 +36,7 @@ pub struct Speaker {
 
 impl Speaker {
     #[allow(missing_docs)]
-    fn new(device_number: usize) -> Result<Self> {
+    fn new(device_number: usize, output_frequency: f32) -> Result<Self> {
         // Initialize portaudio interface
         let audio = portaudio::PortAudio::new()
             .chain_err(|| "Failed to initialize PortAudio")?;
@@ -56,7 +55,7 @@ impl Speaker {
         let mut audio_settings = audio
             .default_output_stream_settings(
                 NUM_CHANNELS,
-                consts::SAMPLE_HZ as f64,
+                output_frequency as f64,
                 FRAMES as u32,
             )
             .chain_err(|| "Failed to get default audio stream settings")?;
@@ -147,9 +146,15 @@ impl Drop for Speaker {
 impl FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value) -> Result<Box<Output>> {
-        let mut spec = value.as_spec()?;
-        let device_number: i32 = spec.consume("device_number")?;
+        let mut spec: Spec = value.as_type()?;
+        let device_number: i32 = spec.consume("device-number")?;
+        // TODO: Remove duplicate variable
+        let output_frequency: f32 =
+            spec.consume_with_default("output-frequency", 44100.0)?;
         spec.ensure_all_used()?;
-        Ok(Box::new(Speaker::new(device_number as usize)?))
+        Ok(Box::new(Speaker::new(
+            device_number as usize,
+            output_frequency,
+        )?))
     }
 }

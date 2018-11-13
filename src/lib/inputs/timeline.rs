@@ -1,30 +1,30 @@
-use consts;
 use core::input;
 use core::CompositionState;
+use core::Time;
 use errors::*;
-use spec::{FromSpec, Value};
+use spec::{FromSpec, Spec, Value};
 
 /// `input::Bool` defined by a list of booleans
 pub struct Timeline {
     /// Events activation, indexed by `[time step][category]`
     events: Vec<bool>,
-    event_tick_length: usize,
+    event_duration: Time,
 }
 
 impl Timeline {
     #[allow(missing_docs)]
-    pub fn new(events: Vec<bool>, event_tick_length: usize) -> Self {
+    pub fn new(events: Vec<bool>, event_duration: Time) -> Self {
         Timeline {
             events,
-            event_tick_length,
+            event_duration,
         }
     }
 
     #[allow(missing_docs)]
-    pub fn from_string(events_str: String, event_tick_length: usize) -> Self {
+    pub fn from_string(events_str: String, event_duration: Time) -> Self {
         Timeline {
             events: events_str.chars().map(|c| c == '_').collect(),
-            event_tick_length,
+            event_duration,
         }
     }
 }
@@ -32,8 +32,8 @@ impl Timeline {
 impl input::Bool for Timeline {
     fn get(&mut self, state: &CompositionState) -> bool {
         let event_index = state.tick as usize
-            % (self.events.len() * self.event_tick_length)
-            / (self.event_tick_length);
+            % (self.events.len() * self.event_duration.to_ticks(&state.consts))
+            / (self.event_duration.to_ticks(&state.consts));
         self.events[event_index]
     }
 }
@@ -41,13 +41,10 @@ impl input::Bool for Timeline {
 impl FromSpec<Box<input::Bool>> for Timeline {
     fn name() -> &'static str { "timeline" }
     fn from_spec(value: Value) -> Result<Box<input::Bool>> {
-        let mut spec = value.as_spec()?;
-        let event_tick_sec: i32 = spec.consume("event-tick-sec")?;
+        let mut spec: Spec = value.as_type()?;
+        let event_duration = Time::from_spec(spec.consume("event-duration")?)?;
         let events: String = spec.consume("events")?;
 
-        Ok(Box::new(Timeline::from_string(
-            events,
-            (event_tick_sec as f32 * consts::SAMPLE_HZ) as usize,
-        )))
+        Ok(Box::new(Timeline::from_string(events, event_duration)))
     }
 }

@@ -27,4 +27,4 @@ outputs:
   # Play the composition to speakers
   - name: speaker
     # The index of the device to play to
-    device_number: 5
+    device-number: 5

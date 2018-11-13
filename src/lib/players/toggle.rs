@@ -3,7 +3,7 @@ use core::Player;
 use errors::*;
 use inputs::BoolToBounded;
 use players::Volume;
-use spec::{create_bool_input, create_player, FromSpec, Value};
+use spec::{create_bool_input, create_player, FromSpec, Spec, Value};
 
 /// Toggle a player on and off
 pub struct Toggle {}
@@ -23,7 +23,7 @@ impl Toggle {
 impl FromSpec<Box<Player>> for Toggle {
     fn name() -> &'static str { "toggle" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
-        let mut spec = value.as_spec()?;
+        let mut spec: Spec = value.as_type()?;
         let child = create_player(&mut spec.consume("child")?)?;
         let bool_input = create_bool_input(&mut spec.consume("input")?)?;
         Ok(Toggle::new(child, bool_input))

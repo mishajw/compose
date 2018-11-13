@@ -3,7 +3,7 @@ use core::CompositionState;
 use core::Playable;
 use core::Player;
 use errors::*;
-use spec::{create_bounded_input, create_player, FromSpec, Value};
+use spec::{create_bounded_input, create_player, FromSpec, Spec, Value};
 
 /// Adjust the volume of a child player
 pub struct Volume {
@@ -27,7 +27,7 @@ impl Player for Volume {
 impl FromSpec<Box<Player>> for Volume {
     fn name() -> &'static str { "volume" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
-        let mut spec = value.as_spec()?;
+        let mut spec: Spec = value.as_type()?;
         Ok(Box::new(Volume::new(
             create_player(&mut spec.consume("child")?)?,
             create_bounded_input(&mut spec.consume("input")?)?,

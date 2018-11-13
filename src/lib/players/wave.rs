@@ -1,4 +1,3 @@
-use consts;
 use core::input;
 use core::CompositionState;
 use core::Playable;
@@ -20,8 +19,8 @@ impl Player for Wave {
         // range
         Playable::new(self.input.get_with_bounds(
             state,
-            i32::MIN as f32 * consts::LOUDNESS_FACTOR,
-            i32::MAX as f32 * consts::LOUDNESS_FACTOR,
+            i32::MIN as f32 * state.consts.loudness_factor,
+            i32::MAX as f32 * state.consts.loudness_factor,
         ) as i32)
     }
 }

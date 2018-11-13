@@ -13,9 +13,11 @@ pub mod input;
 mod output;
 mod playable;
 mod player;
+mod time;
 
 pub use self::composer::compose;
-pub use self::composition_state::CompositionState;
+pub use self::composition_state::{CompositionConsts, CompositionState};
 pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;
+pub use self::time::Time;

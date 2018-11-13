@@ -39,6 +39,13 @@ impl Spec {
     #[allow(missing_docs)]
     pub fn new(values: HashMap<String, Value>) -> Self { Spec { values } }
 
+    #[allow(missing_docs)]
+    pub fn empty() -> Self {
+        Spec {
+            values: HashMap::new(),
+        }
+    }
+
     /// Get a value from the spec, and remove it
     pub fn consume<T: ValueType>(&mut self, value_name: &str) -> Result<T> {
         let value: Value = self
@@ -46,7 +53,11 @@ impl Spec {
             .remove(value_name)
             .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
         T::get_from_value(value).ok_or_else(|| {
-            ErrorKind::SpecTypeError(value_name.into(), "string".into()).into()
+            ErrorKind::SpecTypeError(
+                value_name.into(),
+                T::get_type_name().into(),
+            )
+            .into()
         })
     }
 
@@ -59,8 +70,11 @@ impl Spec {
     {
         match self.values.remove(value_name) {
             Some(value) => T::get_from_value(value).ok_or_else(|| {
-                ErrorKind::SpecTypeError(value_name.into(), "string".into())
-                    .into()
+                ErrorKind::SpecTypeError(
+                    value_name.into(),
+                    T::get_type_name().into(),
+                )
+                .into()
             }),
             None => Ok(default),
         }
@@ -81,6 +95,9 @@ impl Spec {
 
 /// A type that can be extracted from a `Value`
 pub trait ValueType: Sized {
+    /// Get the name of the type for error messages
+    fn get_type_name() -> &'static str;
+
     /// Get the type from the `Value`
     fn get_from_value(value: Value) -> Option<Self>;
 }
@@ -88,6 +105,8 @@ pub trait ValueType: Sized {
 macro_rules! impl_value_type {
     ($extracted_type:ty, $value_pattern:tt) => {
         impl ValueType for $extracted_type {
+            fn get_type_name() -> &'static str { stringify!($extracted_type) }
+
             fn get_from_value(value: Value) -> Option<Self> {
                 match value {
                     Value::$value_pattern(extracted) => Some(extracted),
@@ -105,13 +124,17 @@ impl_value_type!(bool, Bool);
 impl_value_type!(Spec, Spec);
 impl_value_type!(Vec<Value>, List);
 
+impl ValueType for Value {
+    fn get_type_name() -> &'static str { "Value" }
+
+    fn get_from_value(value: Value) -> Option<Self> { Some(value) }
+}
+
 impl Value {
-    /// Try convert the value into a `Spec`
-    pub fn as_spec(self) -> Result<Spec> {
-        if let Value::Spec(spec) = self {
-            Ok(spec)
-        } else {
-            Err(ErrorKind::BadInput("Failed cast as spec".into()).into())
-        }
+    /// Try return the value as a type
+    pub fn as_type<T: ValueType>(self) -> Result<T> {
+        T::get_from_value(self).ok_or_else(|| {
+            ErrorKind::BadInput("Failed cast as spec".into()).into()
+        })
     }
 }

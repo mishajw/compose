@@ -7,8 +7,10 @@ extern crate env_logger;
 extern crate clap;
 
 use composer::core::compose;
+use composer::core::CompositionConsts;
 use composer::errors::*;
 use composer::spec;
+use composer::spec::{FromSpec, Spec, Value};
 
 use std::path::Path;
 
@@ -40,9 +42,12 @@ fn run() -> Result<()> {
     let output_specs = spec.consume("outputs")?;
     let mut player = spec::create_player(&mut player_spec)?;
     let outputs = spec::create_outputs(output_specs)?;
+    let consts = CompositionConsts::from_spec(
+        spec.consume_with_default("consts", Value::Spec(Spec::empty()))?,
+    )?;
 
     info!("Composing");
-    compose(player.as_mut(), outputs);
+    compose(player.as_mut(), outputs, consts);
 
     info!("Finished");
     Ok(())

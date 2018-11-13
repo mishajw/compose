@@ -9,11 +9,13 @@ players:
       frequency: 659.25
   input:
     name: timeline-multi
-    event-tick-sec: 1
+    event-duration: 1 beats
     events: |
       X__X
       _X_X
       __XX
 outputs:
   - name: speaker
-    device_number: 5
+    device-number: 5
+consts:
+  beats-per-minute: 80.0
