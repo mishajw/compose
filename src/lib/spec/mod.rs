@@ -61,7 +61,8 @@ impl Spec {
         })
     }
 
-    /// Get a value from the spec, and remove it
+    /// Get a value from the spec, and remove it. If it doesn't exist, return
+    /// `default`
     pub fn consume_with_default<T: ValueType>(
         &mut self,
         value_name: &str,
@@ -77,6 +78,27 @@ impl Spec {
                 .into()
             }),
             None => Ok(default),
+        }
+    }
+
+    /// Get a value from the spec, and remove it. If it doesn't exist, return
+    /// `None`
+    pub fn consume_optional<T: ValueType>(
+        &mut self,
+        value_name: &str,
+    ) -> Result<Option<T>>
+    {
+        match self.values.remove(value_name) {
+            Some(value) => T::get_from_value(value)
+                .ok_or_else(|| {
+                    ErrorKind::SpecTypeError(
+                        value_name.into(),
+                        T::get_type_name().into(),
+                    )
+                    .into()
+                })
+                .map(Some),
+            None => Ok(None),
         }
     }
 

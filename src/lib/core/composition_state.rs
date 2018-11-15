@@ -19,8 +19,17 @@ impl CompositionState {
 
     /// Step to the next state in the composition
     pub fn increment(&mut self) { self.tick += 1; }
+
+    /// Get a copy of the state with a custom tick value
+    pub fn with_tick(&self, tick: usize) -> Self {
+        CompositionState {
+            tick,
+            consts: self.consts.clone(),
+        }
+    }
 }
 
+#[derive(Clone)]
 pub struct CompositionConsts {
     pub sample_hz: f32,
     pub beats_per_minute: f32,
