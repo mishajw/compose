@@ -82,3 +82,40 @@ impl FromSpec<Box<input::Bounded>> for Wave {
         Ok(Wave::from_string(wave_fn_name, frequency)?)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use core::CompositionConsts;
+
+    #[test]
+    fn test_sine() {
+        let consts = CompositionConsts::default();
+        let state = CompositionState::initial(consts.clone());
+        let mut wave = Wave::from_string("sine".into(), 1.0).unwrap();
+        assert!((0.0 - wave.get(&state.with_tick(0))).abs() < 0.001);
+        assert!(
+            (1.0 - wave
+                .get(&state.with_tick((consts.sample_hz * 0.25) as usize)))
+            .abs()
+                < 0.001
+        );
+        assert!(
+            (0.0 - wave
+                .get(&state.with_tick((consts.sample_hz * 0.5) as usize)))
+            .abs()
+                < 0.001
+        );
+        assert!(
+            (-1.0
+                - wave
+                    .get(&state.with_tick((consts.sample_hz * 0.75) as usize)))
+            .abs()
+                < 0.001
+        );
+        assert!(
+            (0.0 - wave.get(&state.with_tick(consts.sample_hz as usize))).abs()
+                < 0.001
+        );
+    }
+}

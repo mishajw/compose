@@ -53,6 +53,10 @@ impl CompositionConsts {
             loudness_factor,
         }
     }
+
+    pub fn default() -> Self {
+        CompositionConsts::new(44100.0, 120.0, 4.0, 0.3)
+    }
 }
 
 impl FromSpec<CompositionConsts> for CompositionConsts {
