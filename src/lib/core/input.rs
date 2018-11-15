@@ -15,8 +15,8 @@ pub trait Bounded {
     fn get_with_bounds(
         &mut self,
         state: &CompositionState,
-        upper: f32,
         lower: f32,
+        upper: f32,
     ) -> f32
     {
         let value = self.get(state);
