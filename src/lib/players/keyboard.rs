@@ -18,7 +18,7 @@ impl FromSpec<Box<Player>> for Keyboard {
             .map(|(v, input)| {
                 Value::as_type::<Spec>(v)
                     .and_then(|mut s| create_player(&mut s))
-                    .map(|c| Toggle::new(c, input))
+                    .map(|c| Toggle::from_bool(c, input))
             })
             .collect::<Result<Vec<_>>>()?;
 

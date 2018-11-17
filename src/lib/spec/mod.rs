@@ -102,6 +102,12 @@ impl Spec {
         }
     }
 
+    /// Add a field to the spec
+    pub fn with<T: ValueType>(mut self, value_name: String, value: T) -> Spec {
+        self.values.insert(value_name, value.into_value());
+        self
+    }
+
     /// Check that all values in the spec have been used
     pub fn ensure_all_used(&self) -> Result<()> {
         if self.values.is_empty() {
@@ -122,6 +128,9 @@ pub trait ValueType: Sized {
 
     /// Get the type from the `Value`
     fn get_from_value(value: Value) -> Option<Self>;
+
+    /// Get the type from the `Value`
+    fn into_value(self) -> Value;
 }
 
 macro_rules! impl_value_type {
@@ -135,6 +144,8 @@ macro_rules! impl_value_type {
                     _ => None,
                 }
             }
+
+            fn into_value(self) -> Value { Value::$value_pattern(self) }
         }
     };
 }
@@ -150,6 +161,8 @@ impl ValueType for Value {
     fn get_type_name() -> &'static str { "Value" }
 
     fn get_from_value(value: Value) -> Option<Self> { Some(value) }
+
+    fn into_value(self) -> Value { self }
 }
 
 impl Value {

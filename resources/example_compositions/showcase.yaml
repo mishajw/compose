@@ -24,9 +24,10 @@ players:
       fn: sine
       frequency: 659.25 # E
   # Toggle input on/off, smoothly
-  - name: smooth-toggle
-    smooth-in-duration: 0.05 seconds
-    smooth-out-duration: 0.1 seconds
+  - name: toggle
+    smooth:
+      smooth-in-duration: 0.05 seconds
+      smooth-out-duration: 0.1 seconds
     input:
       name: bounded-to-bool
       bounded:
