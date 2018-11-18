@@ -30,7 +30,10 @@ fn resolve_single_macro<T: SpecMacro>(
 }
 
 fn resolve_single_spec(spec: &mut Spec) -> Result<Option<Value>> {
-    let name: String = spec.consume("name")?;
+    let name: String = match spec.consume_optional("name")? {
+        Some(name) => name,
+        None => return Ok(None),
+    };
     match resolve_single_macro::<macros::TimelineMulti>(&name, spec)
         .or_else(|| resolve_single_macro::<macros::Map>(&name, spec))
     {
