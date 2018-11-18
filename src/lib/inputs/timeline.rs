@@ -13,19 +13,23 @@ pub struct Timeline {
 
 impl Timeline {
     #[allow(missing_docs)]
-    pub fn new(events: Vec<bool>, event_duration: Time) -> Self {
-        Timeline {
+    pub fn new(events: Vec<bool>, event_duration: Time) -> Box<input::Bool> {
+        Box::new(Timeline {
             events,
             event_duration,
-        }
+        })
     }
 
     #[allow(missing_docs)]
-    pub fn from_string(events_str: String, event_duration: Time) -> Self {
-        Timeline {
+    pub fn from_string(
+        events_str: String,
+        event_duration: Time,
+    ) -> Box<input::Bool>
+    {
+        Box::new(Timeline {
             events: events_str.chars().map(|c| c != '_').collect(),
             event_duration,
-        }
+        })
     }
 }
 
@@ -46,6 +50,6 @@ impl FromSpec<Box<input::Bool>> for Timeline {
         let events: String = spec.consume("events")?;
         spec.ensure_all_used()?;
 
-        Ok(Box::new(Timeline::from_string(events, event_duration)))
+        Ok(Timeline::from_string(events, event_duration))
     }
 }

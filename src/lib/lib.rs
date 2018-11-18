@@ -19,6 +19,7 @@ extern crate log;
 pub mod core;
 pub mod errors;
 pub mod inputs;
+pub mod macros;
 pub mod outputs;
 pub mod players;
 pub mod spec;

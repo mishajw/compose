@@ -5,21 +5,23 @@ use errors::*;
 use std::collections::HashMap;
 
 mod creation;
+mod spec_macro;
 pub mod yaml;
 
 pub use self::creation::{
-    create_bool_input, create_bounded_input, create_multi_bool_input,
-    create_outputs, create_player, FromSpec,
+    create_bool_input, create_bounded_input, create_outputs, create_player,
+    resolve_macros, FromSpec,
 };
+pub use self::spec_macro::SpecMacro;
 
 /// A key-value store for defining compositions
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Spec {
     values: HashMap<String, Value>,
 }
 
 /// A value in a [`Spec`](struct.Spec.html)
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Value {
     #[allow(missing_docs)]
     Str(String),
@@ -122,10 +124,15 @@ impl Spec {
             .collect::<Result<Vec<_>>>()
     }
 
-    /// Add a field to the spec
+    /// Add a field to the spec, returning the modified spec
     pub fn with<T: ValueType>(mut self, value_name: String, value: T) -> Spec {
         self.values.insert(value_name, value.into_value());
         self
+    }
+
+    /// Add a field to the spec
+    pub fn put<T: ValueType>(&mut self, value_name: String, value: T) {
+        self.values.insert(value_name, value.into_value());
     }
 
     /// Check that all values in the spec have been used

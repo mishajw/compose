@@ -38,7 +38,10 @@ fn run() -> Result<()> {
 
     info!("Initializing from spec");
     let mut spec = spec::yaml::read(Path::new(spec_path))?;
-    let mut player_spec = spec.consume("players")?;
+    let player_spec_with_macros = spec.consume("players")?;
+    debug!("Player spec: {:#?}", player_spec_with_macros);
+    let mut player_spec = spec::resolve_macros(player_spec_with_macros)?;
+    debug!("Player spec resolved: {:#?}", player_spec);
     let output_specs = spec.consume("outputs")?;
     let mut player = spec::create_player(&mut player_spec)?;
     let outputs = spec::create_outputs(output_specs)?;
