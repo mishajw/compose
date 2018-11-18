@@ -8,21 +8,17 @@ players:
     - name: wave
       frequency: 659.25
   inputs:
-    - name: bool-to-bounded
-      bool:
-        name: timeline
-        event-duration: 1 beats
-        events: X__X
-    - name: bool-to-bounded
-      bool:
-        name: timeline
-        event-duration: 1 beats
-        events: _X_X
-    - name: bool-to-bounded
-      bool:
-        name: timeline
-        event-duration: 1 beats
-        events: __XX
+    name: map
+    fn:
+      name: bool-to-bounded
+    field: bool
+    list:
+      name: timeline-multi
+      event-duration: 1 beats
+      events: |
+        X__X
+        _X_X
+        __XX
 outputs:
   - name: speaker
     device-number: 5

@@ -108,7 +108,9 @@ pub fn resolve_macros(spec: Spec) -> Result<Spec> {
 
     fn resolve_single_spec(spec: &mut Spec) -> Result<Option<Value>> {
         let name: String = spec.consume("name")?;
-        match resolve_single_macro::<macros::TimelineMulti>(&name, spec) {
+        match resolve_single_macro::<macros::TimelineMulti>(&name, spec)
+            .or_else(|| resolve_single_macro::<macros::Map>(&name, spec))
+        {
             None => {
                 spec.put("name".into(), name);
                 Ok(None)
