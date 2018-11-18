@@ -1,7 +1,7 @@
 #![allow(missing_docs)]
 
+use core::spec::{create, Spec, Value};
 use errors::*;
-use spec::{FromSpec, Spec, Value};
 
 /// Used to keep track of the progress through a composition
 pub struct CompositionState {
@@ -59,7 +59,7 @@ impl CompositionConsts {
     }
 }
 
-impl FromSpec<CompositionConsts> for CompositionConsts {
+impl create::FromSpec<CompositionConsts> for CompositionConsts {
     fn name() -> &'static str { "consts" }
     fn from_spec(value: Value) -> Result<CompositionConsts> {
         let mut spec: Spec = value.as_type()?;

@@ -1,26 +1,27 @@
 use core::input;
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::Player;
 use errors::*;
 use players::Combiner;
 use players::Volume;
-use spec::{create_bounded_input, create_player, FromSpec, Spec, Value};
 
 /// Selectively plays from its children
 pub struct Keyboard {}
 
-impl FromSpec<Box<Player>> for Keyboard {
+impl create::FromSpec<Box<Player>> for Keyboard {
     fn name() -> &'static str { "keyboard" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         let children: Vec<Box<Player>> = spec
             .consume_list("children")?
             .iter_mut()
-            .map(create_player)
+            .map(create::create_player)
             .collect::<Result<Vec<_>>>()?;
         let inputs: Vec<Box<input::Bounded>> = spec
             .consume_list("inputs")?
             .iter_mut()
-            .map(create_bounded_input)
+            .map(create::create_bounded_input)
             .collect::<Result<Vec<_>>>()?;
         spec.ensure_all_used()?;
 

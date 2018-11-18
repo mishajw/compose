@@ -1,10 +1,11 @@
 use core::input;
+use core::spec::create;
+use core::spec::Value;
 use core::CompositionState;
 use core::Playable;
 use core::Player;
 use errors::*;
 use inputs;
-use spec::{FromSpec, Value};
 
 use std::i32;
 
@@ -25,7 +26,7 @@ impl Player for Wave {
     }
 }
 
-impl FromSpec<Box<Player>> for Wave {
+impl create::FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
     fn from_spec(value: Value) -> Result<Box<Player>> {

@@ -1,10 +1,10 @@
 use core::input;
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::CompositionState;
 use core::Time;
 use errors::*;
 use inputs::Wave;
-use spec::Spec;
-use spec::{create_bool_input, create_bounded_input, FromSpec, Value};
 
 /// Smooth a bool transition
 pub struct SmoothBool {
@@ -73,19 +73,19 @@ impl input::Bounded for SmoothBool {
     fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
 }
 
-impl FromSpec<Box<input::Bounded>> for SmoothBool {
+impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
     fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
         let mut spec: Spec = value.as_type()?;
-        let input = create_bool_input(&mut spec.consume("input")?)?;
+        let input = create::create_bool_input(&mut spec.consume("input")?)?;
         let smooth_in_duration =
             Time::from_spec(spec.consume("smooth-in-duration")?)?;
         let smooth_out_duration =
             Time::from_spec(spec.consume("smooth-out-duration")?)?;
         match spec.consume_optional::<Spec>("smooth-fn")? {
             Some(mut smooth_fn) => {
-                let smooth_fn = create_bounded_input(&mut smooth_fn)?;
+                let smooth_fn = create::create_bounded_input(&mut smooth_fn)?;
                 Ok(SmoothBool::new(
                     input,
                     smooth_fn,

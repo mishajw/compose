@@ -1,7 +1,7 @@
 //! Read `.yaml`. files into [`Spec`](../struct.Spec.html)s
 
+use core::spec::{Spec, Value};
 use errors::*;
-use spec::{Spec, Value};
 
 use std::collections::HashMap;
 use std::fs::File;

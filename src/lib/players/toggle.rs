@@ -1,10 +1,11 @@
 use core::input;
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::Player;
 use errors::*;
 use inputs::BoolToBounded;
 use inputs::SmoothBool;
 use players::Volume;
-use spec::{create_bool_input, create_player, FromSpec, Spec, Value};
 
 /// Toggle a player on and off
 pub struct Toggle {}
@@ -30,11 +31,11 @@ impl Toggle {
     }
 }
 
-impl FromSpec<Box<Player>> for Toggle {
+impl create::FromSpec<Box<Player>> for Toggle {
     fn name() -> &'static str { "toggle" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
-        let child = create_player(&mut spec.consume("child")?)?;
+        let child = create::create_player(&mut spec.consume("child")?)?;
         let mut bool_spec = spec.consume("input")?;
 
         if let Some(smooth_bool_spec) =
@@ -45,7 +46,7 @@ impl FromSpec<Box<Player>> for Toggle {
             ))?;
             Ok(Toggle::from_bounded(child, smooth_bool))
         } else {
-            let bool_input = create_bool_input(&mut bool_spec)?;
+            let bool_input = create::create_bool_input(&mut bool_spec)?;
             Ok(Toggle::from_bool(child, bool_input))
         }
     }

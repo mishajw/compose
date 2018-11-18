@@ -1,0 +1,38 @@
+//! Creating components from [`core`](../../core/)
+
+use core::spec::{Spec, Value};
+use errors::*;
+
+mod bool_input;
+mod bounded_input;
+mod output;
+mod player;
+mod spec_macro;
+
+pub use self::bool_input::create_bool_input;
+pub use self::bounded_input::create_bounded_input;
+pub use self::output::create_outputs;
+pub use self::player::create_player;
+pub use self::spec_macro::resolve_macros;
+
+/// Implementors can be created from a spec
+pub trait FromSpec<T> {
+    /// The name of the value to be created, used to find the type of the
+    /// definition
+    fn name() -> &'static str;
+    /// Create the value from a spec
+    fn from_spec(value: Value) -> Result<T>;
+}
+
+/// Create a type `T` from a spec
+pub fn create_with_type<T: 'static + FromSpec<S>, S>(
+    name: &str,
+    spec: &mut Spec,
+) -> Option<Result<S>>
+{
+    if name == T::name() {
+        Some(T::from_spec(Value::Spec(spec.clone())))
+    } else {
+        None
+    }
+}

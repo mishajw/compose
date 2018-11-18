@@ -1,8 +1,9 @@
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::CompositionState;
 use core::Playable;
 use core::Player;
 use errors::*;
-use spec::{create_player, FromSpec, Spec, Value};
 
 /// Sum several children `Player` output into one output
 pub struct Combiner {
@@ -20,7 +21,7 @@ impl Player for Combiner {
     }
 }
 
-impl FromSpec<Box<Player>> for Combiner {
+impl create::FromSpec<Box<Player>> for Combiner {
     fn name() -> &'static str { "combiner" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
@@ -32,7 +33,7 @@ impl FromSpec<Box<Player>> for Combiner {
             .chain_err(|| "Failed to create combiner children specs")?;
         let children = children_specs
             .iter_mut()
-            .map(create_player)
+            .map(create::create_player)
             .collect::<Result<Vec<_>>>()
             .chain_err(|| "Failed to create combiner children")?;
 

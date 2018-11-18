@@ -1,6 +1,6 @@
+use core::spec::{create, Value};
 use core::CompositionConsts;
 use errors::*;
-use spec::{FromSpec, Value};
 
 /// Amount of time in different measurements
 #[derive(Clone)]
@@ -48,7 +48,7 @@ impl Time {
     }
 }
 
-impl FromSpec<Time> for Time {
+impl create::FromSpec<Time> for Time {
     fn name() -> &'static str { "time" }
     fn from_spec(value: Value) -> Result<Time> {
         let string: String = value.as_type()?;

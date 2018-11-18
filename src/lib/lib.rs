@@ -22,4 +22,3 @@ pub mod inputs;
 pub mod macros;
 pub mod outputs;
 pub mod players;
-pub mod spec;

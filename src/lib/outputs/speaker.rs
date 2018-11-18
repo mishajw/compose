@@ -1,9 +1,10 @@
 //! Play music to the device speaker
 
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::Output;
 use core::Playable;
 use errors::*;
-use spec::{FromSpec, Spec, Value};
 
 use std::collections::VecDeque;
 use std::sync::{mpsc, Arc, Mutex};
@@ -143,7 +144,7 @@ impl Drop for Speaker {
     }
 }
 
-impl FromSpec<Box<Output>> for Speaker {
+impl create::FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value) -> Result<Box<Output>> {
         let mut spec: Spec = value.as_type()?;

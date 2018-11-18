@@ -4,14 +4,10 @@ use errors::*;
 
 use std::collections::HashMap;
 
-mod creation;
+pub mod create;
 mod spec_macro;
 pub mod yaml;
 
-pub use self::creation::{
-    create_bool_input, create_bounded_input, create_outputs, create_player,
-    resolve_macros, FromSpec,
-};
 pub use self::spec_macro::SpecMacro;
 
 /// A key-value store for defining compositions

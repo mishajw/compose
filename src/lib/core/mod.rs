@@ -13,6 +13,7 @@ pub mod input;
 mod output;
 mod playable;
 mod player;
+pub mod spec;
 mod time;
 
 pub use self::composer::compose;

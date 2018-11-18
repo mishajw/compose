@@ -1,6 +1,5 @@
+use core::spec::{Spec, Value};
 use errors::*;
-use spec::Spec;
-use spec::Value;
 
 /// Resolvable macro in the spec
 pub trait SpecMacro {

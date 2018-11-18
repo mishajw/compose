@@ -1,8 +1,9 @@
 use core::input;
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::CompositionState;
 use core::Time;
 use errors::*;
-use spec::{FromSpec, Spec, Value};
 
 /// `input::Bool` defined by a list of booleans
 pub struct Timeline {
@@ -42,7 +43,7 @@ impl input::Bool for Timeline {
     }
 }
 
-impl FromSpec<Box<input::Bool>> for Timeline {
+impl create::FromSpec<Box<input::Bool>> for Timeline {
     fn name() -> &'static str { "timeline" }
     fn from_spec(value: Value) -> Result<Box<input::Bool>> {
         let mut spec: Spec = value.as_type()?;

@@ -1,5 +1,5 @@
+use core::spec::{Spec, SpecMacro, Value, ValueType};
 use errors::*;
-use spec::{Spec, SpecMacro, Value, ValueType};
 
 /// [`Timeline`](../strict.Timeline.html) for multiple inputs
 pub struct TimelineMulti {}

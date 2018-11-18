@@ -1,8 +1,9 @@
 /// Inputs that convert between input types
 use core::input;
+use core::spec::create;
+use core::spec::{Spec, Value};
 use core::CompositionState;
 use errors::*;
-use spec::{create_bool_input, create_bounded_input, FromSpec, Spec, Value};
 
 /// Convert a `Bounded` input to a `Bool` input
 pub struct BoundedToBool {
@@ -22,13 +23,13 @@ impl input::Bool for BoundedToBool {
     }
 }
 
-impl FromSpec<Box<input::Bool>> for BoundedToBool {
+impl create::FromSpec<Box<input::Bool>> for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
     fn from_spec(value: Value) -> Result<Box<input::Bool>> {
         let mut spec: Spec = value.as_type()?;
         let mut bounded_spec = spec.consume("bounded")?;
         spec.ensure_all_used()?;
-        Ok(Box::new(BoundedToBool::new(create_bounded_input(
+        Ok(Box::new(BoundedToBool::new(create::create_bounded_input(
             &mut bounded_spec,
         )?)))
     }
@@ -56,13 +57,13 @@ impl input::Bounded for BoolToBounded {
     fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
 }
 
-impl FromSpec<Box<input::Bounded>> for BoolToBounded {
+impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
     fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
         let mut spec: Spec = value.as_type()?;
         let mut bool_spec = spec.consume("bool")?;
         spec.ensure_all_used()?;
-        Ok(Box::new(BoolToBounded::new(create_bool_input(
+        Ok(Box::new(BoolToBounded::new(create::create_bool_input(
             &mut bool_spec,
         )?)))
     }
