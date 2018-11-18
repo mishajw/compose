@@ -6,7 +6,7 @@ use errors::*;
 
 /// A wave input, gets values from a function at a frequency
 pub struct Wave {
-    wave_fn: Box<Fn(f32) -> f32>,
+    wave_fn: Box<Fn(f32) -> f32 + Send + Sync>,
     frequency: f32,
     lower_bound: f32,
     upper_bound: f32,
@@ -15,7 +15,7 @@ pub struct Wave {
 impl Wave {
     #[allow(missing_docs)]
     pub fn new(
-        wave_fn: Box<Fn(f32) -> f32>,
+        wave_fn: Box<Fn(f32) -> f32 + Send + Sync>,
         frequency: f32,
         lower_bound: f32,
         upper_bound: f32,
@@ -36,7 +36,7 @@ impl Wave {
     ) -> Result<Box<input::Bounded>>
     {
         let (wave_fn, lower_bound, upper_bound): (
-            Box<Fn(f32) -> f32>,
+            Box<Fn(f32) -> f32 + Send + Sync>,
             f32,
             f32,
         ) = match wave_string.as_ref() {

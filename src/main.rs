@@ -1,12 +1,10 @@
 extern crate composer;
-extern crate error_chain;
 extern crate env_logger;
+extern crate error_chain;
 #[macro_use]
 extern crate clap;
 
 use composer::errors::*;
-
-use std::path::Path;
 
 use error_chain::ChainedError;
 
@@ -23,13 +21,13 @@ fn run() -> Result<()> {
          "Specification of the composition")
     )
     .get_matches();
-    let spec_path = Path::new(matches.value_of("spec_path").unwrap());
+    let spec_path = matches.value_of("spec_path").unwrap();
 
     // Initialize logging
     let env = env_logger::Env::default()
         .filter_or(env_logger::DEFAULT_FILTER_ENV, "composer=debug");
     env_logger::Builder::from_env(env).init();
 
-    composer::core::composer::compose_from_file(spec_path)?;
+    composer::core::composer::compose_from_file(spec_path.into())?;
     Ok(())
 }

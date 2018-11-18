@@ -1,6 +1,7 @@
 use core::spec::{create, Value};
 use core::CompositionConsts;
 use errors::*;
+use std::time::Duration;
 
 /// Amount of time in different measurements
 #[derive(Clone)]
@@ -46,6 +47,11 @@ impl Time {
             ticks => Time::Seconds(ticks.to_seconds(consts)).to_beats(consts),
         }
     }
+
+    #[allow(missing_docs)]
+    pub fn to_duration(&self, consts: &CompositionConsts) -> Duration {
+        return Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64);
+    }
 }
 
 impl create::FromSpec<Time> for Time {
@@ -84,7 +90,8 @@ mod test {
 
     #[test]
     fn test_to_ticks() {
-        let consts = &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0);
+        let consts =
+            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
         assert_eq!(Time::Ticks(1000).to_ticks(consts), 1000);
         assert_eq!(Time::Seconds(3.0).to_ticks(consts), 44100 * 3);
         assert_eq!(Time::Bars(2.0).to_ticks(consts), 44100 * 4);
@@ -93,7 +100,8 @@ mod test {
 
     #[test]
     fn test_to_seconds() {
-        let consts = &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0);
+        let consts =
+            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
         assert_eq!(Time::Ticks(44100).to_seconds(consts), 1.0);
         assert_eq!(Time::Seconds(3.0).to_seconds(consts), 3.0);
         assert_eq!(Time::Bars(2.0).to_seconds(consts), 4.0);
@@ -102,7 +110,8 @@ mod test {
 
     #[test]
     fn test_to_beats() {
-        let consts = &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0);
+        let consts =
+            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
         assert_eq!(Time::Ticks(44100).to_beats(consts), 2.0);
         assert_eq!(Time::Seconds(3.0).to_beats(consts), 6.0);
         assert_eq!(Time::Bars(2.0).to_beats(consts), 8.0);

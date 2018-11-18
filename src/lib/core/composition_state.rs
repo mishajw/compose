@@ -1,6 +1,7 @@
 #![allow(missing_docs)]
 
 use core::spec::{create, Spec, Value};
+use core::Time;
 use errors::*;
 
 /// Used to keep track of the progress through a composition
@@ -35,6 +36,7 @@ pub struct CompositionConsts {
     pub beats_per_minute: f32,
     pub beats_per_bar: f32,
     pub loudness_factor: f32,
+    pub reload_time: Time,
 }
 
 impl CompositionConsts {
@@ -44,6 +46,7 @@ impl CompositionConsts {
         beats_per_minute: f32,
         beats_per_bar: f32,
         loudness_factor: f32,
+        reload_time: Time,
     ) -> Self
     {
         CompositionConsts {
@@ -51,11 +54,12 @@ impl CompositionConsts {
             beats_per_minute,
             beats_per_bar,
             loudness_factor,
+            reload_time,
         }
     }
 
     pub fn default() -> Self {
-        CompositionConsts::new(44100.0, 120.0, 4.0, 0.3)
+        CompositionConsts::new(44100.0, 120.0, 4.0, 0.3, Time::Ticks(0))
     }
 }
 
@@ -68,6 +72,10 @@ impl create::FromSpec<CompositionConsts> for CompositionConsts {
             spec.consume_with_default("beats-per-minute", 120.0)?,
             spec.consume_with_default("beats-per-bar", 4.0)?,
             spec.consume_with_default("loudness-factor", 0.3)?,
+            Time::from_spec(spec.consume_with_default(
+                "reload-time",
+                Value::Str("0 ticks".to_string()),
+            )?)?,
         );
         spec.ensure_all_used()?;
         Ok(consts)

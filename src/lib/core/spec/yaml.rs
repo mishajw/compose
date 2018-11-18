@@ -5,7 +5,6 @@ use errors::*;
 
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::BufReader;
 use std::io::Read;
 use std::path::Path;
 
@@ -13,7 +12,13 @@ use yaml_rust::{Yaml, YamlLoader};
 
 /// Read a `.yaml` file into a `Spec`
 pub fn read(path: &Path) -> Result<Spec> {
-    let yaml = get_yaml(path)?;
+    let yaml_str = get_yaml_str(path)?;
+    parse(yaml_str)
+}
+
+/// Parse a `.yaml` file into a `Spec`
+pub fn parse(yaml_str: String) -> Result<Spec> {
+    let yaml = get_yaml(yaml_str)?;
     let value = yaml_to_value(yaml)?;
     if let Value::Spec(spec) = value {
         Ok(spec)
@@ -25,19 +30,18 @@ pub fn read(path: &Path) -> Result<Spec> {
     }
 }
 
-fn get_yaml(path: &Path) -> Result<Yaml> {
-    let yaml_contents = {
-        let file =
-            File::open(path).chain_err(|| "Failed to open Spec yaml file")?;
-        let mut reader = BufReader::new(file);
-        let mut contents = String::new();
-        reader
-            .read_to_string(&mut contents)
-            .chain_err(|| "Failed to read from Spec yaml file")?;
-        contents
-    };
+/// Get the .yaml text
+pub fn get_yaml_str(path: &Path) -> Result<String> {
+    let mut file =
+        File::open(path).chain_err(|| "Failed to open Spec yaml file")?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .chain_err(|| "Failed to read from Spec yaml file")?;
+    Ok(contents)
+}
 
-    let mut yaml_list = YamlLoader::load_from_str(&yaml_contents)
+fn get_yaml(yaml_str: String) -> Result<Yaml> {
+    let mut yaml_list = YamlLoader::load_from_str(&yaml_str)
         .chain_err(|| "Failed to parse Spec yaml file")?;
 
     if yaml_list.len() > 1 {

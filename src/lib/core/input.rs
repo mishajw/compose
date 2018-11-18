@@ -3,7 +3,7 @@
 use core::CompositionState;
 
 /// An input that is is guarenteed to be between two values
-pub trait Bounded {
+pub trait Bounded: Send + Sync {
     /// Get the input value between the bounds given by `get_bounds`
     fn get(&mut self, state: &CompositionState) -> f32;
 
@@ -27,7 +27,7 @@ pub trait Bounded {
 }
 
 /// Input that is either true or false
-pub trait Bool {
+pub trait Bool: Send + Sync {
     #[allow(missing_docs)]
     fn get(&mut self, state: &CompositionState) -> bool;
 }
