@@ -7,7 +7,7 @@
 //! through [`CompositionState`](struct.CompositionState.html)s. `Player`s can
 //! be controlled through [`input`](input/) traits.
 
-mod composer;
+pub mod composer;
 mod composition_state;
 pub mod input;
 mod output;
@@ -16,7 +16,6 @@ mod player;
 pub mod spec;
 mod time;
 
-pub use self::composer::compose;
 pub use self::composition_state::{CompositionConsts, CompositionState};
 pub use self::output::Output;
 pub use self::playable::Playable;

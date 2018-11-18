@@ -1,15 +1,9 @@
 extern crate composer;
 extern crate error_chain;
-#[macro_use]
-extern crate log;
 extern crate env_logger;
 #[macro_use]
 extern crate clap;
 
-use composer::core::compose;
-use composer::core::spec;
-use composer::core::spec::create::FromSpec;
-use composer::core::CompositionConsts;
 use composer::errors::*;
 
 use std::path::Path;
@@ -36,24 +30,6 @@ fn run() -> Result<()> {
         .filter_or(env_logger::DEFAULT_FILTER_ENV, "composer=debug");
     env_logger::Builder::from_env(env).init();
 
-    info!("Initializing from spec");
-    let mut spec = spec::yaml::read(Path::new(spec_path))?;
-    let player_spec_with_macros = spec.consume("players")?;
-    debug!("Player spec: {:#?}", player_spec_with_macros);
-    let mut player_spec =
-        spec::create::resolve_macros(player_spec_with_macros)?;
-    debug!("Player spec resolved: {:#?}", player_spec);
-    let output_specs = spec.consume("outputs")?;
-    let mut player = spec::create::create_player(&mut player_spec)?;
-    let outputs = spec::create::create_outputs(output_specs)?;
-    let consts = CompositionConsts::from_spec(spec.consume_with_default(
-        "consts",
-        spec::Value::Spec(spec::Spec::empty()),
-    )?)?;
-
-    info!("Composing");
-    compose(player.as_mut(), outputs, consts);
-
-    info!("Finished");
+    composer::core::composer::compose_from_file(spec_path)?;
     Ok(())
 }
