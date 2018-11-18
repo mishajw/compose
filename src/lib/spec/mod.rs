@@ -102,6 +102,26 @@ impl Spec {
         }
     }
 
+    /// Consume a list of elements as a type
+    pub fn consume_list<T: ValueType>(
+        &mut self,
+        list_name: &str,
+    ) -> Result<Vec<T>>
+    {
+        let value_list: Vec<Value> =
+            if let Some(value_list) = self.consume_optional(list_name)? {
+                value_list
+            } else {
+                // If the field doesn't exist, return an empty list
+                return Ok(vec![]);
+            };
+
+        value_list
+            .into_iter()
+            .map(|v| v.as_type::<T>())
+            .collect::<Result<Vec<_>>>()
+    }
+
     /// Add a field to the spec
     pub fn with<T: ValueType>(mut self, value_name: String, value: T) -> Spec {
         self.values.insert(value_name, value.into_value());

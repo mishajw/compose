@@ -13,8 +13,8 @@ pub struct Volume {
 
 impl Volume {
     #[allow(missing_docs)]
-    pub fn new(child: Box<Player>, input: Box<input::Bounded>) -> Self {
-        Volume { child, input }
+    pub fn new(child: Box<Player>, input: Box<input::Bounded>) -> Box<Player> {
+        Box::new(Volume { child, input })
     }
 }
 
@@ -28,9 +28,9 @@ impl FromSpec<Box<Player>> for Volume {
     fn name() -> &'static str { "volume" }
     fn from_spec(value: Value) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
-        Ok(Box::new(Volume::new(
+        Ok(Volume::new(
             create_player(&mut spec.consume("child")?)?,
             create_bounded_input(&mut spec.consume("input")?)?,
-        )))
+        ))
     }
 }

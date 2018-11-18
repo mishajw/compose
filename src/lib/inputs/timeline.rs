@@ -23,7 +23,7 @@ impl Timeline {
     #[allow(missing_docs)]
     pub fn from_string(events_str: String, event_duration: Time) -> Self {
         Timeline {
-            events: events_str.chars().map(|c| c == '_').collect(),
+            events: events_str.chars().map(|c| c != '_').collect(),
             event_duration,
         }
     }
@@ -44,6 +44,7 @@ impl FromSpec<Box<input::Bool>> for Timeline {
         let mut spec: Spec = value.as_type()?;
         let event_duration = Time::from_spec(spec.consume("event-duration")?)?;
         let events: String = spec.consume("events")?;
+        spec.ensure_all_used()?;
 
         Ok(Box::new(Timeline::from_string(events, event_duration)))
     }

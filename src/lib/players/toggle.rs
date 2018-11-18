@@ -17,7 +17,7 @@ impl Toggle {
     ) -> Box<Player>
     {
         let bounded_input = BoolToBounded::new(bool_input);
-        Box::new(Volume::new(child, Box::new(bounded_input)))
+        Volume::new(child, Box::new(bounded_input))
     }
 
     #[allow(missing_docs)]
@@ -26,7 +26,7 @@ impl Toggle {
         bounded_input: Box<input::Bounded>,
     ) -> Box<Player>
     {
-        Box::new(Volume::new(child, bounded_input))
+        Volume::new(child, bounded_input)
     }
 }
 
