@@ -1,5 +1,6 @@
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use core::Playable;
 use core::Player;
@@ -23,7 +24,11 @@ impl Player for Combiner {
 
 impl create::FromSpec<Box<Player>> for Combiner {
     fn name() -> &'static str { "combiner" }
-    fn from_spec(value: Value) -> Result<Box<Player>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<Player>>
+    {
         let mut spec: Spec = value.as_type()?;
         let children_values: Vec<Value> = spec.consume("children")?;
         let mut children_specs = children_values
@@ -33,7 +38,7 @@ impl create::FromSpec<Box<Player>> for Combiner {
             .chain_err(|| "Failed to create combiner children specs")?;
         let children = children_specs
             .iter_mut()
-            .map(create::create_player)
+            .map(|s| create::create_player(s, consts))
             .collect::<Result<Vec<_>>>()
             .chain_err(|| "Failed to create combiner children")?;
 

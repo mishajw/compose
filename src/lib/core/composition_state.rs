@@ -65,17 +65,31 @@ impl CompositionConsts {
 
 impl create::FromSpec<CompositionConsts> for CompositionConsts {
     fn name() -> &'static str { "consts" }
-    fn from_spec(value: Value) -> Result<CompositionConsts> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<CompositionConsts>
+    {
         let mut spec: Spec = value.as_type()?;
+        let defaults = CompositionConsts::default();
         let consts = CompositionConsts::new(
-            spec.consume_with_default("sample-hz", 44100.0)?,
-            spec.consume_with_default("beats-per-minute", 120.0)?,
-            spec.consume_with_default("beats-per-bar", 4.0)?,
-            spec.consume_with_default("loudness-factor", 0.3)?,
-            Time::from_spec(spec.consume_with_default(
-                "reload-time",
-                Value::Str("0 ticks".to_string()),
-            )?)?,
+            spec.consume_with_default("sample-hz", consts.sample_hz)?,
+            spec.consume_with_default(
+                "beats-per-minute",
+                consts.beats_per_minute,
+            )?,
+            spec.consume_with_default("beats-per-bar", consts.beats_per_bar)?,
+            spec.consume_with_default(
+                "loudness-factor",
+                consts.loudness_factor,
+            )?,
+            Time::from_spec(
+                spec.consume_with_default(
+                    "reload-time",
+                    Value::Str("0 ticks".to_string()),
+                )?,
+                &defaults,
+            )?,
         );
         spec.ensure_all_used()?;
         Ok(consts)

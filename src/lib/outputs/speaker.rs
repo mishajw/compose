@@ -9,6 +9,7 @@ use errors::*;
 use std::collections::VecDeque;
 use std::sync::{mpsc, Arc, Mutex};
 
+use core::CompositionConsts;
 use portaudio;
 
 const NUM_CHANNELS: i32 = 1;
@@ -146,16 +147,17 @@ impl Drop for Speaker {
 
 impl create::FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
-    fn from_spec(value: Value) -> Result<Box<Output>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<Output>>
+    {
         let mut spec: Spec = value.as_type()?;
         let device_number: i32 = spec.consume("device-number")?;
-        // TODO: Remove duplicate variable
-        let output_frequency: f32 =
-            spec.consume_with_default("output-frequency", 44100.0)?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(
             device_number as usize,
-            output_frequency,
+            consts.sample_hz,
         )?))
     }
 }

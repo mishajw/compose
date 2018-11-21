@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use core::Playable;
 use core::Player;
@@ -27,11 +28,15 @@ impl Player for Volume {
 
 impl create::FromSpec<Box<Player>> for Volume {
     fn name() -> &'static str { "volume" }
-    fn from_spec(value: Value) -> Result<Box<Player>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<Player>>
+    {
         let mut spec: Spec = value.as_type()?;
         Ok(Volume::new(
-            create::create_player(&mut spec.consume("child")?)?,
-            create::create_bounded_input(&mut spec.consume("input")?)?,
+            create::create_player(&mut spec.consume("child")?, consts)?,
+            create::create_bounded_input(&mut spec.consume("input")?, consts)?,
         ))
     }
 }

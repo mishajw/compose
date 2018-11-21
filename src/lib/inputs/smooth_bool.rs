@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use core::Time;
 use errors::*;
@@ -76,16 +77,22 @@ impl input::Bounded for SmoothBool {
 impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
-    fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<input::Bounded>>
+    {
         let mut spec: Spec = value.as_type()?;
-        let input = create::create_bool_input(&mut spec.consume("input")?)?;
+        let input =
+            create::create_bool_input(&mut spec.consume("input")?, consts)?;
         let smooth_in_duration =
-            Time::from_spec(spec.consume("smooth-in-duration")?)?;
+            Time::from_spec(spec.consume("smooth-in-duration")?, consts)?;
         let smooth_out_duration =
-            Time::from_spec(spec.consume("smooth-out-duration")?)?;
+            Time::from_spec(spec.consume("smooth-out-duration")?, consts)?;
         match spec.consume_optional::<Spec>("smooth-fn")? {
             Some(mut smooth_fn) => {
-                let smooth_fn = create::create_bounded_input(&mut smooth_fn)?;
+                let smooth_fn =
+                    create::create_bounded_input(&mut smooth_fn, consts)?;
                 Ok(SmoothBool::new(
                     input,
                     smooth_fn,

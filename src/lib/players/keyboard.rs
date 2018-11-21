@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::Player;
 use errors::*;
 use players::Combiner;
@@ -11,17 +12,21 @@ pub struct Keyboard {}
 
 impl create::FromSpec<Box<Player>> for Keyboard {
     fn name() -> &'static str { "keyboard" }
-    fn from_spec(value: Value) -> Result<Box<Player>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<Player>>
+    {
         let mut spec: Spec = value.as_type()?;
         let children: Vec<Box<Player>> = spec
             .consume_list("children")?
             .iter_mut()
-            .map(create::create_player)
+            .map(|s| create::create_player(s, consts))
             .collect::<Result<Vec<_>>>()?;
         let inputs: Vec<Box<input::Bounded>> = spec
             .consume_list("inputs")?
             .iter_mut()
-            .map(create::create_bounded_input)
+            .map(|s| create::create_bounded_input(s, consts))
             .collect::<Result<Vec<_>>>()?;
         spec.ensure_all_used()?;
 

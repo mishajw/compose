@@ -14,6 +14,7 @@ pub use self::bounded_input::create_bounded_input;
 pub use self::output::create_outputs;
 pub use self::player::create_player;
 pub use self::spec_macro::resolve_macros;
+use core::CompositionConsts;
 
 /// Implementors can be created from a spec
 pub trait FromSpec<T> {
@@ -21,17 +22,18 @@ pub trait FromSpec<T> {
     /// definition
     fn name() -> &'static str;
     /// Create the value from a spec
-    fn from_spec(value: Value) -> Result<T>;
+    fn from_spec(value: Value, consts: &CompositionConsts) -> Result<T>;
 }
 
 /// Create a type `T` from a spec
 pub fn create_with_type<T: 'static + FromSpec<S>, S>(
     name: &str,
     spec: &mut Spec,
+    consts: &CompositionConsts,
 ) -> Option<Result<S>>
 {
     if name == T::name() {
-        Some(T::from_spec(Value::Spec(spec.clone())))
+        Some(T::from_spec(Value::Spec(spec.clone()), consts))
     } else {
         None
     }

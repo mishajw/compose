@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use core::Time;
 use errors::*;
@@ -45,9 +46,14 @@ impl input::Bool for Timeline {
 
 impl create::FromSpec<Box<input::Bool>> for Timeline {
     fn name() -> &'static str { "timeline" }
-    fn from_spec(value: Value) -> Result<Box<input::Bool>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<input::Bool>>
+    {
         let mut spec: Spec = value.as_type()?;
-        let event_duration = Time::from_spec(spec.consume("event-duration")?)?;
+        let event_duration =
+            Time::from_spec(spec.consume("event-duration")?, consts)?;
         let events: String = spec.consume("events")?;
         spec.ensure_all_used()?;
 

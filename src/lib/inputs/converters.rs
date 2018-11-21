@@ -2,6 +2,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use errors::*;
 
@@ -25,12 +26,17 @@ impl input::Bool for BoundedToBool {
 
 impl create::FromSpec<Box<input::Bool>> for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
-    fn from_spec(value: Value) -> Result<Box<input::Bool>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<input::Bool>>
+    {
         let mut spec: Spec = value.as_type()?;
         let mut bounded_spec = spec.consume("bounded")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoundedToBool::new(create::create_bounded_input(
             &mut bounded_spec,
+            consts,
         )?)))
     }
 }
@@ -59,12 +65,17 @@ impl input::Bounded for BoolToBounded {
 
 impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
-    fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<input::Bounded>>
+    {
         let mut spec: Spec = value.as_type()?;
         let mut bool_spec = spec.consume("bool")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoolToBounded::new(create::create_bool_input(
             &mut bool_spec,
+            consts,
         )?)))
     }
 }

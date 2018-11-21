@@ -56,7 +56,7 @@ impl Time {
 
 impl create::FromSpec<Time> for Time {
     fn name() -> &'static str { "time" }
-    fn from_spec(value: Value) -> Result<Time> {
+    fn from_spec(value: Value, _consts: &CompositionConsts) -> Result<Time> {
         let string: String = value.as_type()?;
         match string.trim().split(" ").collect::<Vec<_>>().as_slice() {
             [number, "ticks"] => Ok(Time::Ticks(

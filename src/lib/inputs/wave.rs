@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::CompositionConsts;
 use core::CompositionState;
 use errors::*;
 
@@ -74,7 +75,11 @@ impl input::Bounded for Wave {
 impl create::FromSpec<Box<input::Bounded>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(value: Value) -> Result<Box<input::Bounded>> {
+    fn from_spec(
+        value: Value,
+        _consts: &CompositionConsts,
+    ) -> Result<Box<input::Bounded>>
+    {
         let mut spec: Spec = value.as_type()?;
         let wave_fn_name: String =
             spec.consume_with_default("fn", "sine".into())?;

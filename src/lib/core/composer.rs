@@ -22,23 +22,26 @@ pub fn compose_from_file(path: String) -> Result<()> {
     info!("Reading yaml spec from {:?}", path);
     let mut spec = spec::yaml::read(&Path::new(&path))?;
 
+    // Initialize consts
+    let consts = CompositionConsts::from_spec(
+        spec.consume_with_default(
+            "consts",
+            spec::Value::Spec(spec::Spec::empty()),
+        )?,
+        &CompositionConsts::default(),
+    )?;
+
     // Initialize players
     let player_spec_with_macros = spec.consume("players")?;
     debug!("Player spec: {:#?}", player_spec_with_macros);
     let mut player_spec =
         spec::create::resolve_macros(player_spec_with_macros)?;
     debug!("Player spec resolved: {:#?}", player_spec);
-    let player = spec::create::create_player(&mut player_spec)?;
+    let player = spec::create::create_player(&mut player_spec, &consts)?;
 
     // Initialize outputs
     let output_specs = spec.consume("outputs")?;
-    let outputs = spec::create::create_outputs(output_specs)?;
-
-    // Initialize consts
-    let consts = CompositionConsts::from_spec(spec.consume_with_default(
-        "consts",
-        spec::Value::Spec(spec::Spec::empty()),
-    )?)?;
+    let outputs = spec::create::create_outputs(output_specs, &consts)?;
 
     spec.ensure_all_used()?;
 
@@ -47,6 +50,7 @@ pub fn compose_from_file(path: String) -> Result<()> {
     let spawn_player_replacement = player_replacement.clone();
     let spawn_path = path.clone();
     let spawn_reload_duration = consts.reload_time.to_duration(&consts);
+    let spawn_consts = consts.clone();
     let mut spawn_previous_hash: u64 = 0;
     thread::spawn(move || loop {
         thread::sleep(spawn_reload_duration);
@@ -54,6 +58,7 @@ pub fn compose_from_file(path: String) -> Result<()> {
             &Path::new(&spawn_path),
             spawn_player_replacement.as_ref(),
             spawn_previous_hash,
+            &spawn_consts,
         ) {
             Ok(new_hash) => spawn_previous_hash = new_hash,
             Err(err) => {
@@ -70,6 +75,7 @@ fn reload_player(
     path: &Path,
     player: &Mutex<Option<Box<Player>>>,
     previous_hash: u64,
+    consts: &CompositionConsts,
 ) -> Result<u64>
 {
     let yaml_str = spec::yaml::get_yaml_str(path)?;
@@ -84,7 +90,8 @@ fn reload_player(
     let mut spec = spec::yaml::parse(yaml_str)?;
     let mut player_spec =
         spec::create::resolve_macros(spec.consume("players")?)?;
-    let mut new_player = Some(spec::create::create_player(&mut player_spec)?);
+    let mut new_player =
+        Some(spec::create::create_player(&mut player_spec, consts)?);
     let mut player = player.lock().unwrap();
     swap(&mut new_player, &mut *player);
     info!("Successfully set up player");

@@ -7,6 +7,7 @@ use core::Player;
 use errors::*;
 use inputs;
 
+use core::CompositionConsts;
 use std::i32;
 
 /// Play a wave from a wave function
@@ -29,8 +30,12 @@ impl Player for Wave {
 impl create::FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(value: Value) -> Result<Box<Player>> {
-        let input = inputs::Wave::from_spec(value)?;
+    fn from_spec(
+        value: Value,
+        consts: &CompositionConsts,
+    ) -> Result<Box<Player>>
+    {
+        let input = inputs::Wave::from_spec(value, consts)?;
         Ok(Box::new(Wave { input }))
     }
 }
