@@ -5,7 +5,7 @@ use core::CompositionConsts;
 use core::CompositionState;
 use core::Time;
 use errors::*;
-use inputs::Wave;
+use inputs::Function;
 
 /// Smooth a bool transition
 pub struct SmoothBool {
@@ -43,7 +43,7 @@ impl SmoothBool {
     {
         SmoothBool::new(
             bool_input,
-            Wave::new(Box::new(|x| x), 1.0, 0.0, 1.0),
+            Function::new(Box::new(|x| x), 0.0, 1.0),
             smooth_in_duration,
             smooth_out_duration,
         )

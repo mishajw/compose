@@ -7,12 +7,21 @@ use core::Player;
 use errors::*;
 use inputs;
 
+use core::spec::Spec;
 use core::CompositionConsts;
+use players::Speed;
 use std::i32;
 
 /// Play a wave from a wave function
 pub struct Wave {
     input: Box<input::Bounded>,
+}
+
+impl Wave {
+    #[allow(missing_docs)]
+    pub fn new(input: Box<input::Bounded>, frequency: f32) -> Box<Player> {
+        Speed::new(Box::new(Wave { input }), frequency)
+    }
 }
 
 impl Player for Wave {
@@ -32,10 +41,14 @@ impl create::FromSpec<Box<Player>> for Wave {
 
     fn from_spec(
         value: Value,
-        consts: &CompositionConsts,
+        _consts: &CompositionConsts,
     ) -> Result<Box<Player>>
     {
-        let input = inputs::Wave::from_spec(value, consts)?;
-        Ok(Box::new(Wave { input }))
+        let mut spec: Spec = value.as_type()?;
+        let function = inputs::Function::from_string(
+            spec.consume_with_default("fn", "sine".into())?,
+        )?;
+        let frequency: f32 = spec.consume("frequency")?;
+        Ok(Wave::new(function, frequency))
     }
 }

@@ -13,7 +13,7 @@ pub fn create_bounded_input(
 ) -> Result<Box<input::Bounded>>
 {
     let name: String = spec.consume("name")?;
-    create_with_type::<inputs::Wave, _>(&name, spec, consts)
+    create_with_type::<inputs::Function, _>(&name, spec, consts)
         .or_else(|| {
             create_with_type::<inputs::BoolToBounded, _>(&name, spec, consts)
         })

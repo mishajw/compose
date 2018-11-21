@@ -5,38 +5,31 @@ use core::CompositionConsts;
 use core::CompositionState;
 use errors::*;
 
-/// A wave input, gets values from a function at a frequency
-pub struct Wave {
-    wave_fn: Box<Fn(f32) -> f32 + Send + Sync>,
-    frequency: f32,
+/// A function input, returns values from a function
+pub struct Function {
+    function: Box<Fn(f32) -> f32 + Send + Sync>,
     lower_bound: f32,
     upper_bound: f32,
 }
 
-impl Wave {
+impl Function {
     #[allow(missing_docs)]
     pub fn new(
-        wave_fn: Box<Fn(f32) -> f32 + Send + Sync>,
-        frequency: f32,
+        function: Box<Fn(f32) -> f32 + Send + Sync>,
         lower_bound: f32,
         upper_bound: f32,
     ) -> Box<input::Bounded>
     {
-        Box::new(Wave {
-            wave_fn,
-            frequency,
+        Box::new(Function {
+            function,
             lower_bound,
             upper_bound,
         })
     }
 
     #[allow(missing_docs)]
-    pub fn from_string(
-        wave_string: String,
-        frequency: f32,
-    ) -> Result<Box<input::Bounded>>
-    {
-        let (wave_fn, lower_bound, upper_bound): (
+    pub fn from_string(wave_string: String) -> Result<Box<input::Bounded>> {
+        let (function, lower_bound, upper_bound): (
             Box<Fn(f32) -> f32 + Send + Sync>,
             f32,
             f32,
@@ -58,22 +51,21 @@ impl Wave {
             }
         };
 
-        Ok(Wave::new(wave_fn, frequency, lower_bound, upper_bound))
+        Ok(Function::new(function, lower_bound, upper_bound))
     }
 }
 
-impl input::Bounded for Wave {
+impl input::Bounded for Function {
     fn get(&mut self, state: &CompositionState) -> f32 {
-        let num_ticks = state.consts.sample_hz / self.frequency;
-        let fn_input = state.tick as f32 / num_ticks;
-        (*self.wave_fn)(fn_input)
+        let fn_input = state.tick as f32 / state.consts.sample_hz;
+        (*self.function)(fn_input)
     }
 
     fn get_bounds(&self) -> (f32, f32) { (self.lower_bound, self.upper_bound) }
 }
 
-impl create::FromSpec<Box<input::Bounded>> for Wave {
-    fn name() -> &'static str { "wave" }
+impl create::FromSpec<Box<input::Bounded>> for Function {
+    fn name() -> &'static str { "function" }
 
     fn from_spec(
         value: Value,
@@ -83,9 +75,8 @@ impl create::FromSpec<Box<input::Bounded>> for Wave {
         let mut spec: Spec = value.as_type()?;
         let wave_fn_name: String =
             spec.consume_with_default("fn", "sine".into())?;
-        let frequency = spec.consume_with_default("frequency", 1.0)?;
         spec.ensure_all_used()?;
-        Ok(Wave::from_string(wave_fn_name, frequency)?)
+        Ok(Function::from_string(wave_fn_name)?)
     }
 }
 
@@ -98,29 +89,30 @@ mod test {
     fn test_sine() {
         let consts = CompositionConsts::default();
         let state = CompositionState::initial(consts.clone());
-        let mut wave = Wave::from_string("sine".into(), 1.0).unwrap();
-        assert!((0.0 - wave.get(&state.with_tick(0))).abs() < 0.001);
+        let mut function = Function::from_string("sine".into()).unwrap();
+        assert!((0.0 - function.get(&state.with_tick(0))).abs() < 0.001);
         assert!(
-            (1.0 - wave
+            (1.0 - function
                 .get(&state.with_tick((consts.sample_hz * 0.25) as usize)))
             .abs()
                 < 0.001
         );
         assert!(
-            (0.0 - wave
+            (0.0 - function
                 .get(&state.with_tick((consts.sample_hz * 0.5) as usize)))
             .abs()
                 < 0.001
         );
         assert!(
             (-1.0
-                - wave
+                - function
                     .get(&state.with_tick((consts.sample_hz * 0.75) as usize)))
             .abs()
                 < 0.001
         );
         assert!(
-            (0.0 - wave.get(&state.with_tick(consts.sample_hz as usize))).abs()
+            (0.0 - function.get(&state.with_tick(consts.sample_hz as usize)))
+                .abs()
                 < 0.001
         );
     }
