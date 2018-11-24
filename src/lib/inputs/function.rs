@@ -53,6 +53,12 @@ impl Function {
 
         Ok(Function::new(function, lower_bound, upper_bound))
     }
+
+    #[allow(missing_docs)]
+    pub fn default() -> Box<input::Bounded> {
+        Self::from_string("sine".into())
+            .expect("Failed to create default function")
+    }
 }
 
 impl input::Bounded for Function {
