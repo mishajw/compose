@@ -1,4 +1,5 @@
 use core::spec::{Spec, SpecMacro, Value};
+use core::CompositionConsts;
 use errors::*;
 
 /// Macro to map a spec over a list
@@ -7,7 +8,7 @@ pub struct Map {}
 impl SpecMacro for Map {
     fn name() -> &'static str { "map" }
 
-    fn resolve(spec: &mut Spec) -> Result<Value> {
+    fn resolve(spec: &mut Spec, _consts: &CompositionConsts) -> Result<Value> {
         let field: String = spec.consume("field")?;
         let fn_spec: Spec = spec.consume("fn")?;
         let list: Vec<Value> = spec.consume("list")?;
