@@ -3,6 +3,7 @@ use core::spec::create;
 use core::spec::{Spec, Value};
 use core::CompositionConsts;
 use core::CompositionState;
+use core::Time;
 use errors::*;
 
 /// A function input, returns values from a function
@@ -10,6 +11,7 @@ pub struct Function {
     function: Box<Fn(f32) -> f32 + Send + Sync>,
     lower_bound: f32,
     upper_bound: f32,
+    time_mod: Option<Time>,
 }
 
 impl Function {
@@ -24,25 +26,40 @@ impl Function {
             function,
             lower_bound,
             upper_bound,
+            time_mod: None,
+        })
+    }
+
+    #[allow(missing_docs)]
+    pub fn with_mod(
+        function: Box<Fn(f32) -> f32 + Send + Sync>,
+        lower_bound: f32,
+        upper_bound: f32,
+        time_mod: Time,
+    ) -> Box<input::Bounded>
+    {
+        Box::new(Function {
+            function,
+            lower_bound,
+            upper_bound,
+            time_mod: Some(time_mod),
         })
     }
 
     #[allow(missing_docs)]
     pub fn from_string(wave_string: String) -> Result<Box<input::Bounded>> {
-        let (function, lower_bound, upper_bound): (
-            Box<Fn(f32) -> f32 + Send + Sync>,
-            f32,
-            f32,
-        ) = match wave_string.as_ref() {
-            "sine" => (
+        let function = match wave_string.as_ref() {
+            "sine" => Function::with_mod(
                 Box::new(|x| f32::sin(x * 2.0 * ::std::f32::consts::PI)),
                 -1.0,
                 1.0,
+                Time::Seconds(1.0),
             ),
-            "cosine" => (
+            "cosine" => Function::with_mod(
                 Box::new(|x| f32::cos(x * 2.0 * ::std::f32::consts::PI)),
                 -1.0,
                 1.0,
+                Time::Seconds(1.0),
             ),
             value => {
                 return Err(
@@ -51,7 +68,7 @@ impl Function {
             }
         };
 
-        Ok(Function::new(function, lower_bound, upper_bound))
+        Ok(function)
     }
 
     #[allow(missing_docs)]
@@ -63,7 +80,12 @@ impl Function {
 
 impl input::Bounded for Function {
     fn get(&mut self, state: &CompositionState) -> f32 {
-        let fn_input = state.tick as f32 / state.consts.sample_hz;
+        self.time_mod.clone().unwrap();
+        let tick = match &self.time_mod {
+            Some(time_mod) => state.tick % time_mod.to_ticks(&state.consts),
+            None => state.tick,
+        };
+        let fn_input = tick as f32 / state.consts.sample_hz;
         (*self.function)(fn_input)
     }
 

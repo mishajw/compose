@@ -23,8 +23,9 @@ impl Speed {
 
 impl Player for Speed {
     fn play(&mut self, state: &CompositionState) -> Playable {
+        // TODO: Handle speed decreases
         self.child
-            .play(&state.with_tick((state.tick as f32 * self.scale) as usize))
+            .play(&state.with_tick((state.tick * self.scale as usize) as usize))
     }
 }
 

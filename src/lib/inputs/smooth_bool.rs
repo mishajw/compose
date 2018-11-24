@@ -43,7 +43,7 @@ impl SmoothBool {
     {
         SmoothBool::new(
             bool_input,
-            Function::new(Box::new(|x| x), 0.0, 1.0),
+            Function::with_mod(Box::new(|x| x), 0.0, 1.0, Time::Seconds(1.1)),
             smooth_in_duration,
             smooth_out_duration,
         )
