@@ -15,6 +15,7 @@ extern crate portaudio;
 extern crate yaml_rust;
 #[macro_use]
 extern crate log;
+extern crate hound;
 
 pub mod core;
 pub mod errors;

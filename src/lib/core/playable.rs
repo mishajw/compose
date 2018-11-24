@@ -5,7 +5,7 @@ use std::iter::Sum;
 use std::ops;
 
 /// A single data point in a sound wave
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Playable {
     value: i32,
 }

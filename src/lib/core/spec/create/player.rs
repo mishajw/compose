@@ -22,6 +22,7 @@ pub fn create_player(
         .or_else(|| {
             create_with_type::<players::Keyboard, _>(&name, spec, consts)
         })
+        .or_else(|| create_with_type::<players::Sample, _>(&name, spec, consts))
         .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
         .chain_err(|| format!("Failed to create player {}", name))
 }
