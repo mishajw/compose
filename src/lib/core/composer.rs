@@ -23,13 +23,16 @@ pub fn compose_from_file(path: String) -> Result<()> {
     let mut spec = spec::yaml::read(&Path::new(&path))?;
 
     // Initialize consts
-    let consts = CompositionConsts::from_spec(
-        spec.consume_with_default(
-            "consts",
-            spec::Value::Spec(spec::Spec::empty()),
-        )?,
-        &CompositionConsts::default(),
-    )?;
+    let consts = Arc::new(
+        CompositionConsts::from_spec(
+            spec.consume_with_default(
+                "consts",
+                spec::Value::Spec(spec::Spec::empty()),
+            )?,
+            &CompositionConsts::default()?,
+        )
+        .chain_err(|| "Failed to create consts")?,
+    );
 
     // Initialize players
     let player_spec_with_macros = spec.consume("players")?;
@@ -104,7 +107,7 @@ fn run_composition(
     // TODO: christ
     player_replacement: Arc<Mutex<Option<Box<Player>>>>,
     mut outputs: Vec<Box<Output>>,
-    consts: CompositionConsts,
+    consts: Arc<CompositionConsts>,
 ) -> !
 {
     let reload_ticks = consts.reload_time.clone().to_ticks(&consts);

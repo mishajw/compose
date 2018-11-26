@@ -10,6 +10,7 @@
 pub mod composer;
 mod composition_state;
 pub mod input;
+mod note;
 mod output;
 mod playable;
 mod player;
@@ -17,6 +18,7 @@ pub mod spec;
 mod time;
 
 pub use self::composition_state::{CompositionConsts, CompositionState};
+pub use self::note::Note;
 pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;

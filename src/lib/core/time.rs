@@ -90,8 +90,7 @@ mod test {
 
     #[test]
     fn test_to_ticks() {
-        let consts =
-            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
+        let consts = &CompositionConsts::default().unwrap();
         assert_eq!(Time::Ticks(1000).to_ticks(consts), 1000);
         assert_eq!(Time::Seconds(3.0).to_ticks(consts), 44100 * 3);
         assert_eq!(Time::Bars(2.0).to_ticks(consts), 44100 * 4);
@@ -100,8 +99,7 @@ mod test {
 
     #[test]
     fn test_to_seconds() {
-        let consts =
-            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
+        let consts = &CompositionConsts::default().unwrap();
         assert_eq!(Time::Ticks(44100).to_seconds(consts), 1.0);
         assert_eq!(Time::Seconds(3.0).to_seconds(consts), 3.0);
         assert_eq!(Time::Bars(2.0).to_seconds(consts), 4.0);
@@ -110,8 +108,7 @@ mod test {
 
     #[test]
     fn test_to_beats() {
-        let consts =
-            &CompositionConsts::new(44100.0, 120.0, 4.0, 1.0, Time::Ticks(0));
+        let consts = &CompositionConsts::default().unwrap();
         assert_eq!(Time::Ticks(44100).to_beats(consts), 2.0);
         assert_eq!(Time::Seconds(3.0).to_beats(consts), 6.0);
         assert_eq!(Time::Bars(2.0).to_beats(consts), 8.0);

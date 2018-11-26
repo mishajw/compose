@@ -142,6 +142,11 @@ impl Spec {
             .into())
         }
     }
+
+    /// Get the names of the values in the spec
+    pub fn value_names(&self) -> Vec<String> {
+        self.values.keys().cloned().collect()
+    }
 }
 
 /// A type that can be extracted from a `Value`

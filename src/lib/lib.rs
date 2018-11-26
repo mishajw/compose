@@ -16,6 +16,9 @@ extern crate yaml_rust;
 #[macro_use]
 extern crate log;
 extern crate hound;
+extern crate regex;
+#[macro_use]
+extern crate lazy_static;
 
 pub mod core;
 pub mod errors;

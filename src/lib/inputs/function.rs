@@ -112,10 +112,11 @@ impl create::FromSpec<Box<input::Bounded>> for Function {
 mod test {
     use super::*;
     use core::CompositionConsts;
+    use std::sync::Arc;
 
     #[test]
     fn test_sine() {
-        let consts = CompositionConsts::default();
+        let consts = Arc::new(CompositionConsts::default().unwrap());
         let state = CompositionState::initial(consts.clone());
         let mut function = Function::from_string("sine".into()).unwrap();
         assert!((0.0 - function.get(&state.with_tick(0))).abs() < 0.001);
