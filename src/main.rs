@@ -1,18 +1,13 @@
 extern crate composer;
 extern crate env_logger;
+#[macro_use]
 extern crate error_chain;
 #[macro_use]
 extern crate clap;
 
 use composer::errors::*;
 
-use error_chain::ChainedError;
-
-fn main() {
-    if let Err(err) = run() {
-        eprintln!("Failed to run composer: {}", err.display_chain());
-    }
-}
+quick_main!(run);
 
 fn run() -> Result<()> {
     // Initialize command line arguments
