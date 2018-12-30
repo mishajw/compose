@@ -28,7 +28,9 @@ impl SpecMacro for Scale {
             steps
         };
 
-        let num_notes = spec.consume_with_default("num-notes", steps.len() as i32)? as usize;
+        let num_notes = spec
+            .consume_with_default("num-notes", steps.len() as i32)?
+            as usize;
 
         let mut frequencies = vec![note.to_frequency()];
         for step in steps.into_iter().cycle().take(num_notes - 1) {

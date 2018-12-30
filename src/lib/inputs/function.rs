@@ -64,7 +64,7 @@ impl Function {
             value => {
                 return Err(
                     ErrorKind::SpecBadValue("fn".into(), value.into()).into()
-                )
+                );
             }
         };
 

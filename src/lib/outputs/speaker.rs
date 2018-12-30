@@ -89,8 +89,9 @@ impl Speaker {
     fn create_callback(
         audio_buffers: Arc<Mutex<VecDeque<[Playable; FRAMES]>>>,
         write_sender: mpsc::Sender<()>,
-    ) -> impl Fn(portaudio::OutputStreamCallbackArgs<'static, i32>)
-        -> portaudio::stream::CallbackResult
+    ) -> impl Fn(
+        portaudio::OutputStreamCallbackArgs<'static, i32>,
+    ) -> portaudio::stream::CallbackResult
     {
         move |args: portaudio::OutputStreamCallbackArgs<'static, i32>| {
             let buffer = audio_buffers.lock().unwrap().pop_front();

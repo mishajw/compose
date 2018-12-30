@@ -73,7 +73,7 @@ fn resolve_children(value: Value, consts: &CompositionConsts) -> Result<Value> {
                 .into_iter()
                 .map(|v| resolve_children(v, consts))
                 .collect::<Result<_>>()
-                .map(Value::List)
+                .map(Value::List);
         }
         // If resolving anything else, there's nothing we can do
         value => return Ok(value),
