@@ -41,7 +41,7 @@ impl Scale {
         let mut note = self.base.clone();
         let mut result = vec![note.clone()];
         for step in self.steps.iter().cycle().take(num - 1) {
-            note = note.increment(*step as u32);
+            note = note.increment(*step);
             result.push(note.clone());
         }
         result

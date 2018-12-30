@@ -30,7 +30,7 @@ impl Note {
     }
 
     /// Get the nth next note
-    pub fn increment(&self, increment: u32) -> Note {
+    pub fn increment(&self, increment: usize) -> Note {
         let mut note = self.clone();
         for _ in 0..increment {
             note = note.next();
