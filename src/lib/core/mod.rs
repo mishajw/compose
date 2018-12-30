@@ -14,6 +14,7 @@ mod note;
 mod output;
 mod playable;
 mod player;
+mod scale;
 pub mod spec;
 mod time;
 
@@ -22,4 +23,5 @@ pub use self::note::Note;
 pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;
+pub use self::scale::Scale;
 pub use self::time::Time;

@@ -1,3 +1,4 @@
+use core;
 use core::spec::Spec;
 use core::spec::SpecMacro;
 use core::spec::Value;
@@ -12,34 +13,21 @@ impl SpecMacro for Scale {
     fn name() -> &'static str { "scale" }
 
     fn resolve(spec: &mut Spec, consts: &CompositionConsts) -> Result<Value> {
-        let mut note: Note = spec.consume::<String>("note")?.parse()?;
+        let note: Note = spec.consume::<String>("note")?.parse()?;
         let scale_name: String = spec.consume("scale")?;
-        let steps: Vec<usize> = {
-            let map_result: Result<_> = consts
-                .scale_map
-                .get(&scale_name)
-                .ok_or_else(|| ErrorKind::SpecUnknownName(scale_name).into());
-            let mut steps = map_result?.clone();
-            let steps_total: usize = steps.iter().sum();
-            if steps_total != 12 {
-                // Complete to the next octave
-                steps.push(12 - (steps_total % 12));
-            }
-            steps
-        };
-
+        let scale = core::Scale::new(note, &scale_name, consts)?;
         let num_notes = spec
-            .consume_with_default("num-notes", steps.len() as i32)?
+            .consume_with_default("num-notes", scale.default_size() as i32)?
             as usize;
-
-        let mut frequencies = vec![note.to_frequency()];
-        for step in steps.into_iter().cycle().take(num_notes - 1) {
-            note = note.increment(step as u32);
-            frequencies.push(note.to_frequency());
-        }
+        spec.ensure_all_used()?;
 
         Ok(Value::List(
-            frequencies.into_iter().map(Value::Float).collect(),
+            scale
+                .get_notes(num_notes)
+                .iter()
+                .map(Note::to_frequency)
+                .map(Value::Float)
+                .collect(),
         ))
     }
 }
