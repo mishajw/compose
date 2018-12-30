@@ -14,6 +14,7 @@ use std::mem::swap;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 
 use error_chain::ChainedError;
 
@@ -50,30 +51,45 @@ pub fn compose_from_file(path: String) -> Result<()> {
 
     // Set up player reloading
     let player_replacement = Arc::new(Mutex::new(None));
-    let spawn_player_replacement = player_replacement.clone();
-    let spawn_path = path.clone();
-    let spawn_reload_duration = consts.reload_time.to_duration(&consts);
-    let spawn_consts = consts.clone();
-    let mut spawn_previous_hash: u64 = 0;
-    thread::spawn(move || loop {
-        thread::sleep(spawn_reload_duration);
-        match reload_player(
-            &Path::new(&spawn_path),
-            spawn_player_replacement.as_ref(),
-            spawn_previous_hash,
-            &spawn_consts,
-        ) {
-            Ok(new_hash) => spawn_previous_hash = new_hash,
-            Err(err) => {
-                error!("Failed to reload player: {}", err.display_chain())
-            }
-        }
-    });
+    if !consts.reload_time.is_zero() {
+        spawn_reload_player_thread(
+            consts.reload_time.to_duration(&consts),
+            path.clone(),
+            player_replacement.clone(),
+            consts.clone(),
+        );
+    }
 
     info!("Composing");
     run_composition(player, player_replacement, outputs, consts);
 }
 
+/// Spawn a thread to reload the player at set intervals
+fn spawn_reload_player_thread(
+    reload_duration: Duration,
+    path: String,
+    player_replacement: Arc<Mutex<Option<Box<Player>>>>,
+    consts: Arc<CompositionConsts>,
+)
+{
+    let mut previous_hash: u64 = 0;
+    thread::spawn(move || loop {
+        thread::sleep(reload_duration);
+        match reload_player(
+            &Path::new(&path),
+            player_replacement.as_ref(),
+            previous_hash,
+            &consts,
+        ) {
+            Ok(new_hash) => previous_hash = new_hash,
+            Err(err) => {
+                error!("Failed to reload player: {}", err.display_chain())
+            }
+        }
+    });
+}
+
+/// Attempt to reload the player
 fn reload_player(
     path: &Path,
     player: &Mutex<Option<Box<Player>>>,
@@ -119,6 +135,8 @@ fn run_composition(
                 swap(&mut player, &mut new_player.as_mut().unwrap());
                 *new_player = None;
                 info!("Successfully loaded player");
+            } else {
+                trace!("No player to swap with");
             }
         }
 

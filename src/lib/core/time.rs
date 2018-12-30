@@ -52,6 +52,16 @@ impl Time {
     pub fn to_duration(&self, consts: &CompositionConsts) -> Duration {
         return Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64);
     }
+
+    /// Check if represents no time
+    pub fn is_zero(&self) -> bool {
+        match self {
+            Time::Ticks(ticks) => ticks == &0,
+            Time::Seconds(seconds) => seconds == &0.0,
+            Time::Beats(beats) => beats == &0.0,
+            Time::Bars(bars) => bars == &0.0,
+        }
+    }
 }
 
 impl create::FromSpec<Time> for Time {
