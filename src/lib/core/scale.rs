@@ -1,4 +1,4 @@
-use core::CompositionConsts;
+use core::Consts;
 use core::Note;
 use core::ScaleIndex;
 use errors::*;
@@ -13,12 +13,7 @@ pub struct Scale {
 
 impl Scale {
     #[allow(missing_docs)]
-    pub fn new(
-        base: Note,
-        scale_name: &str,
-        consts: &CompositionConsts,
-    ) -> Result<Self>
-    {
+    pub fn new(base: Note, scale_name: &str, consts: &Consts) -> Result<Self> {
         let mut steps: Vec<usize> = consts
             .scale_map
             .get(scale_name)

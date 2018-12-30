@@ -1,5 +1,3 @@
-#![allow(missing_docs)]
-
 use core::spec::yaml;
 use core::spec::{create, Spec, Value};
 use core::Time;
@@ -7,46 +5,26 @@ use errors::*;
 
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::Arc;
 
 const DEFAULT_SCALE_DEFINITION_PATH: &str = "resources/scales.yaml";
 
-/// Used to keep track of the progress through a composition
-pub struct CompositionState {
-    /// How far through, in steps, we are through the composition
-    pub tick: usize,
-    /// Contants of the composition
-    pub consts: Arc<CompositionConsts>,
-}
-
-impl CompositionState {
-    #[allow(missing_docs)]
-    pub fn initial(consts: Arc<CompositionConsts>) -> Self {
-        CompositionState { tick: 0, consts }
-    }
-
-    /// Step to the next state in the composition
-    pub fn increment(&mut self) { self.tick += 1; }
-
-    /// Get a copy of the state with a custom tick value
-    pub fn with_tick(&self, tick: usize) -> Self {
-        CompositionState {
-            tick,
-            consts: self.consts.clone(),
-        }
-    }
-}
-
-pub struct CompositionConsts {
+/// Constants in the composition
+pub struct Consts {
+    /// How many samples are in a second in the output audio
     pub sample_hz: f32,
+    /// How many beats are in a minute (i.e. bpm)
     pub beats_per_minute: f32,
+    /// How many beats are in a bar (i.e. time signature)
     pub beats_per_bar: f32,
+    /// How loud sound is by default
     pub loudness_factor: f32,
+    /// How often to reload the input configuration file
     pub reload_time: Time,
+    /// Maps scale names to scales
     pub scale_map: HashMap<String, Vec<usize>>,
 }
 
-impl CompositionConsts {
+impl Consts {
     #[allow(missing_docs)]
     pub fn new(
         sample_hz: f32,
@@ -58,7 +36,7 @@ impl CompositionConsts {
     ) -> Result<Self>
     {
         let scale_map = Self::create_scale_map(scale_definition_path)?;
-        Ok(CompositionConsts {
+        Ok(Consts {
             sample_hz,
             beats_per_minute,
             beats_per_bar,
@@ -68,8 +46,9 @@ impl CompositionConsts {
         })
     }
 
+    /// The default values for the constants
     pub fn default() -> Result<Self> {
-        CompositionConsts::new(
+        Consts::new(
             44100.0,
             120.0,
             4.0,
@@ -97,15 +76,11 @@ impl CompositionConsts {
     }
 }
 
-impl create::FromSpec<CompositionConsts> for CompositionConsts {
+impl create::FromSpec<Consts> for Consts {
     fn name() -> &'static str { "consts" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<CompositionConsts>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Consts> {
         let mut spec: Spec = value.as_type()?;
-        let consts = CompositionConsts::new(
+        let consts = Consts::new(
             spec.consume_with_default("sample-hz", consts.sample_hz)?,
             spec.consume_with_default(
                 "beats-per-minute",

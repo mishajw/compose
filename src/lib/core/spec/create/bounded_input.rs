@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::create::create_with_type;
 use core::spec::Spec;
-use core::CompositionConsts;
+use core::Consts;
 use errors::*;
 use inputs;
 
@@ -9,7 +9,7 @@ use inputs;
 /// this function
 pub fn create_bounded_input(
     spec: &mut Spec,
-    consts: &CompositionConsts,
+    consts: &Consts,
 ) -> Result<Box<input::Bounded>>
 {
     let name: String = spec.consume("name")?;

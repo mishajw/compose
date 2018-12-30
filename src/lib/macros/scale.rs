@@ -2,7 +2,7 @@ use core;
 use core::spec::Spec;
 use core::spec::SpecMacro;
 use core::spec::Value;
-use core::CompositionConsts;
+use core::Consts;
 use core::Note;
 use errors::*;
 
@@ -12,7 +12,7 @@ pub struct Scale {}
 impl SpecMacro for Scale {
     fn name() -> &'static str { "scale" }
 
-    fn resolve(spec: &mut Spec, consts: &CompositionConsts) -> Result<Value> {
+    fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         let note: Note = spec.consume::<String>("note")?.parse()?;
         let scale_name: String = spec.consume("scale")?;
         let scale = core::Scale::new(note, &scale_name, consts)?;

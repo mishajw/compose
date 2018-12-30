@@ -1,5 +1,5 @@
 use core::spec::{Spec, SpecMacro, Value, ValueType};
-use core::CompositionConsts;
+use core::Consts;
 use errors::*;
 
 /// [`Timeline`](../strict.Timeline.html) for multiple inputs
@@ -7,7 +7,7 @@ pub struct TimelineMulti {}
 
 impl SpecMacro for TimelineMulti {
     fn name() -> &'static str { "timeline-multi" }
-    fn resolve(spec: &mut Spec, _consts: &CompositionConsts) -> Result<Value> {
+    fn resolve(spec: &mut Spec, _consts: &Consts) -> Result<Value> {
         let event_duration: String = spec.consume("event-duration")?;
         let events: String = spec.consume("events")?;
         spec.ensure_all_used()?;

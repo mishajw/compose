@@ -1,5 +1,5 @@
 use core::spec::{create, Value};
-use core::CompositionConsts;
+use core::Consts;
 use errors::*;
 use std::time::Duration;
 
@@ -18,7 +18,7 @@ pub enum Time {
 
 impl Time {
     #[allow(missing_docs)]
-    pub fn to_ticks(&self, consts: &CompositionConsts) -> usize {
+    pub fn to_ticks(&self, consts: &Consts) -> usize {
         match self {
             Time::Ticks(ticks) => ticks.clone(),
             Time::Seconds(seconds) => (seconds * consts.sample_hz) as usize,
@@ -27,7 +27,7 @@ impl Time {
     }
 
     #[allow(missing_docs)]
-    pub fn to_seconds(&self, consts: &CompositionConsts) -> f32 {
+    pub fn to_seconds(&self, consts: &Consts) -> f32 {
         match self {
             Time::Seconds(seconds) => seconds.clone(),
             Time::Ticks(ticks) => ticks.clone() as f32 / consts.sample_hz,
@@ -37,7 +37,7 @@ impl Time {
     }
 
     #[allow(missing_docs)]
-    pub fn to_beats(&self, consts: &CompositionConsts) -> f32 {
+    pub fn to_beats(&self, consts: &Consts) -> f32 {
         match self {
             Time::Beats(beats) => beats.clone(),
             Time::Bars(bars) => bars * consts.beats_per_bar,
@@ -49,7 +49,7 @@ impl Time {
     }
 
     #[allow(missing_docs)]
-    pub fn to_duration(&self, consts: &CompositionConsts) -> Duration {
+    pub fn to_duration(&self, consts: &Consts) -> Duration {
         return Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64);
     }
 
@@ -66,7 +66,7 @@ impl Time {
 
 impl create::FromSpec<Time> for Time {
     fn name() -> &'static str { "time" }
-    fn from_spec(value: Value, _consts: &CompositionConsts) -> Result<Time> {
+    fn from_spec(value: Value, _consts: &Consts) -> Result<Time> {
         let string: String = value.as_type()?;
         match string.trim().split(" ").collect::<Vec<_>>().as_slice() {
             [number, "ticks"] => Ok(Time::Ticks(
@@ -100,7 +100,7 @@ mod test {
 
     #[test]
     fn test_to_ticks() {
-        let consts = &CompositionConsts::default().unwrap();
+        let consts = &Consts::default().unwrap();
         assert_eq!(Time::Ticks(1000).to_ticks(consts), 1000);
         assert_eq!(Time::Seconds(3.0).to_ticks(consts), 44100 * 3);
         assert_eq!(Time::Bars(2.0).to_ticks(consts), 44100 * 4);
@@ -109,7 +109,7 @@ mod test {
 
     #[test]
     fn test_to_seconds() {
-        let consts = &CompositionConsts::default().unwrap();
+        let consts = &Consts::default().unwrap();
         assert_eq!(Time::Ticks(44100).to_seconds(consts), 1.0);
         assert_eq!(Time::Seconds(3.0).to_seconds(consts), 3.0);
         assert_eq!(Time::Bars(2.0).to_seconds(consts), 4.0);
@@ -118,7 +118,7 @@ mod test {
 
     #[test]
     fn test_to_beats() {
-        let consts = &CompositionConsts::default().unwrap();
+        let consts = &Consts::default().unwrap();
         assert_eq!(Time::Ticks(44100).to_beats(consts), 2.0);
         assert_eq!(Time::Seconds(3.0).to_beats(consts), 6.0);
         assert_eq!(Time::Bars(2.0).to_beats(consts), 8.0);

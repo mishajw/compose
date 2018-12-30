@@ -1,8 +1,8 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
+use core::State;
 use core::Time;
 use errors::*;
 
@@ -36,7 +36,7 @@ impl Timeline {
 }
 
 impl input::Bool for Timeline {
-    fn get(&mut self, state: &CompositionState) -> bool {
+    fn get(&mut self, state: &State) -> bool {
         let event_index = state.tick as usize
             % (self.events.len() * self.event_duration.to_ticks(&state.consts))
             / (self.event_duration.to_ticks(&state.consts));
@@ -46,11 +46,7 @@ impl input::Bool for Timeline {
 
 impl create::FromSpec<Box<input::Bool>> for Timeline {
     fn name() -> &'static str { "timeline" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<input::Bool>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
         let mut spec: Spec = value.as_type()?;
         let event_duration =
             Time::from_spec(spec.consume("event-duration")?, consts)?;

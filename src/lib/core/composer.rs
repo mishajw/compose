@@ -2,10 +2,10 @@
 
 use core::spec;
 use core::spec::create::FromSpec;
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
 use core::Output;
 use core::Player;
+use core::State;
 use errors::*;
 
 use std::collections::hash_map::DefaultHasher;
@@ -25,12 +25,12 @@ pub fn compose_from_file(path: String) -> Result<()> {
 
     // Initialize consts
     let consts = Arc::new(
-        CompositionConsts::from_spec(
+        Consts::from_spec(
             spec.consume_with_default(
                 "consts",
                 spec::Value::Spec(spec::Spec::empty()),
             )?,
-            &CompositionConsts::default()?,
+            &Consts::default()?,
         )
         .chain_err(|| "Failed to create consts")?,
     );
@@ -69,7 +69,7 @@ fn spawn_reload_player_thread(
     reload_duration: Duration,
     path: String,
     player_replacement: Arc<Mutex<Option<Box<Player>>>>,
-    consts: Arc<CompositionConsts>,
+    consts: Arc<Consts>,
 )
 {
     let mut previous_hash: u64 = 0;
@@ -94,7 +94,7 @@ fn reload_player(
     path: &Path,
     player: &Mutex<Option<Box<Player>>>,
     previous_hash: u64,
-    consts: &CompositionConsts,
+    consts: &Consts,
 ) -> Result<u64>
 {
     let yaml_str = spec::yaml::get_yaml_str(path)?;
@@ -123,11 +123,11 @@ fn run_composition(
     // TODO: christ
     player_replacement: Arc<Mutex<Option<Box<Player>>>>,
     mut outputs: Vec<Box<Output>>,
-    consts: Arc<CompositionConsts>,
+    consts: Arc<Consts>,
 ) -> !
 {
     let reload_ticks = consts.reload_time.clone().to_ticks(&consts);
-    let mut state = CompositionState::initial(consts);
+    let mut state = State::initial(consts);
     loop {
         if reload_ticks != 0 && state.tick % reload_ticks == 0 {
             let mut new_player = player_replacement.lock().unwrap();

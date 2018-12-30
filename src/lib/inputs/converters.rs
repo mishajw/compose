@@ -2,8 +2,8 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
+use core::State;
 use errors::*;
 
 /// Convert a `Bounded` input to a `Bool` input
@@ -19,18 +19,14 @@ impl BoundedToBool {
 }
 
 impl input::Bool for BoundedToBool {
-    fn get(&mut self, state: &CompositionState) -> bool {
+    fn get(&mut self, state: &State) -> bool {
         self.bounded.get_with_bounds(state, -1.0, 1.0) >= 0.0
     }
 }
 
 impl create::FromSpec<Box<input::Bool>> for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<input::Bool>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
         let mut spec: Spec = value.as_type()?;
         let mut bounded_spec = spec.consume("bounded")?;
         spec.ensure_all_used()?;
@@ -52,7 +48,7 @@ impl BoolToBounded {
 }
 
 impl input::Bounded for BoolToBounded {
-    fn get(&mut self, state: &CompositionState) -> f32 {
+    fn get(&mut self, state: &State) -> f32 {
         if self.boolean.get(state) {
             1.0
         } else {
@@ -65,11 +61,7 @@ impl input::Bounded for BoolToBounded {
 
 impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<input::Bounded>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
         let mut spec: Spec = value.as_type()?;
         let mut bool_spec = spec.consume("bool")?;
         spec.ensure_all_used()?;

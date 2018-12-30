@@ -1,8 +1,8 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
+use core::State;
 use core::Time;
 use errors::*;
 
@@ -79,7 +79,7 @@ impl Function {
 }
 
 impl input::Bounded for Function {
-    fn get(&mut self, state: &CompositionState) -> f32 {
+    fn get(&mut self, state: &State) -> f32 {
         self.time_mod.clone().unwrap();
         let tick = match &self.time_mod {
             Some(time_mod) => state.tick % time_mod.to_ticks(&state.consts),
@@ -97,7 +97,7 @@ impl create::FromSpec<Box<input::Bounded>> for Function {
 
     fn from_spec(
         value: Value,
-        _consts: &CompositionConsts,
+        _consts: &Consts,
     ) -> Result<Box<input::Bounded>>
     {
         let mut spec: Spec = value.as_type()?;
@@ -111,13 +111,13 @@ impl create::FromSpec<Box<input::Bounded>> for Function {
 #[cfg(test)]
 mod test {
     use super::*;
-    use core::CompositionConsts;
+    use core::Consts;
     use std::sync::Arc;
 
     #[test]
     fn test_sine() {
-        let consts = Arc::new(CompositionConsts::default().unwrap());
-        let state = CompositionState::initial(consts.clone());
+        let consts = Arc::new(Consts::default().unwrap());
+        let state = State::initial(consts.clone());
         let mut function = Function::from_string("sine".into()).unwrap();
         assert!((0.0 - function.get(&state.with_tick(0))).abs() < 0.001);
         assert!(

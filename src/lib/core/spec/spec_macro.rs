@@ -1,5 +1,5 @@
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
+use core::Consts;
 use errors::*;
 
 /// Resolvable macro in the spec
@@ -8,5 +8,5 @@ pub trait SpecMacro {
     fn name() -> &'static str;
 
     /// Resolve the macro on a spec
-    fn resolve(spec: &mut Spec, consts: &CompositionConsts) -> Result<Value>;
+    fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value>;
 }

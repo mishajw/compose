@@ -1,8 +1,8 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
+use core::State;
 use core::Time;
 use errors::*;
 use inputs::Function;
@@ -51,7 +51,7 @@ impl SmoothBool {
 }
 
 impl input::Bounded for SmoothBool {
-    fn get(&mut self, state: &CompositionState) -> f32 {
+    fn get(&mut self, state: &State) -> f32 {
         let input = self.bool_input.get(state);
         if input && self.activation < 1.0 {
             self.activation +=
@@ -77,11 +77,7 @@ impl input::Bounded for SmoothBool {
 impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<input::Bounded>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
         let mut spec: Spec = value.as_type()?;
         let input =
             create::create_bool_input(&mut spec.consume("input")?, consts)?;

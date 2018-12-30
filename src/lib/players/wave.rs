@@ -6,7 +6,7 @@ use errors::*;
 use inputs;
 
 use core::spec::Spec;
-use core::CompositionConsts;
+use core::Consts;
 use players::PlayInput;
 use players::Speed;
 
@@ -23,11 +23,7 @@ impl Wave {
 impl create::FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(
-        value: Value,
-        _consts: &CompositionConsts,
-    ) -> Result<Box<Player>>
-    {
+    fn from_spec(value: Value, _consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         let function = match spec.consume_optional("fn")? {
             Some(string) => inputs::Function::from_string(string)?,

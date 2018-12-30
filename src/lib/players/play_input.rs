@@ -1,7 +1,7 @@
 use core::input;
-use core::CompositionState;
 use core::Playable;
 use core::Player;
+use core::State;
 
 use std::i32;
 
@@ -18,7 +18,7 @@ impl PlayInput {
 }
 
 impl Player for PlayInput {
-    fn play(&mut self, state: &CompositionState) -> Playable {
+    fn play(&mut self, state: &State) -> Playable {
         Playable::new(self.input.get_with_bounds(
             state,
             i32::MIN as f32 * state.consts.loudness_factor,

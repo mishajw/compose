@@ -1,5 +1,5 @@
 use core::input;
-use core::CompositionState;
+use core::State;
 use std::cmp::Ordering;
 
 /// Play from a list of playables
@@ -23,7 +23,7 @@ impl Buffer {
 }
 
 impl input::Bounded for Buffer {
-    fn get(&mut self, state: &CompositionState) -> f32 {
+    fn get(&mut self, state: &State) -> f32 {
         self.buffer[state.tick % self.buffer.len()]
     }
 

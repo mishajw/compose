@@ -1,7 +1,7 @@
 use core::spec::create::FromSpec;
 use core::spec::Spec;
 use core::spec::Value;
-use core::CompositionConsts;
+use core::Consts;
 use core::Player;
 use core::Time;
 use errors::*;
@@ -19,7 +19,7 @@ impl Sample {
         wav_path: String,
         start: Time,
         duration: Time,
-        consts: &CompositionConsts,
+        consts: &Consts,
     ) -> Result<Box<Player>>
     {
         let mut reader = hound::WavReader::open(&wav_path)
@@ -53,11 +53,7 @@ impl Sample {
 impl FromSpec<Box<Player>> for Sample {
     fn name() -> &'static str { "sample" }
 
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<Player>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         let wav_path: String = spec.consume("path")?;
         let start: Time = Time::from_spec(spec.consume("start")?, consts)?;

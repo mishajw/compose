@@ -1,11 +1,11 @@
 use core::spec::Spec;
 use core::spec::{SpecMacro, Value};
-use core::CompositionConsts;
+use core::Consts;
 use errors::*;
 use macros;
 
 /// Resolve all the macros in a spec
-pub fn resolve_macros(spec: Spec, consts: &CompositionConsts) -> Result<Spec> {
+pub fn resolve_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
     let resolved = resolve_children(Value::Spec(spec), consts)
         .chain_err(|| "Failed to resolve macros")?;
     match resolved {
@@ -21,7 +21,7 @@ pub fn resolve_macros(spec: Spec, consts: &CompositionConsts) -> Result<Spec> {
 fn resolve_single_macro<T: SpecMacro>(
     name: &str,
     spec: &mut Spec,
-    consts: &CompositionConsts,
+    consts: &Consts,
 ) -> Option<Result<Value>>
 {
     if name == T::name() {
@@ -33,7 +33,7 @@ fn resolve_single_macro<T: SpecMacro>(
 
 fn resolve_single_spec(
     spec: &mut Spec,
-    consts: &CompositionConsts,
+    consts: &Consts,
 ) -> Result<Option<Value>>
 {
     let name: String = match spec.consume_optional("name")? {
@@ -54,7 +54,7 @@ fn resolve_single_spec(
 
 fn resolve_entry(
     entry: (String, Value),
-    consts: &CompositionConsts,
+    consts: &Consts,
 ) -> Result<(String, Value)>
 {
     let (value_name, value) = entry;
@@ -63,7 +63,7 @@ fn resolve_entry(
         .map(|resolved_value| (value_name, resolved_value))
 }
 
-fn resolve_children(value: Value, consts: &CompositionConsts) -> Result<Value> {
+fn resolve_children(value: Value, consts: &Consts) -> Result<Value> {
     let spec = match value {
         // If resolving a spec, continue
         Value::Spec(spec) => spec,

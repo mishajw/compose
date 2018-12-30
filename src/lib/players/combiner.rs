@@ -1,9 +1,9 @@
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
 use core::Playable;
 use core::Player;
+use core::State;
 use errors::*;
 
 /// Sum several children `Player` output into one output
@@ -17,18 +17,14 @@ impl Combiner {
 }
 
 impl Player for Combiner {
-    fn play(&mut self, state: &CompositionState) -> Playable {
+    fn play(&mut self, state: &State) -> Playable {
         self.children.iter_mut().map(|p| p.play(state)).sum()
     }
 }
 
 impl create::FromSpec<Box<Player>> for Combiner {
     fn name() -> &'static str { "combiner" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<Player>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         let children_values: Vec<Value> = spec.consume("children")?;
         let mut children_specs = children_values

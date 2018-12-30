@@ -1,10 +1,10 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
-use core::CompositionState;
+use core::Consts;
 use core::Playable;
 use core::Player;
+use core::State;
 use errors::*;
 
 /// Adjust the volume of a child player
@@ -21,18 +21,14 @@ impl Volume {
 }
 
 impl Player for Volume {
-    fn play(&mut self, state: &CompositionState) -> Playable {
+    fn play(&mut self, state: &State) -> Playable {
         self.child.play(state) * self.input.get_with_bounds(state, 0.0, 1.0)
     }
 }
 
 impl create::FromSpec<Box<Player>> for Volume {
     fn name() -> &'static str { "volume" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<Player>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         Ok(Volume::new(
             create::create_player(&mut spec.consume("child")?, consts)?,

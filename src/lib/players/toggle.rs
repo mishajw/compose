@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
-use core::CompositionConsts;
+use core::Consts;
 use core::Player;
 use errors::*;
 use inputs::BoolToBounded;
@@ -34,11 +34,7 @@ impl Toggle {
 
 impl create::FromSpec<Box<Player>> for Toggle {
     fn name() -> &'static str { "toggle" }
-    fn from_spec(
-        value: Value,
-        consts: &CompositionConsts,
-    ) -> Result<Box<Player>>
-    {
+    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.as_type()?;
         let child = create::create_player(&mut spec.consume("child")?, consts)?;
         let mut bool_spec = spec.consume("input")?;
