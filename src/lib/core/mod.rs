@@ -15,6 +15,7 @@ mod output;
 mod playable;
 mod player;
 mod scale;
+mod scale_index;
 pub mod spec;
 mod time;
 
@@ -24,4 +25,5 @@ pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;
 pub use self::scale::Scale;
+pub use self::scale_index::ScaleIndex;
 pub use self::time::Time;

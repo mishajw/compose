@@ -1,5 +1,6 @@
 use core::CompositionConsts;
 use core::Note;
+use core::ScaleIndex;
 use errors::*;
 
 const NUM_OCTAVE_STEPS: usize = 12;
@@ -45,5 +46,14 @@ impl Scale {
             result.push(note.clone());
         }
         result
+    }
+
+    /// Get the note defined by a `ScaleIndex`
+    pub fn at_index(&self, scale_index: &ScaleIndex) -> Note {
+        let increment: usize =
+            self.steps.iter().take(scale_index.index - 1).sum();
+        let increment_adjusted =
+            (increment as i8 + scale_index.step_adjustment) as usize;
+        self.base.increment(increment_adjusted)
     }
 }
