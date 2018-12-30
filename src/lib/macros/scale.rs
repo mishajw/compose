@@ -34,9 +34,7 @@ impl SpecMacro for Scale {
 
         let mut frequencies = vec![note.to_frequency()];
         for step in steps.into_iter().cycle().take(num_notes - 1) {
-            for _ in 0..step {
-                note = note.next();
-            }
+            note = note.increment(step as u32);
             frequencies.push(note.to_frequency());
         }
 

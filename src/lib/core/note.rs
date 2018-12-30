@@ -3,6 +3,7 @@ use errors::*;
 use regex::Regex;
 
 /// Notes in an octave
+#[derive(Clone)]
 pub struct Note {
     note: AbstractNote,
     octave: usize,
@@ -26,6 +27,15 @@ impl Note {
                 octave: self.octave,
             },
         }
+    }
+
+    /// Get the nth next note
+    pub fn increment(&self, increment: u32) -> Note {
+        let mut note = self.clone();
+        for _ in 0..increment {
+            note = note.next();
+        }
+        note
     }
 }
 
@@ -55,6 +65,7 @@ impl std::str::FromStr for Note {
 }
 
 /// Notes in scale, with no assigned octave
+#[derive(Clone)]
 #[allow(missing_docs)]
 enum AbstractNote {
     C,
