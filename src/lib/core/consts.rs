@@ -1,5 +1,6 @@
 use core::spec::yaml;
 use core::spec::{create, Spec, Value};
+use core::ScaleIndex;
 use core::Time;
 use errors::*;
 
@@ -7,6 +8,7 @@ use std::collections::HashMap;
 use std::path::Path;
 
 const DEFAULT_SCALE_DEFINITION_PATH: &str = "resources/scales.yaml";
+const DEFAULT_CHORD_DEFINITION_PATH: &str = "resources/chords.yaml";
 
 /// Constants in the composition
 pub struct Consts {
@@ -22,6 +24,8 @@ pub struct Consts {
     pub reload_time: Time,
     /// Maps scale names to scales
     pub scale_map: HashMap<String, Vec<usize>>,
+    /// Maps chord names to chords
+    pub chord_map: HashMap<String, Vec<ScaleIndex>>,
 }
 
 impl Consts {
@@ -33,9 +37,11 @@ impl Consts {
         loudness_factor: f32,
         reload_time: Time,
         scale_definition_path: String,
+        chord_definition_path: String,
     ) -> Result<Self>
     {
         let scale_map = Self::create_scale_map(scale_definition_path)?;
+        let chord_map = Self::create_chord_map(chord_definition_path)?;
         Ok(Consts {
             sample_hz,
             beats_per_minute,
@@ -43,6 +49,7 @@ impl Consts {
             loudness_factor,
             reload_time,
             scale_map,
+            chord_map,
         })
     }
 
@@ -55,6 +62,7 @@ impl Consts {
             0.3,
             Time::Ticks(0),
             DEFAULT_SCALE_DEFINITION_PATH.into(),
+            DEFAULT_CHORD_DEFINITION_PATH.into(),
         )
     }
 
@@ -70,6 +78,27 @@ impl Consts {
                 scale_spec
                     .consume_list::<i32>(&name)
                     .map(|list| list.into_iter().map(|i| i as usize).collect())
+                    .map(|list| (name, list))
+            })
+            .collect::<Result<_>>()
+    }
+
+    /// Get map from chord to list of step sizes
+    fn create_chord_map(
+        chord_definition_path: String,
+    ) -> Result<HashMap<String, Vec<ScaleIndex>>> {
+        let mut chord_spec = yaml::read(Path::new(&chord_definition_path))?;
+        chord_spec
+            .value_names()
+            .into_iter()
+            .map(|name| {
+                chord_spec
+                    .consume_list::<String>(&name)
+                    .and_then(|list| {
+                        list.into_iter()
+                            .map(|s| s.parse())
+                            .collect::<Result<_>>()
+                    })
                     .map(|list| (name, list))
             })
             .collect::<Result<_>>()
@@ -101,6 +130,10 @@ impl create::FromSpec<Consts> for Consts {
             spec.consume_with_default(
                 "scale-definition-path",
                 DEFAULT_SCALE_DEFINITION_PATH.to_string(),
+            )?,
+            spec.consume_with_default(
+                "chord-definition-path",
+                DEFAULT_CHORD_DEFINITION_PATH.to_string(),
             )?,
         )?;
         spec.ensure_all_used()?;

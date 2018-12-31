@@ -1,0 +1,13 @@
+players:
+  name: combiner
+  children:
+    name: map
+    list:
+      name: chord
+      note: a4
+      chord: maj
+    fn: { name: wave }
+    field: frequency
+outputs:
+  - name: speaker
+    device-number: 5
