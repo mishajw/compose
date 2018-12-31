@@ -1,5 +1,8 @@
 //! Creating components from [`core`](../../core/)
 
+// TODO: Consume spec values in creation functions, instead of passing by
+// reference
+
 use core::spec::{Spec, Value};
 use error::*;
 
