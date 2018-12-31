@@ -2,7 +2,7 @@ use core::input;
 use core::spec::create::create_with_type;
 use core::spec::Spec;
 use core::Consts;
-use errors::*;
+use error::*;
 use inputs;
 
 /// Create an bool input from the spec. Every creatable bool input has to be

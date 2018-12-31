@@ -1,6 +1,6 @@
 use core::spec::{create, Value};
 use core::Consts;
-use errors::*;
+use error::*;
 use std::time::Duration;
 
 /// Amount of time in different measurements

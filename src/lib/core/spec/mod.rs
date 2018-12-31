@@ -1,6 +1,6 @@
 //! Defines a tree of [`Player`](../core/trait.Player.html)s
 
-use errors::*;
+use error::*;
 
 use std::collections::HashMap;
 

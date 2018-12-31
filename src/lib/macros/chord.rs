@@ -2,7 +2,7 @@ use core::spec::{Spec, SpecMacro, Value};
 use core::Consts;
 use core::Note;
 use core::Scale;
-use errors::*;
+use error::*;
 
 const DEFAULT_SCALE: &str = "major";
 

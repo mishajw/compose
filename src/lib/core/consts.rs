@@ -2,7 +2,7 @@ use core::spec::yaml;
 use core::spec::{create, Spec, Value};
 use core::ScaleIndex;
 use core::Time;
-use errors::*;
+use error::*;
 
 use std::collections::HashMap;
 use std::path::Path;

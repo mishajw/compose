@@ -2,7 +2,7 @@ use core::input;
 use core::spec::create;
 use core::spec::Value;
 use core::Player;
-use errors::*;
+use error::*;
 use inputs;
 
 use core::spec::Spec;

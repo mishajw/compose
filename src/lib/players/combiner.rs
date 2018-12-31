@@ -4,7 +4,7 @@ use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
-use errors::*;
+use error::*;
 
 /// Sum several children `Player` output into one output
 pub struct Combiner {

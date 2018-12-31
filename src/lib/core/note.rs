@@ -1,4 +1,4 @@
-use errors::*;
+use error::*;
 
 use regex::Regex;
 

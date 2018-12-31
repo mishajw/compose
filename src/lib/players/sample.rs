@@ -4,7 +4,7 @@ use core::spec::Value;
 use core::Consts;
 use core::Player;
 use core::Time;
-use errors::*;
+use error::*;
 use hound;
 use inputs::Buffer;
 use players::PlayInput;

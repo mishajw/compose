@@ -3,7 +3,7 @@ use core::spec::Spec;
 use core::spec::Value;
 use core::Consts;
 use core::Output;
-use errors::*;
+use error::*;
 use outputs;
 
 /// Create outputs from the spec

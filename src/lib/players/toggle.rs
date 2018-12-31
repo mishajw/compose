@@ -3,7 +3,7 @@ use core::spec::create;
 use core::spec::{Spec, Value};
 use core::Consts;
 use core::Player;
-use errors::*;
+use error::*;
 use inputs::BoolToBounded;
 use inputs::SmoothBool;
 use players::Volume;

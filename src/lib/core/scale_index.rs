@@ -1,4 +1,4 @@
-use errors::*;
+use error::*;
 
 use std::str::FromStr;
 

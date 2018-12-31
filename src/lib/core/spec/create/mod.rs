@@ -1,7 +1,7 @@
 //! Creating components from [`core`](../../core/)
 
 use core::spec::{Spec, Value};
-use errors::*;
+use error::*;
 
 mod bool_input;
 mod bounded_input;

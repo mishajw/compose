@@ -6,7 +6,7 @@ use core::Consts;
 use core::Output;
 use core::Player;
 use core::State;
-use errors::*;
+use error::*;
 
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};

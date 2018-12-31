@@ -5,7 +5,7 @@ extern crate error_chain;
 #[macro_use]
 extern crate clap;
 
-use composer::errors::*;
+use composer::error::*;
 
 quick_main!(run);
 

@@ -4,7 +4,7 @@ use core::spec::{Spec, Value};
 use core::Consts;
 use core::State;
 use core::Time;
-use errors::*;
+use error::*;
 
 /// A function input, returns values from a function
 pub struct Function {

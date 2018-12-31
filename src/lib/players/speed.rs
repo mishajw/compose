@@ -6,7 +6,7 @@ use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
-use errors::*;
+use error::*;
 
 /// Adjust the speed of a child player
 pub struct Speed {

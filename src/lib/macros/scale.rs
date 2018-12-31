@@ -4,7 +4,7 @@ use core::spec::SpecMacro;
 use core::spec::Value;
 use core::Consts;
 use core::Note;
-use errors::*;
+use error::*;
 
 /// Resolve a scale name into a list of frequencies
 pub struct Scale {}

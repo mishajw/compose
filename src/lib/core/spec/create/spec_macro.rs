@@ -1,7 +1,7 @@
 use core::spec::Spec;
 use core::spec::{SpecMacro, Value};
 use core::Consts;
-use errors::*;
+use error::*;
 use macros;
 
 /// Resolve all the macros in a spec

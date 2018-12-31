@@ -5,7 +5,7 @@ use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
-use errors::*;
+use error::*;
 
 /// Adjust the volume of a child player
 pub struct Volume {

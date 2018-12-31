@@ -21,7 +21,7 @@ extern crate regex;
 extern crate lazy_static;
 
 pub mod core;
-pub mod errors;
+pub mod error;
 pub mod inputs;
 pub mod macros;
 pub mod outputs;

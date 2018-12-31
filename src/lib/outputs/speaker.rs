@@ -4,7 +4,7 @@ use core::spec::create;
 use core::spec::{Spec, Value};
 use core::Output;
 use core::Playable;
-use errors::*;
+use error::*;
 
 use std::collections::VecDeque;
 use std::sync::{mpsc, Arc, Mutex};

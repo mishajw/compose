@@ -4,7 +4,7 @@ use core::spec::{Spec, Value};
 use core::Consts;
 use core::State;
 use core::Time;
-use errors::*;
+use error::*;
 
 /// `input::Bool` defined by a list of booleans
 pub struct Timeline {

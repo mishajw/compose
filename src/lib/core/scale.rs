@@ -1,7 +1,7 @@
 use core::Consts;
 use core::Note;
 use core::ScaleIndex;
-use errors::*;
+use error::*;
 
 const NUM_OCTAVE_STEPS: usize = 12;
 

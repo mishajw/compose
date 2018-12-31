@@ -1,6 +1,6 @@
 use core::spec::{Spec, SpecMacro, Value};
 use core::Consts;
-use errors::*;
+use error::*;
 
 /// Macro to map a spec over a list
 pub struct Map {}

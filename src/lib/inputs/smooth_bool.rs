@@ -4,7 +4,7 @@ use core::spec::{Spec, Value};
 use core::Consts;
 use core::State;
 use core::Time;
-use errors::*;
+use error::*;
 use inputs::Function;
 
 /// Smooth a bool transition

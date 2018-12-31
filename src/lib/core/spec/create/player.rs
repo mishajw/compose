@@ -2,7 +2,7 @@ use core::spec::create::create_with_type;
 use core::spec::Spec;
 use core::Consts;
 use core::Player;
-use errors::*;
+use error::*;
 use players;
 
 /// Create a player from the spec. Every creatable player has to be added to

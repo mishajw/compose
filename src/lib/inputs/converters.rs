@@ -4,7 +4,7 @@ use core::spec::create;
 use core::spec::{Spec, Value};
 use core::Consts;
 use core::State;
-use errors::*;
+use error::*;
 
 /// Convert a `Bounded` input to a `Bool` input
 pub struct BoundedToBool {
