@@ -44,13 +44,47 @@ impl Spec {
         }
     }
 
+    /// Get a reference to a value in the spec
+    pub fn get<'a, T: ValueType>(&'a self, value_name: &str) -> Result<&'a T> {
+        let value: &'a Value = self
+            .values
+            .get(value_name)
+            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+        T::get_from_value(value).ok_or_else(|| {
+            ErrorKind::SpecTypeError(
+                value_name.into(),
+                T::get_type_name().into(),
+            )
+            .into()
+        })
+    }
+
+    /// Get a mutable reference to a value in the spec
+    pub fn get_mut<'a, T: ValueType>(
+        &'a mut self,
+        value_name: &str,
+    ) -> Result<&'a mut T>
+    {
+        let value: &'a mut Value = self
+            .values
+            .get_mut(value_name)
+            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+        T::get_mut_from_value(value).ok_or_else(|| {
+            ErrorKind::SpecTypeError(
+                value_name.into(),
+                T::get_type_name().into(),
+            )
+            .into()
+        })
+    }
+
     /// Get a value from the spec, and remove it
     pub fn consume<T: ValueType>(&mut self, value_name: &str) -> Result<T> {
         let value: Value = self
             .values
             .remove(value_name)
             .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
-        T::get_from_value(value).ok_or_else(|| {
+        T::consume_from_value(value).ok_or_else(|| {
             ErrorKind::SpecTypeError(
                 value_name.into(),
                 T::get_type_name().into(),
@@ -68,7 +102,7 @@ impl Spec {
     ) -> Result<T>
     {
         match self.values.remove(value_name) {
-            Some(value) => T::get_from_value(value).ok_or_else(|| {
+            Some(value) => T::consume_from_value(value).ok_or_else(|| {
                 ErrorKind::SpecTypeError(
                     value_name.into(),
                     T::get_type_name().into(),
@@ -87,7 +121,7 @@ impl Spec {
     ) -> Result<Option<T>>
     {
         match self.values.remove(value_name) {
-            Some(value) => T::get_from_value(value)
+            Some(value) => T::consume_from_value(value)
                 .ok_or_else(|| {
                     ErrorKind::SpecTypeError(
                         value_name.into(),
@@ -150,12 +184,20 @@ impl Spec {
 }
 
 /// A type that can be extracted from a `Value`
-pub trait ValueType: Sized {
+pub trait ValueType: Sized + Clone {
     /// Get the name of the type for error messages
     fn get_type_name() -> &'static str;
 
     /// Get the type from the `Value`
-    fn get_from_value(value: Value) -> Option<Self>;
+    fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self>;
+
+    /// Get mutable reference to the type from the `Value`
+    fn get_mut_from_value<'a>(value: &'a mut Value) -> Option<&'a mut Self>;
+
+    /// Consume the type from the `Value`
+    fn consume_from_value(value: Value) -> Option<Self> {
+        Self::get_from_value(&value).map(Clone::clone)
+    }
 
     /// Get the type from the `Value`
     fn into_value(self) -> Value;
@@ -166,7 +208,16 @@ macro_rules! impl_value_type {
         impl ValueType for $extracted_type {
             fn get_type_name() -> &'static str { stringify!($extracted_type) }
 
-            fn get_from_value(value: Value) -> Option<Self> {
+            fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self> {
+                match value {
+                    Value::$value_pattern(extracted) => Some(extracted),
+                    _ => None,
+                }
+            }
+
+            fn get_mut_from_value<'a>(
+                value: &'a mut Value,
+            ) -> Option<&'a mut Self> {
                 match value {
                     Value::$value_pattern(extracted) => Some(extracted),
                     _ => None,
@@ -188,7 +239,11 @@ impl_value_type!(Vec<Value>, List);
 impl ValueType for Value {
     fn get_type_name() -> &'static str { "Value" }
 
-    fn get_from_value(value: Value) -> Option<Self> { Some(value) }
+    fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self> { Some(value) }
+
+    fn get_mut_from_value<'a>(value: &'a mut Value) -> Option<&'a mut Self> {
+        Some(value)
+    }
 
     fn into_value(self) -> Value { self }
 }
@@ -196,7 +251,7 @@ impl ValueType for Value {
 impl Value {
     /// Try return the value as a type
     pub fn as_type<T: ValueType>(self) -> Result<T> {
-        T::get_from_value(self).ok_or_else(|| {
+        T::consume_from_value(self).ok_or_else(|| {
             ErrorKind::BadInput("Failed cast as spec".into()).into()
         })
     }

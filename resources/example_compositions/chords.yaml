@@ -6,8 +6,9 @@ players:
       name: chord
       note: a4
       chord: maj
-    fn: { name: wave }
-    field: frequency
+    fn:
+      name: wave
+      frequency: $1
 outputs:
   - name: speaker
     device-number: 5
