@@ -11,7 +11,7 @@ players:
     name: map
     fn:
       name: bool-to-bounded
-    field: bool
+      bool: $1
     list:
       name: timeline-multi
       event-duration: 1 beats

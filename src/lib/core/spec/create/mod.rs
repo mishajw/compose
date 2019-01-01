@@ -16,7 +16,7 @@ pub use self::bool_input::create_bool_input;
 pub use self::bounded_input::create_bounded_input;
 pub use self::output::create_outputs;
 pub use self::player::create_player;
-pub use self::spec_macro::resolve_macros;
+pub use self::spec_macro::{resolve_root_macros, resolve_spec_value};
 use core::Consts;
 
 /// Implementors can be created from a spec

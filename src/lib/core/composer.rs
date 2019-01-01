@@ -39,7 +39,7 @@ pub fn compose_from_file(path: String) -> Result<()> {
     let player_spec_with_macros = spec.consume("players")?;
     debug!("Player spec: {:#?}", player_spec_with_macros);
     let mut player_spec =
-        spec::create::resolve_macros(player_spec_with_macros, &consts)?;
+        spec::create::resolve_root_macros(player_spec_with_macros, &consts)?;
     debug!("Player spec resolved: {:#?}", player_spec);
     let player = spec::create::create_player(&mut player_spec, &consts)?;
 
@@ -108,7 +108,7 @@ fn reload_player(
 
     let mut spec = spec::yaml::parse(yaml_str)?;
     let mut player_spec =
-        spec::create::resolve_macros(spec.consume("players")?, consts)?;
+        spec::create::resolve_root_macros(spec.consume("players")?, consts)?;
     let mut new_player =
         Some(spec::create::create_player(&mut player_spec, consts)?);
     let mut player = player.lock().unwrap();

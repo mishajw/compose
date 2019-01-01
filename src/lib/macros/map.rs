@@ -1,3 +1,4 @@
+use core::spec::create::resolve_spec_value;
 use core::spec::{Spec, SpecMacro, Value};
 use core::Consts;
 use error::*;
@@ -10,7 +11,8 @@ pub struct Map {}
 impl SpecMacro for Map {
     fn name() -> &'static str { "map" }
 
-    fn resolve(spec: &mut Spec, _consts: &Consts) -> Result<Value> {
+    fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
+        resolve_spec_value(spec, "list".into(), consts)?;
         let spec_fn: Spec = spec.consume("fn")?;
         let var_name: String =
             spec.consume_with_default("var", DEFAULT_VAR.into())?;

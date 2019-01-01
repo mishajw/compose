@@ -4,9 +4,9 @@ use core::Consts;
 use error::*;
 use macros;
 
-/// Resolve all the macros in a spec
-pub fn resolve_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
-    let resolved = resolve_children(Value::Spec(spec), consts)
+/// Resolve macros in the root player
+pub fn resolve_root_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
+    let resolved = resolve_macros(Value::Spec(spec), consts)
         .chain_err(|| "Failed to resolve macros")?;
     match resolved {
         Value::Spec(spec) => Ok(spec),
@@ -18,17 +18,66 @@ pub fn resolve_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
     }
 }
 
-fn resolve_single_macro<T: SpecMacro>(
-    name: &str,
+/// Resolve a value in a spec
+pub fn resolve_spec_value(
     spec: &mut Spec,
+    value_name: String,
     consts: &Consts,
-) -> Option<Result<Value>>
+) -> Result<()>
 {
-    if name == T::name() {
-        Some(T::resolve(spec, consts))
-    } else {
-        None
-    }
+    let value: Value = spec.consume(&value_name)?;
+    let value = resolve_macros(value, consts)?;
+    spec.put(value_name, value);
+    Ok(())
+}
+
+/// Resolve macros in a spec
+fn resolve_macros(value: Value, consts: &Consts) -> Result<Value> {
+    let mut spec = match value {
+        // If resolving a spec, continue
+        Value::Spec(spec) => spec,
+        // If resolving a list, run for each element in the list
+        Value::List(list) => {
+            return list
+                .into_iter()
+                .map(|v| resolve_macros(v, consts))
+                .collect::<Result<_>>()
+                .map(Value::List);
+        }
+        // If resolving anything else, there's nothing we can do
+        value => return Ok(value),
+    };
+
+    // Resolve this spec
+    let resolved_value = resolve_single_spec(&mut spec, consts)?
+        .unwrap_or_else(|| Value::Spec(spec));
+
+    // If resolved to another spec or list, resolve all children
+    let resolved_value = match resolved_value {
+        Value::Spec(spec) => {
+            // Resolve all children
+            Value::Spec(Spec::new(
+                spec.values
+                    .into_iter()
+                    .map(|e| resolve_entry(e, consts))
+                    .collect::<Result<_>>()?,
+            ))
+        }
+        value => resolve_macros(value, consts)?,
+    };
+
+    Ok(resolved_value)
+}
+
+fn resolve_entry(
+    entry: (String, Value),
+    consts: &Consts,
+) -> Result<(String, Value)>
+{
+    let (value_name, value) = entry;
+    resolve_macros(value, consts)
+        .chain_err(|| format!("Error resolving macros for {}", value_name))
+        .map(|resolved_value| (value_name, resolved_value))
 }
 
 fn resolve_single_spec(
@@ -53,47 +102,15 @@ fn resolve_single_spec(
     }
 }
 
-fn resolve_entry(
-    entry: (String, Value),
+fn resolve_single_macro<T: SpecMacro>(
+    name: &str,
+    spec: &mut Spec,
     consts: &Consts,
-) -> Result<(String, Value)>
+) -> Option<Result<Value>>
 {
-    let (value_name, value) = entry;
-    resolve_children(value, consts)
-        .chain_err(|| format!("Error resolving macros for {}", value_name))
-        .map(|resolved_value| (value_name, resolved_value))
-}
-
-fn resolve_children(value: Value, consts: &Consts) -> Result<Value> {
-    let spec = match value {
-        // If resolving a spec, continue
-        Value::Spec(spec) => spec,
-        // If resolving a list, run for each element in the list
-        Value::List(list) => {
-            return list
-                .into_iter()
-                .map(|v| resolve_children(v, consts))
-                .collect::<Result<_>>()
-                .map(Value::List);
-        }
-        // If resolving anything else, there's nothing we can do
-        value => return Ok(value),
-    };
-
-    // Resolve all children first
-    let mut spec = Spec::new(
-        spec.values
-            .into_iter()
-            .map(|e| resolve_entry(e, consts))
-            .collect::<Result<_>>()?,
-    );
-
-    // Resolve this spec
-    let resolved_value = resolve_single_spec(&mut spec, consts)?
-        .unwrap_or_else(|| Value::Spec(spec));
-
-    // TODO Resolve children again, in case resolving this spec created more
-    // macros
-
-    Ok(resolved_value)
+    if name == T::name() {
+        Some(T::resolve(spec, consts))
+    } else {
+        None
+    }
 }
