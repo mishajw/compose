@@ -14,6 +14,7 @@ mod note;
 mod output;
 mod playable;
 mod player;
+pub mod regex;
 mod scale;
 mod scale_index;
 pub mod spec;

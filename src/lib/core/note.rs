@@ -1,6 +1,5 @@
+use core::regex;
 use error::*;
-
-use regex::Regex;
 
 /// Notes in an octave
 #[derive(Clone)]
@@ -42,12 +41,7 @@ impl Note {
 impl std::str::FromStr for Note {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        lazy_static! {
-            static ref NOTE_REGEX: Regex =
-                Regex::new(r"([a-gA-G]#?)([0-9]*)").unwrap();
-        }
-
-        let captures = NOTE_REGEX
+        let captures = regex::NOTE_REGEX
             .captures(s)
             .ok_or_else(|| ErrorKind::SpecBadValue("note".into(), s.into()))?;
         let abstract_note_str = captures.get(1).unwrap().as_str();

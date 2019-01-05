@@ -1,8 +1,7 @@
+use core::regex;
 use error::*;
 
 use std::str::FromStr;
-
-use regex::Regex;
 
 /// Represents a note in a scale
 pub struct ScaleIndex {
@@ -20,19 +19,20 @@ impl ScaleIndex {
             step_adjustment,
         }
     }
+
+    /// Get the index offsetted by some number
+    pub fn offset(&self, n: usize) -> Self {
+        ScaleIndex::new(self.index + n, self.step_adjustment)
+    }
 }
 
 impl FromStr for ScaleIndex {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        lazy_static! {
-            static ref SCALE_INDEX_REGEX: Regex =
-                Regex::new(r"([sb]*)([0-9]+)").unwrap();
-        }
-
-        let captures = SCALE_INDEX_REGEX.captures(s).ok_or_else(|| {
-            ErrorKind::SpecBadValue("scale_index".into(), s.into())
-        })?;
+        let captures =
+            regex::SCALE_INDEX_REGEX.captures(s).ok_or_else(|| {
+                ErrorKind::SpecBadValue("scale_index".into(), s.into())
+            })?;
         let step_adjustment_str = captures.get(1).unwrap().as_str();
         let index: usize = captures
             .get(2)
