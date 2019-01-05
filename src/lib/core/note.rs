@@ -1,6 +1,8 @@
 use core::regex;
 use error::*;
 
+const DEFAULT_OCTAVE: usize = 4;
+
 /// Notes in an octave
 #[derive(Clone)]
 pub struct Note {
@@ -46,14 +48,19 @@ impl std::str::FromStr for Note {
             .ok_or_else(|| ErrorKind::SpecBadValue("note".into(), s.into()))?;
         let abstract_note_str = captures.get(1).unwrap().as_str();
         let octave_str = captures.get(2).unwrap().as_str();
+        let octave = if octave_str.is_empty() {
+            DEFAULT_OCTAVE
+        } else {
+            octave_str.parse().chain_err(|| {
+                format!("Failed to parse note octave: {}", octave_str)
+            })?
+        };
 
         Ok(Note {
             note: abstract_note_str.parse().chain_err(|| {
                 format!("Failed to parse abstract note: {}", abstract_note_str)
             })?,
-            octave: octave_str.parse().chain_err(|| {
-                format!("Failed to parse note octave: {}", octave_str)
-            })?,
+            octave,
         })
     }
 }

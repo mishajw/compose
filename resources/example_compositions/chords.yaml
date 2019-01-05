@@ -4,8 +4,7 @@ players:
     name: map
     list:
       name: chord
-      note: a4
-      chord: maj
+      chord: a4 maj
     fn:
       name: wave
       frequency: $1

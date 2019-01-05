@@ -7,6 +7,7 @@
 //! through [`State`](struct.State.html)s. `Player`s can
 //! be controlled through [`input`](input/) traits.
 
+mod chord;
 pub mod composer;
 mod consts;
 pub mod input;
@@ -21,6 +22,7 @@ pub mod spec;
 mod state;
 mod time;
 
+pub use self::chord::Chord;
 pub use self::consts::Consts;
 pub use self::note::Note;
 pub use self::output::Output;
