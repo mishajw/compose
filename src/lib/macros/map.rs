@@ -38,19 +38,30 @@ fn apply_spec_fn(
     let value_names = spec_fn.value_names();
 
     {
-        let field_name: Option<&String> =
+        let found_name: Option<&String> =
             value_names.iter().find(|value_name| {
                 if let Ok(s) = spec_fn.get::<String>(&value_name) {
-                    s == var_name
+                    s.contains(var_name)
                 } else {
                     false
                 }
             });
 
-        if let Some(field_name) = field_name {
+        if let Some(found_name) = found_name {
             // Unwrap, as we're sure it exists and is a string field
-            spec_fn.consume::<String>(field_name).unwrap();
-            spec_fn.put(field_name.clone(), value.clone());
+            let found_value = spec_fn.consume::<String>(found_name).unwrap();
+            if let Value::Str(value) = value {
+                // If we're replacing with a string, replace the variable name
+                // inside the string
+                spec_fn.put(
+                    found_name.clone(),
+                    found_value.replace(var_name, value),
+                )
+            } else {
+                // If we're replacing with another type, remove the old value
+                // completely
+                spec_fn.put(found_name.clone(), value.clone());
+            }
             return Ok(());
         }
     }
