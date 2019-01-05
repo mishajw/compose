@@ -18,7 +18,7 @@ impl Chord {
         consts: &Consts,
     ) -> Result<Self>
     {
-        let scale = Scale::new(note, "major", consts)?;
+        let scale = Scale::new(note, "maj", consts)?;
 
         let chord_indices =
             consts.chord_map.get(chord_name).ok_or_else(|| -> Error {
