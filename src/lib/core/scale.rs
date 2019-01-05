@@ -1,3 +1,4 @@
+use core::regex;
 use core::Consts;
 use core::Note;
 use core::ScaleIndex;
@@ -27,6 +28,16 @@ impl Scale {
             steps.push(NUM_OCTAVE_STEPS - (steps_total % NUM_OCTAVE_STEPS));
         }
         Ok(Scale { base, steps })
+    }
+
+    #[allow(missing_docs)]
+    pub fn from_str(s: &str, consts: &Consts) -> Result<Self> {
+        let captures = regex::SCALE_REGEX
+            .captures(s)
+            .chain_err(|| "Failed to match scale string")?;
+        let note_str = captures.get(1).unwrap().as_str();
+        let scale_name = captures.get(2).unwrap().as_str();
+        Scale::new(note_str.parse()?, scale_name, consts)
     }
 
     /// Get the default scale size, typically ranging across an octave
