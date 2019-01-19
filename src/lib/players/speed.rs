@@ -2,6 +2,7 @@ use core::spec::create::create_player;
 use core::spec::create::FromSpec;
 use core::spec::Spec;
 use core::spec::Value;
+use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
@@ -26,6 +27,14 @@ impl Player for Speed {
         // TODO: Handle speed decreases
         self.child
             .play(&state.with_tick((state.tick * self.scale as usize) as usize))
+    }
+}
+
+impl Tree for Speed {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.child.to_tree()]
     }
 }
 

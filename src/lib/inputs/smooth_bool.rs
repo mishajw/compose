@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::State;
 use core::Time;
@@ -72,6 +73,14 @@ impl input::Bounded for SmoothBool {
     }
 
     fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
+}
+
+impl Tree for SmoothBool {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.bool_input.to_tree()]
+    }
 }
 
 impl create::FromSpec<Box<input::Bounded>> for SmoothBool {

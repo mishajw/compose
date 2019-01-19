@@ -2,6 +2,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::State;
 use error::*;
@@ -21,6 +22,14 @@ impl BoundedToBool {
 impl input::Bool for BoundedToBool {
     fn get(&mut self, state: &State) -> bool {
         self.bounded.get_with_bounds(state, -1.0, 1.0) >= 0.0
+    }
+}
+
+impl Tree for BoundedToBool {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.bounded.to_tree()]
     }
 }
 
@@ -57,6 +66,14 @@ impl input::Bounded for BoolToBounded {
     }
 
     fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
+}
+
+impl Tree for BoolToBounded {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.boolean.to_tree()]
+    }
 }
 
 impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {

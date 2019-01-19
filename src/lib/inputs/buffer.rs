@@ -1,4 +1,5 @@
 use core::input;
+use core::tree::Tree;
 use core::State;
 use std::cmp::Ordering;
 
@@ -28,4 +29,8 @@ impl input::Bounded for Buffer {
     }
 
     fn get_bounds(&self) -> (f32, f32) { (self.lower_bound, self.upper_bound) }
+}
+
+impl Tree for Buffer {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
 }

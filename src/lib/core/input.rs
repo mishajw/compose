@@ -1,9 +1,10 @@
 //! Inputs that control [`Player`](../trait.Player.html)s
 
+use core::tree::Tree;
 use core::State;
 
 /// An input that is is guarenteed to be between two values
-pub trait Bounded: Send + Sync {
+pub trait Bounded: Tree + Send + Sync {
     /// Get the input value between the bounds given by `get_bounds`
     fn get(&mut self, state: &State) -> f32;
 
@@ -27,7 +28,7 @@ pub trait Bounded: Send + Sync {
 }
 
 /// Input that is either true or false
-pub trait Bool: Send + Sync {
+pub trait Bool: Tree + Send + Sync {
     #[allow(missing_docs)]
     fn get(&mut self, state: &State) -> bool;
 }

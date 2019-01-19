@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::State;
 use core::Time;
@@ -90,6 +91,10 @@ impl input::Bounded for Function {
     }
 
     fn get_bounds(&self) -> (f32, f32) { (self.lower_bound, self.upper_bound) }
+}
+
+impl Tree for Function {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
 }
 
 impl create::FromSpec<Box<input::Bounded>> for Function {

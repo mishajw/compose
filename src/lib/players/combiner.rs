@@ -1,5 +1,6 @@
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
@@ -19,6 +20,14 @@ impl Combiner {
 impl Player for Combiner {
     fn play(&mut self, state: &State) -> Playable {
         self.children.iter_mut().map(|p| p.play(state)).sum()
+    }
+}
+
+impl Tree for Combiner {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        self.children.iter().map(|c| c.to_tree()).collect()
     }
 }
 

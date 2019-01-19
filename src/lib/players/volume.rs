@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
@@ -23,6 +24,14 @@ impl Volume {
 impl Player for Volume {
     fn play(&mut self, state: &State) -> Playable {
         self.child.play(state) * self.input.get_with_bounds(state, 0.0, 1.0)
+    }
+}
+
+impl Tree for Volume {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.child.to_tree(), self.input.to_tree()]
     }
 }
 

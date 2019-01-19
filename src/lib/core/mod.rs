@@ -21,6 +21,7 @@ mod scale_index;
 pub mod spec;
 mod state;
 mod time;
+pub mod tree;
 
 pub use self::chord::Chord;
 pub use self::consts::Consts;

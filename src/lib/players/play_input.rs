@@ -1,4 +1,5 @@
 use core::input;
+use core::tree::Tree;
 use core::Playable;
 use core::Player;
 use core::State;
@@ -24,5 +25,13 @@ impl Player for PlayInput {
             i32::MIN as f32 * state.consts.loudness_factor,
             i32::MAX as f32 * state.consts.loudness_factor,
         ) as i32)
+    }
+}
+
+impl Tree for PlayInput {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+
+    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+        vec![self.input.to_tree()]
     }
 }

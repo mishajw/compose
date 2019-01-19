@@ -1,6 +1,7 @@
 use core::input;
 use core::spec::create;
 use core::spec::{Spec, Value};
+use core::tree::Tree;
 use core::Consts;
 use core::State;
 use core::Time;
@@ -42,6 +43,10 @@ impl input::Bool for Timeline {
             / (self.event_duration.to_ticks(&state.consts));
         self.events[event_index]
     }
+}
+
+impl Tree for Timeline {
+    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
 }
 
 impl create::FromSpec<Box<input::Bool>> for Timeline {
