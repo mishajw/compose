@@ -9,6 +9,7 @@
 
 mod chord;
 pub mod composer;
+mod composition;
 mod consts;
 pub mod input;
 mod note;
@@ -16,6 +17,7 @@ mod output;
 mod playable;
 mod player;
 pub mod regex;
+mod reload_composition;
 mod scale;
 mod scale_index;
 pub mod spec;
@@ -24,11 +26,13 @@ mod time;
 pub mod tree;
 
 pub use self::chord::Chord;
+pub use self::composition::Composition;
 pub use self::consts::Consts;
 pub use self::note::Note;
 pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;
+pub use self::reload_composition::ReloadingComposition;
 pub use self::scale::Scale;
 pub use self::scale_index::ScaleIndex;
 pub use self::state::State;

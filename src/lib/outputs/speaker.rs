@@ -139,13 +139,6 @@ impl Output for Speaker {
     }
 }
 
-impl Drop for Speaker {
-    fn drop(&mut self) {
-        self.audio_stream.stop().expect("Failed to stop audio");
-        self.audio_stream.close().expect("Failed to close audio");
-    }
-}
-
 impl create::FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Output>> {
@@ -156,5 +149,12 @@ impl create::FromSpec<Box<Output>> for Speaker {
             device_number as usize,
             consts.sample_hz,
         )?))
+    }
+}
+
+impl Drop for Speaker {
+    fn drop(&mut self) {
+        self.audio_stream.stop().expect("Failed to stop audio");
+        self.audio_stream.close().expect("Failed to close audio");
     }
 }
