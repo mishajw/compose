@@ -35,9 +35,5 @@ players:
       name: wave
       fn: sine
       frequency: 880.0 # A
-# All the outputs of the composition
-outputs:
-  # Play the composition to speakers
-  - name: speaker
-    # The index of the device to play to
-    device-number: 5
+# Play the composition to speakers
+outputs: [{ name: speaker }]

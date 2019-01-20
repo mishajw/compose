@@ -8,6 +8,4 @@ players:
     fn:
       name: wave
       frequency: $1
-outputs:
-  - name: speaker
-    device-number: 5
+outputs: [{ name: speaker }]

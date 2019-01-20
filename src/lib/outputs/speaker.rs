@@ -38,20 +38,10 @@ pub struct Speaker {
 
 impl Speaker {
     #[allow(missing_docs)]
-    fn new(device_number: usize, output_frequency: f32) -> Result<Self> {
+    fn new(output_frequency: f32) -> Result<Self> {
         // Initialize portaudio interface
         let audio = portaudio::PortAudio::new()
             .chain_err(|| "Failed to initialize PortAudio")?;
-
-        // Log what devices are available
-        let device_string = audio
-            .devices()
-            .chain_err(|| "Couldn't get devices")?
-            .filter_map(|s| s.ok())
-            .map(|(portaudio::DeviceIndex(i), d)| format!("{}: {}", i, d.name))
-            .collect::<Vec<_>>()
-            .join(", ");
-        info!("Found audio devices: {}", device_string);
 
         // Create the stream settings
         let mut audio_settings = audio
@@ -62,8 +52,6 @@ impl Speaker {
             )
             .chain_err(|| "Failed to get default audio stream settings")?;
         audio_settings.flags = portaudio::stream_flags::CLIP_OFF;
-        audio_settings.params.device =
-            portaudio::DeviceIndex(device_number as u32).into();
 
         // Create and start the stream
         let audio_buffers = Arc::new(Mutex::new(VecDeque::new()));
@@ -142,11 +130,9 @@ impl Output for Speaker {
 impl create::FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Output>> {
-        let mut spec: Spec = value.as_type()?;
-        let device_number: i32 = spec.consume("device-number")?;
+        let spec: Spec = value.as_type()?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(
-            device_number as usize,
             consts.sample_hz,
         )?))
     }

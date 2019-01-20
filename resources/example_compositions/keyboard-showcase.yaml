@@ -19,8 +19,6 @@ players:
         X__X
         _X_X
         __XX
-outputs:
-  - name: speaker
-    device-number: 5
+outputs: [{ name: speaker }]
 consts:
   beats-per-minute: 80.0
