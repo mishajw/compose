@@ -65,6 +65,15 @@ impl Speaker {
             .start()
             .chain_err(|| "Failed to start audio stream")?;
 
+        // TODO: We need to play some empty audio here, otherwise when we switch
+        // speakers when reloading, we get some strange glitches
+        for _ in 0..32 {
+            audio_buffers.lock().unwrap().push_back([Playable::new(0); FRAMES]);
+        }
+        for _ in 0..32 {
+            write_reciever.recv().unwrap();
+        }
+
         Ok(Speaker {
             audio_stream,
             write_reciever,
