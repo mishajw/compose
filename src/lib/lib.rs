@@ -19,9 +19,11 @@ extern crate hound;
 extern crate regex;
 #[macro_use]
 extern crate lazy_static;
+extern crate sfml;
 
 pub mod core;
 pub mod error;
+pub mod gui;
 pub mod inputs;
 pub mod macros;
 pub mod outputs;
