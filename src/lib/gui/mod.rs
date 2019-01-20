@@ -48,6 +48,9 @@ fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
                 | Event::KeyPressed {
                     code: Key::Escape, ..
                 } => return Ok(()),
+                Event::Resized{width, height} => {
+                    window.set_size((width, height))
+                },
                 _ => {}
             }
         }
@@ -82,12 +85,13 @@ fn draw_composition(
     }
 
     let num_drawables = drawables.len();
-    let drawable_height = WINDOW_HEIGHT / num_drawables as u32;
+    let size = window.size();
+    let drawable_height = size.y as u32 / num_drawables as u32;
 
     for (i, drawable) in drawables.into_iter().enumerate() {
         drawable.draw(
             window,
-            WINDOW_WIDTH,
+            size.x as u32,
             drawable_height,
             0,
             drawable_height * i as u32,
