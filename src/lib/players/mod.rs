@@ -1,6 +1,7 @@
 //! Implementations of [`Player`](../core/trait.Player.html)
 
 mod combiner;
+mod empty;
 mod keyboard;
 mod play_input;
 mod sample;
@@ -11,6 +12,7 @@ mod wave;
 mod wave_drawer;
 
 pub use self::combiner::Combiner;
+pub use self::empty::Empty;
 pub use self::keyboard::Keyboard;
 pub use self::play_input::PlayInput;
 pub use self::sample::Sample;

@@ -22,6 +22,7 @@ pub fn create_player(spec: &mut Spec, consts: &Consts) -> Result<Box<Player>> {
         .or_else(|| {
             create_with_type::<players::WaveDrawer, _>(&name, spec, consts)
         })
+        .or_else(|| create_with_type::<players::Empty, _>(&name, spec, consts))
         .unwrap_or_else(|| Err(ErrorKind::SpecUnknownName(name.clone()).into()))
         .chain_err(|| format!("Failed to create player {}", name))
 }
