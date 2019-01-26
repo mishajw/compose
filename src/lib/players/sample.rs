@@ -45,8 +45,8 @@ impl Sample {
 
         Ok(Speed::new(
             PlayInput::new(Buffer::new(buffer)),
-            sample_hz as f32 / consts.sample_hz,
-        ))
+            sample_hz as f64 / consts.sample_hz as f64,
+        )?)
     }
 }
 

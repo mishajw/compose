@@ -15,8 +15,12 @@ pub struct Wave {}
 
 impl Wave {
     #[allow(missing_docs)]
-    pub fn new(input: Box<input::Bounded>, frequency: f32) -> Box<Player> {
-        Speed::new(PlayInput::new(input), frequency)
+    pub fn new(
+        input: Box<input::Bounded>,
+        frequency: f32,
+    ) -> Result<Box<Player>>
+    {
+        Speed::new(PlayInput::new(input), frequency as f64)
     }
 }
 
@@ -30,6 +34,7 @@ impl create::FromSpec<Box<Player>> for Wave {
             None => inputs::Function::default(),
         };
         let frequency: f32 = spec.consume("frequency")?;
-        Ok(Wave::new(function, frequency))
+        spec.ensure_all_used()?;
+        Wave::new(function, frequency)
     }
 }
