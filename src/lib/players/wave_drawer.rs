@@ -93,16 +93,17 @@ impl Drawable for WaveDrawer {
             }
         };
 
-        let scale_to_window = |x| {
-            (x - sample_bucketer.all_min_max.0) as f32
-                / (sample_bucketer.all_min_max.1
-                    - sample_bucketer.all_min_max.0) as f32
+        let scale_to_window = |x: i32| {
+            (x as i64 - sample_bucketer.all_min_max.0 as i64) as f32
+                / (sample_bucketer.all_min_max.1 as i64
+                    - sample_bucketer.all_min_max.0 as i64)
+                    as f32
                 * height as f32
         };
 
         for (i, (range_min, range_max)) in sample_bucketer.iter().enumerate() {
-            let window_min = scale_to_window(range_min);
-            let window_max = scale_to_window(range_max);
+            let window_min = scale_to_window(*range_min);
+            let window_max = scale_to_window(*range_max);
             let range_height = (window_max - window_min).max(1.0);
             window.draw_with_renderstates(
                 &RectangleShape::with_size(Vector2f::new(1.0, range_height)),
