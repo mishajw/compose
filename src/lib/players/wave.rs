@@ -15,12 +15,12 @@ pub struct Wave {}
 
 impl Wave {
     #[allow(missing_docs)]
-    pub fn new(
+    pub fn player(
         input: Box<input::Bounded>,
         frequency: f32,
     ) -> Result<Box<Player>>
     {
-        Speed::new(PlayInput::new(input), frequency as f64)
+        Speed::player(PlayInput::player(input), f64::from(frequency))
     }
 }
 
@@ -28,13 +28,13 @@ impl create::FromSpec<Box<Player>> for Wave {
     fn name() -> &'static str { "wave" }
 
     fn from_spec(value: Value, _consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let function = match spec.consume_optional("fn")? {
             Some(string) => inputs::Function::from_string(string)?,
             None => inputs::Function::default(),
         };
         let frequency: f32 = spec.consume("frequency")?;
         spec.ensure_all_used()?;
-        Wave::new(function, frequency)
+        Wave::player(function, frequency)
     }
 }

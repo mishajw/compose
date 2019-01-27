@@ -26,7 +26,7 @@ impl input::Bool for BoundedToBool {
 }
 
 impl Tree for BoundedToBool {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.bounded.to_tree()]
@@ -36,7 +36,7 @@ impl Tree for BoundedToBool {
 impl create::FromSpec<Box<input::Bool>> for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let mut bounded_spec = spec.consume("bounded")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoundedToBool::new(create::create_bounded_input(
@@ -69,7 +69,7 @@ impl input::Bounded for BoolToBounded {
 }
 
 impl Tree for BoolToBounded {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.boolean.to_tree()]
@@ -79,7 +79,7 @@ impl Tree for BoolToBounded {
 impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let mut bool_spec = spec.consume("bool")?;
         spec.ensure_all_used()?;
         Ok(Box::new(BoolToBounded::new(create::create_bool_input(

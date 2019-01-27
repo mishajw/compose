@@ -1,7 +1,6 @@
 use core::input;
 use core::tree::Tree;
 use core::State;
-use std::cmp::Ordering;
 
 /// Play from a list of playables
 pub struct Buffer {
@@ -12,12 +11,17 @@ pub struct Buffer {
 
 impl Buffer {
     #[allow(missing_docs)]
-    pub fn new(buffer: Vec<f32>) -> Box<input::Bounded> {
+    pub fn bounded(buffer: Vec<f32>) -> Box<input::Bounded> {
         assert!(!buffer.is_empty());
-        fn compare(a: &&f32, b: &&f32) -> Ordering { a.partial_cmp(b).unwrap() }
         Box::new(Buffer {
-            lower_bound: *buffer.iter().min_by(compare).unwrap(),
-            upper_bound: *buffer.iter().max_by(compare).unwrap(),
+            lower_bound: *buffer
+                .iter()
+                .min_by(|a, b| a.partial_cmp(b).unwrap())
+                .unwrap(),
+            upper_bound: *buffer
+                .iter()
+                .max_by(|a, b| a.partial_cmp(b).unwrap())
+                .unwrap(),
             buffer,
         })
     }
@@ -32,5 +36,5 @@ impl input::Bounded for Buffer {
 }
 
 impl Tree for Buffer {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 }

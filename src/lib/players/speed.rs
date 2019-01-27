@@ -21,12 +21,11 @@ pub struct Speed {
 
 impl Speed {
     #[allow(missing_docs)]
-    pub fn new(child: Box<Player>, scale: f64) -> Result<Box<Player>> {
-        Ok(Box::new(Speed::new_speed(child, scale)?))
+    pub fn player(child: Box<Player>, scale: f64) -> Result<Box<Player>> {
+        Ok(Box::new(Speed::new(child, scale)?))
     }
 
-    /// Used for testing
-    fn new_speed(child: Box<Player>, scale: f64) -> Result<Speed> {
+    fn new(child: Box<Player>, scale: f64) -> Result<Speed> {
         let ratio = match Ratio::from_float(scale) {
             Some(ratio) => ratio,
             None => bail!(ErrorKind::BadInput(format!(
@@ -62,7 +61,7 @@ impl Player for Speed {
 }
 
 impl Tree for Speed {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.child.to_tree()]
@@ -73,11 +72,11 @@ impl FromSpec<Box<Player>> for Speed {
     fn name() -> &'static str { "speed" }
 
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let child = create_player(&mut spec.consume("child")?, consts)?;
         let speed: f32 = spec.consume("speed")?;
         spec.ensure_all_used()?;
-        Speed::new(child, speed as f64)
+        Speed::player(child, f64::from(speed))
     }
 }
 
@@ -101,7 +100,7 @@ mod test {
 
     fn test_ranges(scale: f64) {
         println!("Testing scale {}", scale);
-        let speed = Speed::new_speed(Empty::new(), scale).unwrap();
+        let speed = Speed::new(Empty::player(), scale).unwrap();
         test_range(&speed, 0, 100, 1);
         test_range(&speed, 1000000, 2000000, 100000);
         test_range(&speed, 10000000, 20000000, 10000);

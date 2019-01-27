@@ -16,7 +16,11 @@ pub struct Volume {
 
 impl Volume {
     #[allow(missing_docs)]
-    pub fn new(child: Box<Player>, input: Box<input::Bounded>) -> Box<Player> {
+    pub fn player(
+        child: Box<Player>,
+        input: Box<input::Bounded>,
+    ) -> Box<Player>
+    {
         Box::new(Volume { child, input })
     }
 }
@@ -28,7 +32,7 @@ impl Player for Volume {
 }
 
 impl Tree for Volume {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.child.to_tree(), self.input.to_tree()]
@@ -38,8 +42,8 @@ impl Tree for Volume {
 impl create::FromSpec<Box<Player>> for Volume {
     fn name() -> &'static str { "volume" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
-        Ok(Volume::new(
+        let mut spec: Spec = value.into_type()?;
+        Ok(Volume::player(
             create::create_player(&mut spec.consume("child")?, consts)?,
             create::create_bounded_input(&mut spec.consume("input")?, consts)?,
         ))

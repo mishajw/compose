@@ -16,7 +16,7 @@ pub struct Timeline {
 
 impl Timeline {
     #[allow(missing_docs)]
-    pub fn new(events: Vec<bool>, event_duration: Time) -> Box<input::Bool> {
+    pub fn bool(events: Vec<bool>, event_duration: Time) -> Box<input::Bool> {
         Box::new(Timeline {
             events,
             event_duration,
@@ -46,13 +46,13 @@ impl input::Bool for Timeline {
 }
 
 impl Tree for Timeline {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
 impl create::FromSpec<Box<input::Bool>> for Timeline {
     fn name() -> &'static str { "timeline" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let event_duration =
             Time::from_spec(spec.consume("event-duration")?, consts)?;
         let events: String = spec.consume("events")?;

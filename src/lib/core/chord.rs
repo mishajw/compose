@@ -26,10 +26,7 @@ impl Chord {
                     .into()
             })?;
 
-        let notes = chord_indices
-            .into_iter()
-            .map(|i| scale.at_index(&i))
-            .collect();
+        let notes = chord_indices.iter().map(|i| scale.at_index(&i)).collect();
 
         Ok(Chord { notes })
     }
@@ -37,7 +34,7 @@ impl Chord {
     /// Create a chord from a scale index, e.g. "a major IV"
     pub fn from_scale_index(scale: Scale, index: usize) -> Self {
         let notes = [index, index + 2, index + 4]
-            .into_iter()
+            .iter()
             .map(|i| ScaleIndex::new(*i, 0))
             .map(|i| scale.at_index(&i))
             .collect();

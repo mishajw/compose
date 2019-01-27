@@ -10,10 +10,10 @@ const NOTE_REGEX_STR: &str = r"^([a-g]#?)([0-9]*)$";
 fn change_groups(s: &str) -> String {
     let mut s = s.to_string();
     s = s.replace("(", "").replace(")", "");
-    if s.starts_with("^") {
+    if s.starts_with('^') {
         s.remove(0);
     }
-    if s.ends_with("$") {
+    if s.ends_with('$') {
         let len = s.len();
         s.remove(len - 1);
     }

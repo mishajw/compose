@@ -19,7 +19,7 @@ impl Toggle {
     ) -> Box<Player>
     {
         let bounded_input = BoolToBounded::new(bool_input);
-        Volume::new(child, Box::new(bounded_input))
+        Volume::player(child, Box::new(bounded_input))
     }
 
     #[allow(missing_docs)]
@@ -28,14 +28,14 @@ impl Toggle {
         bounded_input: Box<input::Bounded>,
     ) -> Box<Player>
     {
-        Volume::new(child, bounded_input)
+        Volume::player(child, bounded_input)
     }
 }
 
 impl create::FromSpec<Box<Player>> for Toggle {
     fn name() -> &'static str { "toggle" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let child = create::create_player(&mut spec.consume("child")?, consts)?;
         let mut bool_spec = spec.consume("input")?;
 

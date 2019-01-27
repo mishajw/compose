@@ -65,7 +65,7 @@ impl Player for WaveDrawer {
 }
 
 impl Tree for WaveDrawer {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.child.to_tree()]
@@ -94,9 +94,9 @@ impl Drawable for WaveDrawer {
         };
 
         let scale_to_window = |x: i32| {
-            (x as i64 - sample_bucketer.all_min_max.0 as i64) as f32
-                / (sample_bucketer.all_min_max.1 as i64
-                    - sample_bucketer.all_min_max.0 as i64)
+            (i64::from(x) - i64::from(sample_bucketer.all_min_max.0)) as f32
+                / (i64::from(sample_bucketer.all_min_max.1)
+                    - i64::from(sample_bucketer.all_min_max.0))
                     as f32
                 * height as f32
         };
@@ -126,7 +126,7 @@ impl FromSpec<Box<Player>> for WaveDrawer {
     fn name() -> &'static str { "wave-drawer" }
 
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let child = create_player(&mut spec.consume("child")?, consts)?;
         let display_time =
             Time::from_spec(spec.consume("display-time")?, consts)?;
@@ -148,7 +148,7 @@ impl SampleBucketer {
         SampleBucketer {
             bucket_min_max: vec![(0, 0); num_buckets],
             all_min_max: (0, 0),
-            num_samples: num_samples,
+            num_samples,
             last_bucket_index: 0,
         }
     }

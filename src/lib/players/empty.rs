@@ -12,7 +12,7 @@ pub struct Empty;
 
 impl Empty {
     #[allow(missing_docs)]
-    pub fn new() -> Box<Player> { Box::new(Empty {}) }
+    pub fn player() -> Box<Player> { Box::new(Empty {}) }
 }
 
 impl Player for Empty {
@@ -20,13 +20,13 @@ impl Player for Empty {
 }
 
 impl Tree for Empty {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
 impl FromSpec<Box<Player>> for Empty {
     fn name() -> &'static str { "empty" }
 
     fn from_spec(_value: Value, _consts: &Consts) -> Result<Box<Player>> {
-        Ok(Empty::new())
+        Ok(Empty::player())
     }
 }

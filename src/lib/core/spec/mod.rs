@@ -150,7 +150,7 @@ impl Spec {
 
         value_list
             .into_iter()
-            .map(|v| v.as_type::<T>())
+            .map(|v| v.into_type::<T>())
             .collect::<Result<Vec<_>>>()
     }
 
@@ -189,10 +189,10 @@ pub trait ValueType: Sized + Clone {
     fn get_type_name() -> &'static str;
 
     /// Get the type from the `Value`
-    fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self>;
+    fn get_from_value(value: &Value) -> Option<&Self>;
 
     /// Get mutable reference to the type from the `Value`
-    fn get_mut_from_value<'a>(value: &'a mut Value) -> Option<&'a mut Self>;
+    fn get_mut_from_value(value: &mut Value) -> Option<&mut Self>;
 
     /// Consume the type from the `Value`
     fn consume_from_value(value: Value) -> Option<Self> {
@@ -208,16 +208,14 @@ macro_rules! impl_value_type {
         impl ValueType for $extracted_type {
             fn get_type_name() -> &'static str { stringify!($extracted_type) }
 
-            fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self> {
+            fn get_from_value(value: &Value) -> Option<&Self> {
                 match value {
                     Value::$value_pattern(extracted) => Some(extracted),
                     _ => None,
                 }
             }
 
-            fn get_mut_from_value<'a>(
-                value: &'a mut Value,
-            ) -> Option<&'a mut Self> {
+            fn get_mut_from_value(value: &mut Value) -> Option<&mut Self> {
                 match value {
                     Value::$value_pattern(extracted) => Some(extracted),
                     _ => None,
@@ -239,9 +237,9 @@ impl_value_type!(Vec<Value>, List);
 impl ValueType for Value {
     fn get_type_name() -> &'static str { "Value" }
 
-    fn get_from_value<'a>(value: &'a Value) -> Option<&'a Self> { Some(value) }
+    fn get_from_value(value: &Value) -> Option<&Self> { Some(value) }
 
-    fn get_mut_from_value<'a>(value: &'a mut Value) -> Option<&'a mut Self> {
+    fn get_mut_from_value(value: &mut Value) -> Option<&mut Self> {
         Some(value)
     }
 
@@ -250,7 +248,7 @@ impl ValueType for Value {
 
 impl Value {
     /// Try return the value as a type
-    pub fn as_type<T: ValueType>(self) -> Result<T> {
+    pub fn into_type<T: ValueType>(self) -> Result<T> {
         T::consume_from_value(self).ok_or_else(|| {
             ErrorKind::BadInput("Failed cast as spec".into()).into()
         })

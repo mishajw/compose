@@ -24,9 +24,9 @@ impl ops::Add for Playable {
         // Perform addition in u64, clamp to i32 range, cast to i32
         // TODO: Can we make this faster?
         Playable::new(
-            (self.value as i64 + other.value as i64)
-                .max(i32::MIN as i64)
-                .min(i32::MAX as i64) as i32,
+            (i64::from(self.value) + i64::from(other.value))
+                .max(i64::from(i32::MIN))
+                .min(i64::from(i32::MAX)) as i32,
         )
     }
 }

@@ -20,7 +20,7 @@ impl Time {
     #[allow(missing_docs)]
     pub fn to_ticks(&self, consts: &Consts) -> usize {
         match self {
-            Time::Ticks(ticks) => ticks.clone(),
+            Time::Ticks(ticks) => *ticks,
             Time::Seconds(seconds) => (seconds * consts.sample_hz) as usize,
             other => Time::Seconds(other.to_seconds(consts)).to_ticks(consts),
         }
@@ -29,8 +29,8 @@ impl Time {
     #[allow(missing_docs)]
     pub fn to_seconds(&self, consts: &Consts) -> f32 {
         match self {
-            Time::Seconds(seconds) => seconds.clone(),
-            Time::Ticks(ticks) => ticks.clone() as f32 / consts.sample_hz,
+            Time::Seconds(seconds) => *seconds,
+            Time::Ticks(ticks) => *ticks as f32 / consts.sample_hz,
             Time::Beats(beats) => (beats * 60.0) / consts.beats_per_minute,
             bars => Time::Beats(bars.to_beats(consts)).to_seconds(consts),
         }
@@ -39,7 +39,7 @@ impl Time {
     #[allow(missing_docs)]
     pub fn to_beats(&self, consts: &Consts) -> f32 {
         match self {
-            Time::Beats(beats) => beats.clone(),
+            Time::Beats(beats) => *beats,
             Time::Bars(bars) => bars * consts.beats_per_bar,
             Time::Seconds(seconds) => {
                 (seconds * consts.beats_per_minute) / 60.0
@@ -50,16 +50,16 @@ impl Time {
 
     #[allow(missing_docs)]
     pub fn to_duration(&self, consts: &Consts) -> Duration {
-        return Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64);
+        Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64)
     }
 
     /// Check if represents no time
     pub fn is_zero(&self) -> bool {
         match self {
-            Time::Ticks(ticks) => ticks == &0,
-            Time::Seconds(seconds) => seconds == &0.0,
-            Time::Beats(beats) => beats == &0.0,
-            Time::Bars(bars) => bars == &0.0,
+            Time::Ticks(ticks) => *ticks == 0,
+            Time::Seconds(seconds) => *seconds == 0.0,
+            Time::Beats(beats) => *beats == 0.0,
+            Time::Bars(bars) => *bars == 0.0,
         }
     }
 }
@@ -67,8 +67,8 @@ impl Time {
 impl create::FromSpec<Time> for Time {
     fn name() -> &'static str { "time" }
     fn from_spec(value: Value, _consts: &Consts) -> Result<Time> {
-        let string: String = value.as_type()?;
-        match string.trim().split(" ").collect::<Vec<_>>().as_slice() {
+        let string: String = value.into_type()?;
+        match string.trim().split(' ').collect::<Vec<_>>().as_slice() {
             [number, "ticks"] => Ok(Time::Ticks(
                 number.parse().chain_err(|| "Failed to parse tick number")?,
             )),

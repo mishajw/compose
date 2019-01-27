@@ -108,7 +108,7 @@ impl Consts {
 impl create::FromSpec<Consts> for Consts {
     fn name() -> &'static str { "consts" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Consts> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let consts = Consts::new(
             spec.consume_with_default("sample-hz", consts.sample_hz)?,
             spec.consume_with_default(

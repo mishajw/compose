@@ -123,7 +123,7 @@ impl AbstractNote {
 impl std::str::FromStr for AbstractNote {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        match s.as_ref() {
+        match s {
             "c" => Ok(AbstractNote::C),
             "c#" => Ok(AbstractNote::Cs),
             "d" => Ok(AbstractNote::D),

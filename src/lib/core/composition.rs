@@ -22,7 +22,7 @@ impl FromSpec<Composition> for Composition {
     fn name() -> &'static str { "composition" }
 
     fn from_spec(value: Value, _consts: &Consts) -> Result<Composition> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
 
         // Initialize consts
         let consts = Arc::new(

@@ -47,7 +47,7 @@ impl Speaker {
         let mut audio_settings = audio
             .default_output_stream_settings(
                 NUM_CHANNELS,
-                output_frequency as f64,
+                f64::from(output_frequency),
                 FRAMES as u32,
             )
             .chain_err(|| "Failed to get default audio stream settings")?;
@@ -142,7 +142,7 @@ impl Output for Speaker {
 impl create::FromSpec<Box<Output>> for Speaker {
     fn name() -> &'static str { "speaker" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Output>> {
-        let spec: Spec = value.as_type()?;
+        let spec: Spec = value.into_type()?;
         spec.ensure_all_used()?;
         Ok(Box::new(Speaker::new(consts.sample_hz)?))
     }

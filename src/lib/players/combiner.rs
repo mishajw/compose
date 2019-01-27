@@ -14,7 +14,9 @@ pub struct Combiner {
 
 impl Combiner {
     #[allow(missing_docs)]
-    pub fn new(children: Vec<Box<Player>>) -> Self { Combiner { children } }
+    pub fn player(children: Vec<Box<Player>>) -> Box<Player> {
+        Box::new(Combiner { children })
+    }
 }
 
 impl Player for Combiner {
@@ -24,7 +26,7 @@ impl Player for Combiner {
 }
 
 impl Tree for Combiner {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         self.children.iter().map(|c| c.to_tree()).collect()
@@ -34,11 +36,11 @@ impl Tree for Combiner {
 impl create::FromSpec<Box<Player>> for Combiner {
     fn name() -> &'static str { "combiner" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let children_values: Vec<Value> = spec.consume("children")?;
         let mut children_specs = children_values
             .into_iter()
-            .map(|v| v.as_type())
+            .map(|v| v.into_type())
             .collect::<Result<Vec<_>>>()
             .chain_err(|| "Failed to create combiner children specs")?;
         let children = children_specs
@@ -47,6 +49,6 @@ impl create::FromSpec<Box<Player>> for Combiner {
             .collect::<Result<Vec<_>>>()
             .chain_err(|| "Failed to create combiner children")?;
 
-        Ok(Box::new(Combiner::new(children)))
+        Ok(Combiner::player(children))
     }
 }

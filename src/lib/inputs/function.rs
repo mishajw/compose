@@ -17,7 +17,7 @@ pub struct Function {
 
 impl Function {
     #[allow(missing_docs)]
-    pub fn new(
+    pub fn bounded(
         function: Box<Fn(f32) -> f32 + Send + Sync>,
         lower_bound: f32,
         upper_bound: f32,
@@ -94,7 +94,7 @@ impl input::Bounded for Function {
 }
 
 impl Tree for Function {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
 impl create::FromSpec<Box<input::Bounded>> for Function {
@@ -105,7 +105,7 @@ impl create::FromSpec<Box<input::Bounded>> for Function {
         _consts: &Consts,
     ) -> Result<Box<input::Bounded>>
     {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let wave_fn_name: String =
             spec.consume_with_default("fn", "sine".into())?;
         spec.ensure_all_used()?;

@@ -14,7 +14,7 @@ impl SpecMacro for TimelineMulti {
 
         Ok(Value::List(
             events
-                .split("\n")
+                .split('\n')
                 .filter(|l| !l.is_empty())
                 .map(|event_line| {
                     Value::Spec(

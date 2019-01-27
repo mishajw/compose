@@ -13,7 +13,7 @@ pub struct Keyboard {}
 impl create::FromSpec<Box<Player>> for Keyboard {
     fn name() -> &'static str { "keyboard" }
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let children: Vec<Box<Player>> = spec
             .consume_list("children")?
             .iter_mut()
@@ -41,9 +41,9 @@ impl create::FromSpec<Box<Player>> for Keyboard {
         let children_with_input = children
             .into_iter()
             .zip(inputs)
-            .map(|(player, input)| Volume::new(player, input))
+            .map(|(player, input)| Volume::player(player, input))
             .collect::<Vec<_>>();
 
-        Ok(Box::new(Combiner::new(children_with_input)))
+        Ok(Combiner::player(children_with_input))
     }
 }

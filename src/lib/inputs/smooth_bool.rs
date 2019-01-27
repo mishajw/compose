@@ -19,7 +19,7 @@ pub struct SmoothBool {
 
 impl SmoothBool {
     #[allow(missing_docs)]
-    pub fn new(
+    pub fn bounded(
         bool_input: Box<input::Bool>,
         smooth_fn: Box<input::Bounded>,
         smooth_in_duration: Time,
@@ -42,7 +42,7 @@ impl SmoothBool {
         smooth_out_duration: Time,
     ) -> Box<input::Bounded>
     {
-        SmoothBool::new(
+        SmoothBool::bounded(
             bool_input,
             Function::with_mod(Box::new(|x| x), 0.0, 1.0, Time::Seconds(1.1)),
             smooth_in_duration,
@@ -76,7 +76,7 @@ impl input::Bounded for SmoothBool {
 }
 
 impl Tree for SmoothBool {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.bool_input.to_tree()]
@@ -87,7 +87,7 @@ impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let input =
             create::create_bool_input(&mut spec.consume("input")?, consts)?;
         let smooth_in_duration =
@@ -98,7 +98,7 @@ impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
             Some(mut smooth_fn) => {
                 let smooth_fn =
                     create::create_bounded_input(&mut smooth_fn, consts)?;
-                Ok(SmoothBool::new(
+                Ok(SmoothBool::bounded(
                     input,
                     smooth_fn,
                     smooth_in_duration,

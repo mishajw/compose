@@ -15,7 +15,7 @@ pub struct Sample {}
 
 impl Sample {
     #[allow(missing_docs)]
-    pub fn new(
+    pub fn player(
         wav_path: String,
         start: Time,
         duration: Time,
@@ -43,9 +43,9 @@ impl Sample {
             .collect::<std::result::Result<_, _>>()
             .chain_err(|| "Failed to read sample")?;
 
-        Ok(Speed::new(
-            PlayInput::new(Buffer::new(buffer)),
-            sample_hz as f64 / consts.sample_hz as f64,
+        Ok(Speed::player(
+            PlayInput::player(Buffer::bounded(buffer)),
+            f64::from(sample_hz) / f64::from(consts.sample_hz),
         )?)
     }
 }
@@ -54,12 +54,12 @@ impl FromSpec<Box<Player>> for Sample {
     fn name() -> &'static str { "sample" }
 
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.as_type()?;
+        let mut spec: Spec = value.into_type()?;
         let wav_path: String = spec.consume("path")?;
         let start: Time = Time::from_spec(spec.consume("start")?, consts)?;
         let duration: Time =
             Time::from_spec(spec.consume("duration")?, consts)?;
         spec.ensure_all_used()?;
-        Ok(Sample::new(wav_path, start, duration, consts)?)
+        Sample::player(wav_path, start, duration, consts)
     }
 }

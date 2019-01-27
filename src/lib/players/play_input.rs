@@ -13,7 +13,7 @@ pub struct PlayInput {
 
 impl PlayInput {
     #[allow(missing_docs)]
-    pub fn new(input: Box<input::Bounded>) -> Box<Player> {
+    pub fn player(input: Box<input::Bounded>) -> Box<Player> {
         Box::new(PlayInput { input })
     }
 }
@@ -29,7 +29,7 @@ impl Player for PlayInput {
 }
 
 impl Tree for PlayInput {
-    fn to_tree<'a>(&'a self) -> &'a Tree { self as &Tree }
+    fn to_tree(&self) -> &Tree { self as &Tree }
 
     fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
         vec![self.input.to_tree()]
