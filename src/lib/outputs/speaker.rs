@@ -68,7 +68,10 @@ impl Speaker {
         // TODO: We need to play some empty audio here, otherwise when we switch
         // speakers when reloading, we get some strange glitches
         for _ in 0..32 {
-            audio_buffers.lock().unwrap().push_back([Playable::new(0); FRAMES]);
+            audio_buffers
+                .lock()
+                .unwrap()
+                .push_back([Playable::new(0); FRAMES]);
         }
         for _ in 0..32 {
             write_reciever.recv().unwrap();
@@ -141,9 +144,7 @@ impl create::FromSpec<Box<Output>> for Speaker {
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Output>> {
         let spec: Spec = value.as_type()?;
         spec.ensure_all_used()?;
-        Ok(Box::new(Speaker::new(
-            consts.sample_hz,
-        )?))
+        Ok(Box::new(Speaker::new(consts.sample_hz)?))
     }
 }
 

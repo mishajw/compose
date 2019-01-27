@@ -48,9 +48,9 @@ fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
                 | Event::KeyPressed {
                     code: Key::Escape, ..
                 } => return Ok(()),
-                Event::Resized{width, height} => {
+                Event::Resized { width, height } => {
                     window.set_size((width, height))
-                },
+                }
                 _ => {}
             }
         }
