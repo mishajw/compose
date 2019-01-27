@@ -97,7 +97,7 @@ impl Drawable for WaveDrawer {
                 / (i64::from(sample_bucketer.all_min_max.1)
                     - i64::from(sample_bucketer.all_min_max.0))
                     as f64
-                * height as f64
+                * f64::from(height)
         };
 
         for (i, (range_min, range_max)) in sample_bucketer.iter().enumerate() {

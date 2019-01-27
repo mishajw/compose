@@ -29,7 +29,7 @@ impl Sample {
 
         // Skip to the part of the sample we want
         reader
-            .seek((sample_hz as f64 * start_seconds) as u32)
+            .seek((f64::from(sample_hz) * start_seconds) as u32)
             .chain_err(|| {
                 format!("Failed to get seek to {} seconds", start_seconds)
             })?;
@@ -37,14 +37,14 @@ impl Sample {
         // Extract the samples we need
         let buffer: Vec<f64> = reader
             .samples::<i32>()
-            .take((sample_hz as f64 * duration_seconds) as usize)
-            .map(|r| r.map(|i| i as f64))
+            .take((f64::from(sample_hz) * duration_seconds) as usize)
+            .map(|r| r.map(f64::from))
             .collect::<std::result::Result<_, _>>()
             .chain_err(|| "Failed to read sample")?;
 
         Ok(Speed::player(
             PlayInput::player(Buffer::bounded(buffer)),
-            f64::from(sample_hz) / f64::from(consts.sample_hz),
+            f64::from(sample_hz) / consts.sample_hz,
         )?)
     }
 }

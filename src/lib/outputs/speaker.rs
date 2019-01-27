@@ -47,7 +47,7 @@ impl Speaker {
         let mut audio_settings = audio
             .default_output_stream_settings(
                 NUM_CHANNELS,
-                f64::from(output_frequency),
+                output_frequency,
                 FRAMES as u32,
             )
             .chain_err(|| "Failed to get default audio stream settings")?;

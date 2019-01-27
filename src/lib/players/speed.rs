@@ -75,7 +75,7 @@ impl FromValue for Speed {
         let child = spec.consume("child", consts)?;
         let speed: f64 = spec.consume("speed", consts)?;
         spec.ensure_all_used()?;
-        Speed::player(child, f64::from(speed))
+        Speed::player(child, speed)
     }
 }
 

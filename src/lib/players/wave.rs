@@ -15,7 +15,7 @@ pub struct Wave {}
 impl Wave {
     #[allow(missing_docs)]
     pub fn player(input: Box<input::Bounded>, frequency: f64) -> Result<Speed> {
-        Speed::player(PlayInput::player(input), f64::from(frequency))
+        Speed::player(PlayInput::player(input), frequency)
     }
 }
 

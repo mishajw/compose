@@ -40,7 +40,8 @@ fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
     window.set_vertical_sync_enabled(true);
 
     let mut last_draw_time = Instant::now();
-    let min_draw_gap = Duration::from_millis((1000.0 / MAX_FPS as f64) as u64);
+    let min_draw_gap =
+        Duration::from_millis((1000.0 / f64::from(MAX_FPS)) as u64);
     loop {
         while let Some(event) = window.poll_event() {
             match event {
