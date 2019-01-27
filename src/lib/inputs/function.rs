@@ -1,5 +1,5 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::tree::Tree;
 use core::Consts;
@@ -21,14 +21,14 @@ impl Function {
         function: Box<Fn(f64) -> f64 + Send + Sync>,
         lower_bound: f64,
         upper_bound: f64,
-    ) -> Box<input::Bounded>
+    ) -> Function
     {
-        Box::new(Function {
+        Function {
             function,
             lower_bound,
             upper_bound,
             time_mod: None,
-        })
+        }
     }
 
     #[allow(missing_docs)]
@@ -37,18 +37,18 @@ impl Function {
         lower_bound: f64,
         upper_bound: f64,
         time_mod: Time,
-    ) -> Box<input::Bounded>
+    ) -> Function
     {
-        Box::new(Function {
+        Function {
             function,
             lower_bound,
             upper_bound,
             time_mod: Some(time_mod),
-        })
+        }
     }
 
     #[allow(missing_docs)]
-    pub fn from_string(wave_string: String) -> Result<Box<input::Bounded>> {
+    pub fn from_string(wave_string: String) -> Result<Function> {
         let function = match wave_string.as_ref() {
             "sine" => Function::with_mod(
                 Box::new(|x| f64::sin(x * 2.0 * ::std::f64::consts::PI)),
@@ -73,7 +73,7 @@ impl Function {
     }
 
     #[allow(missing_docs)]
-    pub fn default() -> Box<input::Bounded> {
+    pub fn default() -> Function {
         Self::from_string("sine".into())
             .expect("Failed to create default function")
     }
@@ -96,17 +96,13 @@ impl Tree for Function {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl create::FromSpec<Box<input::Bounded>> for Function {
+impl FromValue for Function {
     fn name() -> &'static str { "function" }
 
-    fn from_spec(
-        value: Value,
-        _consts: &Consts,
-    ) -> Result<Box<input::Bounded>>
-    {
-        let mut spec: Spec = value.into_type()?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
         let wave_fn_name: String =
-            spec.consume_with_default("fn", "sine".into())?;
+            spec.consume_with_default("fn", "sine".into(), consts)?;
         spec.ensure_all_used()?;
         Ok(Function::from_string(wave_fn_name)?)
     }

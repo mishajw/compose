@@ -1,8 +1,7 @@
-use core::spec::create::FromSpec;
+use core::spec::FromValue;
 use core::spec::Spec;
 use core::spec::Value;
 use core::Consts;
-use core::Player;
 use core::Time;
 use error::*;
 use hound;
@@ -20,7 +19,7 @@ impl Sample {
         start: Time,
         duration: Time,
         consts: &Consts,
-    ) -> Result<Box<Player>>
+    ) -> Result<Speed>
     {
         let mut reader = hound::WavReader::open(&wav_path)
             .chain_err(|| format!("Failed to open .wav file: {}", wav_path))?;
@@ -50,15 +49,14 @@ impl Sample {
     }
 }
 
-impl FromSpec<Box<Player>> for Sample {
+impl FromValue<Speed> for Sample {
     fn name() -> &'static str { "sample" }
 
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        let wav_path: String = spec.consume("path")?;
-        let start: Time = Time::from_spec(spec.consume("start")?, consts)?;
-        let duration: Time =
-            Time::from_spec(spec.consume("duration")?, consts)?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Speed> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let wav_path: String = spec.consume("path", consts)?;
+        let start: Time = spec.consume("start", consts)?;
+        let duration: Time = spec.consume("duration", consts)?;
         spec.ensure_all_used()?;
         Sample::player(wav_path, start, duration, consts)
     }

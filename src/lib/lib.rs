@@ -22,7 +22,9 @@ extern crate lazy_static;
 extern crate num;
 extern crate sfml;
 
+#[macro_use]
 pub mod core;
+
 pub mod error;
 pub mod gui;
 pub mod inputs;

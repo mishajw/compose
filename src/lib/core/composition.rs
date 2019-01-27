@@ -1,5 +1,5 @@
 use core::spec;
-use core::spec::create::FromSpec;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::Consts;
 use core::Output;
@@ -15,49 +15,45 @@ pub struct Composition {
     /// Outputs to play the composition to
     pub outputs: Mutex<Vec<Box<Output>>>,
     /// Constants shared across the composition
+    // TODO: Why arc?
     pub consts: Arc<Consts>,
 }
 
-impl FromSpec<Composition> for Composition {
+impl FromValue for Composition {
     fn name() -> &'static str { "composition" }
 
-    fn from_spec(value: Value, _consts: &Consts) -> Result<Composition> {
-        let mut spec: Spec = value.into_type()?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Composition> {
+        let mut spec: Spec = value.into_type(consts)?;
 
         // Initialize consts
-        let consts = Arc::new(
-            Consts::from_spec(
-                spec.consume_with_default(
-                    "consts",
-                    spec::Value::Spec(spec::Spec::empty()),
-                )?,
+        let consts = spec
+            .consume_with_default(
+                "consts",
+                Consts::default()?,
                 &Consts::default()?,
             )
-            .chain_err(|| "Failed to create consts")?,
-        );
+            .chain_err(|| "Failed to create consts")?;
 
         // Initialize players
-        let player_spec_with_macros = spec.consume("players")?;
+        let player_spec_with_macros = spec.consume("players", &consts)?;
         debug!("Player spec: {:#?}", player_spec_with_macros);
-        let mut player_spec = spec::create::resolve_root_macros(
+        // TODO: Get rid of Value::Spec
+        let player_spec = Value::Spec(spec::resolve_root_macros(
             player_spec_with_macros,
             &consts,
-        )?;
+        )?);
         debug!("Player spec resolved: {:#?}", player_spec);
-        let root_player =
-            Mutex::new(spec::create::create_player(&mut player_spec, &consts)?);
+        let root_player = player_spec.into_type(&consts)?;
 
         // Initialize outputs
-        let output_specs = spec.consume("outputs")?;
-        let outputs =
-            Mutex::new(spec::create::create_outputs(output_specs, &consts)?);
-
+        let outputs: Vec<Box<Output>> =
+            spec.consume_list("outputs", &consts)?;
         spec.ensure_all_used()?;
 
         Ok(Composition {
-            root_player,
-            outputs,
-            consts,
+            root_player: Mutex::new(root_player),
+            outputs: Mutex::new(outputs),
+            consts: Arc::new(consts),
         })
     }
 }

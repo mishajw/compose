@@ -1,5 +1,4 @@
-use core::spec::create::create_player;
-use core::spec::create::FromSpec;
+use core::spec::FromValue;
 use core::spec::Spec;
 use core::spec::Value;
 use core::tree::Tree;
@@ -33,15 +32,15 @@ impl WaveDrawer {
         child: Box<Player>,
         display_time: Time,
         consts: &Consts,
-    ) -> Box<WaveDrawer>
+    ) -> WaveDrawer
     {
         let display_ticks = display_time.to_ticks(consts);
-        Box::new(WaveDrawer {
+        WaveDrawer {
             child,
             display_ticks,
             sample_bucketer: None,
             window_width: Mutex::new(None),
-        })
+        }
     }
 }
 
@@ -125,14 +124,13 @@ impl Drawable for WaveDrawer {
     }
 }
 
-impl FromSpec<Box<Player>> for WaveDrawer {
+impl FromValue for WaveDrawer {
     fn name() -> &'static str { "wave-drawer" }
 
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        let child = create_player(&mut spec.consume("child")?, consts)?;
-        let display_time =
-            Time::from_spec(spec.consume("display-time")?, consts)?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let child: Box<Player> = spec.consume("child", consts)?;
+        let display_time: Time = spec.consume("display-time", consts)?;
         Ok(WaveDrawer::new(child, display_time, consts))
     }
 }

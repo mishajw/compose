@@ -1,5 +1,4 @@
-use core::spec::create::create_player;
-use core::spec::create::FromSpec;
+use core::spec::FromValue;
 use core::spec::Spec;
 use core::spec::Value;
 use core::tree::Tree;
@@ -21,8 +20,8 @@ pub struct Speed {
 
 impl Speed {
     #[allow(missing_docs)]
-    pub fn player(child: Box<Player>, scale: f64) -> Result<Box<Player>> {
-        Ok(Box::new(Speed::new(child, scale)?))
+    pub fn player(child: Box<Player>, scale: f64) -> Result<Speed> {
+        Ok(Speed::new(child, scale)?)
     }
 
     fn new(child: Box<Player>, scale: f64) -> Result<Speed> {
@@ -68,13 +67,13 @@ impl Tree for Speed {
     }
 }
 
-impl FromSpec<Box<Player>> for Speed {
+impl FromValue for Speed {
     fn name() -> &'static str { "speed" }
 
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        let child = create_player(&mut spec.consume("child")?, consts)?;
-        let speed: f64 = spec.consume("speed")?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let child = spec.consume("child", consts)?;
+        let speed: f64 = spec.consume("speed", consts)?;
         spec.ensure_all_used()?;
         Speed::player(child, f64::from(speed))
     }

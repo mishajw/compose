@@ -1,5 +1,4 @@
 use core::spec;
-use core::spec::create::FromSpec;
 use core::spec::Value;
 use core::Composition;
 use core::Consts;
@@ -93,5 +92,5 @@ fn load_spec(
 
 fn load_composition(yaml_str: String) -> Result<Composition> {
     let spec = spec::yaml::parse(yaml_str)?;
-    Composition::from_spec(Value::Spec(spec), &Consts::default()?)
+    Value::Spec(spec).into_type(&Consts::default()?)
 }

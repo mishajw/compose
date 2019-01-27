@@ -1,5 +1,5 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::tree::Tree;
 use core::Consts;
@@ -16,23 +16,19 @@ pub struct Timeline {
 
 impl Timeline {
     #[allow(missing_docs)]
-    pub fn bool(events: Vec<bool>, event_duration: Time) -> Box<input::Bool> {
-        Box::new(Timeline {
+    pub fn bool(events: Vec<bool>, event_duration: Time) -> Timeline {
+        Timeline {
             events,
             event_duration,
-        })
+        }
     }
 
     #[allow(missing_docs)]
-    pub fn from_string(
-        events_str: String,
-        event_duration: Time,
-    ) -> Box<input::Bool>
-    {
-        Box::new(Timeline {
+    pub fn from_string(events_str: String, event_duration: Time) -> Timeline {
+        Timeline {
             events: events_str.chars().map(|c| c != '_').collect(),
             event_duration,
-        })
+        }
     }
 }
 
@@ -49,15 +45,13 @@ impl Tree for Timeline {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl create::FromSpec<Box<input::Bool>> for Timeline {
+impl FromValue for Timeline {
     fn name() -> &'static str { "timeline" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
-        let mut spec: Spec = value.into_type()?;
-        let event_duration =
-            Time::from_spec(spec.consume("event-duration")?, consts)?;
-        let events: String = spec.consume("events")?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let event_duration = spec.consume("event-duration", consts)?;
+        let events: String = spec.consume("events", consts)?;
         spec.ensure_all_used()?;
-
         Ok(Timeline::from_string(events, event_duration))
     }
 }

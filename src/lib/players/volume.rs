@@ -1,5 +1,5 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::tree::Tree;
 use core::Consts;
@@ -16,12 +16,8 @@ pub struct Volume {
 
 impl Volume {
     #[allow(missing_docs)]
-    pub fn player(
-        child: Box<Player>,
-        input: Box<input::Bounded>,
-    ) -> Box<Player>
-    {
-        Box::new(Volume { child, input })
+    pub fn player(child: Box<Player>, input: Box<input::Bounded>) -> Volume {
+        Volume { child, input }
     }
 }
 
@@ -39,13 +35,13 @@ impl Tree for Volume {
     }
 }
 
-impl create::FromSpec<Box<Player>> for Volume {
+impl FromValue for Volume {
     fn name() -> &'static str { "volume" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        Ok(Volume::player(
-            create::create_player(&mut spec.consume("child")?, consts)?,
-            create::create_bounded_input(&mut spec.consume("input")?, consts)?,
-        ))
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let child = spec.consume("child", consts)?;
+        let input = spec.consume("input", consts)?;
+        spec.ensure_all_used()?;
+        Ok(Volume::player(child, input))
     }
 }

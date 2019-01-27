@@ -1,6 +1,6 @@
 /// Inputs that convert between input types
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::tree::Tree;
 use core::Consts;
@@ -14,7 +14,7 @@ pub struct BoundedToBool {
 
 impl BoundedToBool {
     #[allow(missing_docs)]
-    pub fn new(bounded: Box<input::Bounded>) -> Self {
+    pub fn bool(bounded: Box<input::Bounded>) -> Self {
         BoundedToBool { bounded }
     }
 }
@@ -33,16 +33,13 @@ impl Tree for BoundedToBool {
     }
 }
 
-impl create::FromSpec<Box<input::Bool>> for BoundedToBool {
+impl FromValue for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bool>> {
-        let mut spec: Spec = value.into_type()?;
-        let mut bounded_spec = spec.consume("bounded")?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let bounded: Box<input::Bounded> = spec.consume("bounded", consts)?;
         spec.ensure_all_used()?;
-        Ok(Box::new(BoundedToBool::new(create::create_bounded_input(
-            &mut bounded_spec,
-            consts,
-        )?)))
+        Ok(BoundedToBool::bool(bounded))
     }
 }
 
@@ -76,15 +73,12 @@ impl Tree for BoolToBounded {
     }
 }
 
-impl create::FromSpec<Box<input::Bounded>> for BoolToBounded {
+impl FromValue for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
-        let mut spec: Spec = value.into_type()?;
-        let mut bool_spec = spec.consume("bool")?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let bool_input: Box<input::Bool> = spec.consume("bool", consts)?;
         spec.ensure_all_used()?;
-        Ok(Box::new(BoolToBounded::new(create::create_bool_input(
-            &mut bool_spec,
-            consts,
-        )?)))
+        Ok(BoolToBounded::new(bool_input))
     }
 }

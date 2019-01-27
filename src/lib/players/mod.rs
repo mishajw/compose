@@ -1,5 +1,7 @@
 //! Implementations of [`Player`](../core/trait.Player.html)
 
+use core::Player;
+
 mod combiner;
 mod empty;
 mod keyboard;
@@ -21,3 +23,8 @@ pub use self::toggle::Toggle;
 pub use self::volume::Volume;
 pub use self::wave::Wave;
 pub use self::wave_drawer::WaveDrawer;
+
+impl_from_value_switch!(
+    Player, "player", Wave, Volume, Combiner, Toggle, Keyboard, Sample,
+    WaveDrawer, Speed, Empty
+);

@@ -1,5 +1,5 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::tree::Tree;
 use core::Consts;
@@ -24,30 +24,15 @@ impl SmoothBool {
         smooth_fn: Box<input::Bounded>,
         smooth_in_duration: Time,
         smooth_out_duration: Time,
-    ) -> Box<input::Bounded>
+    ) -> SmoothBool
     {
-        Box::new(SmoothBool {
+        SmoothBool {
             bool_input,
             smooth_fn,
             smooth_in_duration,
             smooth_out_duration,
             activation: 0.0,
-        })
-    }
-
-    #[allow(missing_docs)]
-    pub fn default_fn(
-        bool_input: Box<input::Bool>,
-        smooth_in_duration: Time,
-        smooth_out_duration: Time,
-    ) -> Box<input::Bounded>
-    {
-        SmoothBool::bounded(
-            bool_input,
-            Function::with_mod(Box::new(|x| x), 0.0, 1.0, Time::Seconds(1.1)),
-            smooth_in_duration,
-            smooth_out_duration,
-        )
+        }
     }
 }
 
@@ -83,33 +68,32 @@ impl Tree for SmoothBool {
     }
 }
 
-impl create::FromSpec<Box<input::Bounded>> for SmoothBool {
+impl FromValue for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<input::Bounded>> {
-        let mut spec: Spec = value.into_type()?;
-        let input =
-            create::create_bool_input(&mut spec.consume("input")?, consts)?;
-        let smooth_in_duration =
-            Time::from_spec(spec.consume("smooth-in-duration")?, consts)?;
-        let smooth_out_duration =
-            Time::from_spec(spec.consume("smooth-out-duration")?, consts)?;
-        match spec.consume_optional::<Spec>("smooth-fn")? {
-            Some(mut smooth_fn) => {
-                let smooth_fn =
-                    create::create_bounded_input(&mut smooth_fn, consts)?;
-                Ok(SmoothBool::bounded(
-                    input,
-                    smooth_fn,
-                    smooth_in_duration,
-                    smooth_out_duration,
-                ))
-            }
-            None => Ok(SmoothBool::default_fn(
-                input,
-                smooth_in_duration,
-                smooth_out_duration,
-            )),
-        }
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let input: Box<input::Bool> = spec.consume("input", consts)?;
+        let smooth_in_duration: Time =
+            spec.consume("smooth-in-duration", consts)?;
+        let smooth_out_duration: Time =
+            spec.consume("smooth-out-duration", consts)?;
+        let smooth_fn: Box<input::Bounded> = spec
+            .consume_with_default::<Box<input::Bounded>>(
+                "smooth-fn",
+                Box::new(Function::with_mod(
+                    Box::new(|x| x),
+                    0.0,
+                    1.0,
+                    Time::Seconds(1.1),
+                )),
+                consts,
+            )?;
+        Ok(SmoothBool::bounded(
+            input,
+            smooth_fn,
+            smooth_in_duration,
+            smooth_out_duration,
+        ))
     }
 }

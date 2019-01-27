@@ -41,7 +41,7 @@ impl ops::Mul for Playable {
 impl ops::Mul<f64> for Playable {
     type Output = Playable;
     fn mul(self, other: f64) -> Self {
-        Playable::new((self.value as f64 * other) as i32)
+        Playable::new((f64::from(self.value) * other) as i32)
     }
 }
 

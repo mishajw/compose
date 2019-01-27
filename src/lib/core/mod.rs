@@ -20,6 +20,7 @@ pub mod regex;
 mod reload_composition;
 mod scale;
 mod scale_index;
+#[macro_use]
 pub mod spec;
 mod state;
 mod time;

@@ -1,4 +1,4 @@
-use core::spec::{create, Value};
+use core::spec::{FromValue, Value};
 use core::Consts;
 use error::*;
 use std::time::Duration;
@@ -53,6 +53,9 @@ impl Time {
         Duration::from_nanos((self.to_seconds(consts) * 1e9) as u64)
     }
 
+    /// Represents zero time
+    pub fn zero() -> Time { Time::Ticks(0) }
+
     /// Check if represents no time
     pub fn is_zero(&self) -> bool {
         match self {
@@ -64,10 +67,10 @@ impl Time {
     }
 }
 
-impl create::FromSpec<Time> for Time {
+impl FromValue for Time {
     fn name() -> &'static str { "time" }
-    fn from_spec(value: Value, _consts: &Consts) -> Result<Time> {
-        let string: String = value.into_type()?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Time> {
+        let string: String = value.into_type(consts)?;
         match string.trim().split(' ').collect::<Vec<_>>().as_slice() {
             [number, "ticks"] => Ok(Time::Ticks(
                 number.parse().chain_err(|| "Failed to parse tick number")?,

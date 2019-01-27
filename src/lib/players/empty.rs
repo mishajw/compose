@@ -1,4 +1,4 @@
-use core::spec::create::FromSpec;
+use core::spec::FromValue;
 use core::spec::Value;
 use core::tree::Tree;
 use core::Consts;
@@ -12,7 +12,7 @@ pub struct Empty;
 
 impl Empty {
     #[allow(missing_docs)]
-    pub fn player() -> Box<Player> { Box::new(Empty {}) }
+    pub fn player() -> Empty { Empty {} }
 }
 
 impl Player for Empty {
@@ -23,10 +23,10 @@ impl Tree for Empty {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromSpec<Box<Player>> for Empty {
+impl FromValue for Empty {
     fn name() -> &'static str { "empty" }
 
-    fn from_spec(_value: Value, _consts: &Consts) -> Result<Box<Player>> {
+    fn from_value(_value: Value, _consts: &Consts) -> Result<Self> {
         Ok(Empty::player())
     }
 }

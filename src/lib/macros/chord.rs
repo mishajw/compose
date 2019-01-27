@@ -10,8 +10,11 @@ impl SpecMacro for Chord {
     fn name() -> &'static str { "chord" }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
-        let chord =
-            core::Chord::from_str(&spec.consume::<String>("chord")?, consts)?;
+        // TODO: Make Chord impl FromValue
+        let chord = core::Chord::from_str(
+            &spec.consume::<String>("chord", consts)?,
+            consts,
+        )?;
         spec.ensure_all_used()?;
         Ok(Value::List(
             chord

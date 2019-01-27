@@ -1,5 +1,5 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::Consts;
 use core::Player;
@@ -10,20 +10,14 @@ use players::Volume;
 /// Selectively plays from its children
 pub struct Keyboard {}
 
-impl create::FromSpec<Box<Player>> for Keyboard {
+impl FromValue<Combiner> for Keyboard {
     fn name() -> &'static str { "keyboard" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        let children: Vec<Box<Player>> = spec
-            .consume_list("children")?
-            .iter_mut()
-            .map(|s| create::create_player(s, consts))
-            .collect::<Result<Vec<_>>>()?;
-        let inputs: Vec<Box<input::Bounded>> = spec
-            .consume_list("inputs")?
-            .iter_mut()
-            .map(|s| create::create_bounded_input(s, consts))
-            .collect::<Result<Vec<_>>>()?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Combiner> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let children: Vec<Box<Player>> =
+            spec.consume_list("children", consts)?;
+        let inputs: Vec<Box<input::Bounded>> =
+            spec.consume_list("inputs", consts)?;
         spec.ensure_all_used()?;
 
         if children.len() != inputs.len() {
@@ -41,8 +35,10 @@ impl create::FromSpec<Box<Player>> for Keyboard {
         let children_with_input = children
             .into_iter()
             .zip(inputs)
-            .map(|(player, input)| Volume::player(player, input))
-            .collect::<Vec<_>>();
+            .map(|(player, input)| {
+                Box::new(Volume::player(player, input)) as Box<Player>
+            })
+            .collect();
 
         Ok(Combiner::player(children_with_input))
     }

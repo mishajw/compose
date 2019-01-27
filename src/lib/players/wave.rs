@@ -1,7 +1,6 @@
 use core::input;
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::Value;
-use core::Player;
 use error::*;
 use inputs;
 
@@ -15,25 +14,22 @@ pub struct Wave {}
 
 impl Wave {
     #[allow(missing_docs)]
-    pub fn player(
-        input: Box<input::Bounded>,
-        frequency: f64,
-    ) -> Result<Box<Player>>
-    {
+    pub fn player(input: Box<input::Bounded>, frequency: f64) -> Result<Speed> {
         Speed::player(PlayInput::player(input), f64::from(frequency))
     }
 }
 
-impl create::FromSpec<Box<Player>> for Wave {
+impl FromValue<Speed> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn from_spec(value: Value, _consts: &Consts) -> Result<Box<Player>> {
-        let mut spec: Spec = value.into_type()?;
-        let function = match spec.consume_optional("fn")? {
-            Some(string) => inputs::Function::from_string(string)?,
-            None => inputs::Function::default(),
-        };
-        let frequency: f64 = spec.consume("frequency")?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Speed> {
+        let mut spec: Spec = value.into_type(consts)?;
+        let function = spec.consume_with_default::<Box<input::Bounded>>(
+            "fn",
+            Box::new(inputs::Function::default()),
+            consts,
+        )?;
+        let frequency: f64 = spec.consume("frequency", consts)?;
         spec.ensure_all_used()?;
         Wave::player(function, frequency)
     }

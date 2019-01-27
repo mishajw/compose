@@ -1,4 +1,4 @@
-use core::spec::{Spec, SpecMacro, Value, ValueType};
+use core::spec::{FromPrimitiveValue, Spec, SpecMacro, Value};
 use core::Consts;
 use error::*;
 
@@ -7,9 +7,9 @@ pub struct TimelineMulti {}
 
 impl SpecMacro for TimelineMulti {
     fn name() -> &'static str { "timeline-multi" }
-    fn resolve(spec: &mut Spec, _consts: &Consts) -> Result<Value> {
-        let event_duration: String = spec.consume("event-duration")?;
-        let events: String = spec.consume("events")?;
+    fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
+        let event_duration: String = spec.consume("event-duration", consts)?;
+        let events: String = spec.consume("events", consts)?;
         spec.ensure_all_used()?;
 
         Ok(Value::List(

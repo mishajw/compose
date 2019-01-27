@@ -1,6 +1,6 @@
 //! Play music to the device speaker
 
-use core::spec::create;
+use core::spec::FromValue;
 use core::spec::{Spec, Value};
 use core::Output;
 use core::Playable;
@@ -139,12 +139,12 @@ impl Output for Speaker {
     }
 }
 
-impl create::FromSpec<Box<Output>> for Speaker {
+impl FromValue for Speaker {
     fn name() -> &'static str { "speaker" }
-    fn from_spec(value: Value, consts: &Consts) -> Result<Box<Output>> {
-        let spec: Spec = value.into_type()?;
+    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
+        let spec: Spec = value.into_type(consts)?;
         spec.ensure_all_used()?;
-        Ok(Box::new(Speaker::new(consts.sample_hz)?))
+        Speaker::new(consts.sample_hz)
     }
 }
 

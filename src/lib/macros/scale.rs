@@ -13,11 +13,13 @@ impl SpecMacro for Scale {
     fn name() -> &'static str { "scale" }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
-        let scale_str: String = spec.consume("scale")?;
+        let scale_str: String = spec.consume("scale", consts)?;
         let scale = core::Scale::from_str(&scale_str, consts)?;
-        let num_notes = spec
-            .consume_with_default("num-notes", scale.default_size() as i32)?
-            as usize;
+        let num_notes = spec.consume_with_default(
+            "num-notes",
+            scale.default_size() as i32,
+            consts,
+        )? as usize;
         spec.ensure_all_used()?;
 
         Ok(Value::List(
