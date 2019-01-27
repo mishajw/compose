@@ -4,14 +4,14 @@ use core::State;
 
 /// Play from a list of playables
 pub struct Buffer {
-    buffer: Vec<f32>,
-    lower_bound: f32,
-    upper_bound: f32,
+    buffer: Vec<f64>,
+    lower_bound: f64,
+    upper_bound: f64,
 }
 
 impl Buffer {
     #[allow(missing_docs)]
-    pub fn bounded(buffer: Vec<f32>) -> Box<input::Bounded> {
+    pub fn bounded(buffer: Vec<f64>) -> Box<input::Bounded> {
         assert!(!buffer.is_empty());
         Box::new(Buffer {
             lower_bound: *buffer
@@ -28,11 +28,11 @@ impl Buffer {
 }
 
 impl input::Bounded for Buffer {
-    fn get(&mut self, state: &State) -> f32 {
+    fn get(&mut self, state: &State) -> f64 {
         self.buffer[state.tick % self.buffer.len()]
     }
 
-    fn get_bounds(&self) -> (f32, f32) { (self.lower_bound, self.upper_bound) }
+    fn get_bounds(&self) -> (f64, f64) { (self.lower_bound, self.upper_bound) }
 }
 
 impl Tree for Buffer {

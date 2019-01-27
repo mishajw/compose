@@ -30,16 +30,16 @@ impl Sample {
 
         // Skip to the part of the sample we want
         reader
-            .seek((sample_hz as f32 * start_seconds) as u32)
+            .seek((sample_hz as f64 * start_seconds) as u32)
             .chain_err(|| {
                 format!("Failed to get seek to {} seconds", start_seconds)
             })?;
 
         // Extract the samples we need
-        let buffer: Vec<f32> = reader
+        let buffer: Vec<f64> = reader
             .samples::<i32>()
-            .take((sample_hz as f32 * duration_seconds) as usize)
-            .map(|r| r.map(|i| i as f32))
+            .take((sample_hz as f64 * duration_seconds) as usize)
+            .map(|r| r.map(|i| i as f64))
             .collect::<std::result::Result<_, _>>()
             .chain_err(|| "Failed to read sample")?;
 

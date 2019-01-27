@@ -38,10 +38,10 @@ impl ops::Mul for Playable {
     }
 }
 
-impl ops::Mul<f32> for Playable {
+impl ops::Mul<f64> for Playable {
     type Output = Playable;
-    fn mul(self, other: f32) -> Self {
-        Playable::new((self.value as f32 * other) as i32)
+    fn mul(self, other: f64) -> Self {
+        Playable::new((self.value as f64 * other) as i32)
     }
 }
 

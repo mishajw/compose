@@ -24,7 +24,7 @@ pub enum Value {
     #[allow(missing_docs)]
     Int(i32),
     #[allow(missing_docs)]
-    Float(f32),
+    Float(f64),
     #[allow(missing_docs)]
     Spec(Spec),
     #[allow(missing_docs)]
@@ -229,7 +229,7 @@ macro_rules! impl_value_type {
 
 impl_value_type!(String, Str);
 impl_value_type!(i32, Int);
-impl_value_type!(f32, Float);
+impl_value_type!(f64, Float);
 impl_value_type!(bool, Bool);
 impl_value_type!(Spec, Spec);
 impl_value_type!(Vec<Value>, List);

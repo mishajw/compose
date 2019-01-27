@@ -94,11 +94,11 @@ impl Drawable for WaveDrawer {
         };
 
         let scale_to_window = |x: i32| {
-            (i64::from(x) - i64::from(sample_bucketer.all_min_max.0)) as f32
+            (i64::from(x) - i64::from(sample_bucketer.all_min_max.0)) as f64
                 / (i64::from(sample_bucketer.all_min_max.1)
                     - i64::from(sample_bucketer.all_min_max.0))
-                    as f32
-                * height as f32
+                    as f64
+                * height as f64
         };
 
         for (i, (range_min, range_max)) in sample_bucketer.iter().enumerate() {
@@ -106,12 +106,15 @@ impl Drawable for WaveDrawer {
             let window_max = scale_to_window(*range_max);
             let range_height = (window_max - window_min).max(1.0);
             window.draw_with_renderstates(
-                &RectangleShape::with_size(Vector2f::new(1.0, range_height)),
+                &RectangleShape::with_size(Vector2f::new(
+                    1.0,
+                    range_height as f32,
+                )),
                 {
                     let mut state = RenderStates::default();
                     state.transform.translate(
                         (offset_x + i as u32) as f32,
-                        offset_y as f32 + window_min,
+                        offset_y as f32 + window_min as f32,
                     );
                     state
                 },
@@ -154,8 +157,8 @@ impl SampleBucketer {
     }
 
     fn add_sample(&mut self, sample: i32, index: usize) {
-        let bucket_index = ((index % self.num_samples) as f32
-            * (self.bucket_min_max.len() as f32 / self.num_samples as f32))
+        let bucket_index = ((index % self.num_samples) as f64
+            * (self.bucket_min_max.len() as f64 / self.num_samples as f64))
             as usize;
         debug_assert!(bucket_index < self.bucket_min_max.len());
         let bucket = &mut self.bucket_min_max[bucket_index];

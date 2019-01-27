@@ -74,7 +74,7 @@ impl FromSpec<Box<Player>> for Speed {
     fn from_spec(value: Value, consts: &Consts) -> Result<Box<Player>> {
         let mut spec: Spec = value.into_type()?;
         let child = create_player(&mut spec.consume("child")?, consts)?;
-        let speed: f32 = spec.consume("speed")?;
+        let speed: f64 = spec.consume("speed")?;
         spec.ensure_all_used()?;
         Speed::player(child, f64::from(speed))
     }

@@ -57,7 +57,7 @@ impl BoolToBounded {
 }
 
 impl input::Bounded for BoolToBounded {
-    fn get(&mut self, state: &State) -> f32 {
+    fn get(&mut self, state: &State) -> f64 {
         if self.boolean.get(state) {
             1.0
         } else {
@@ -65,7 +65,7 @@ impl input::Bounded for BoolToBounded {
         }
     }
 
-    fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
+    fn get_bounds(&self) -> (f64, f64) { (0.0, 1.0) }
 }
 
 impl Tree for BoolToBounded {

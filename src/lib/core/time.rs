@@ -9,11 +9,11 @@ pub enum Time {
     /// Amount of ticks
     Ticks(usize),
     /// Seconds in real time
-    Seconds(f32),
+    Seconds(f64),
     /// Beats in a bar
-    Beats(f32),
+    Beats(f64),
     /// Composed of beats
-    Bars(f32),
+    Bars(f64),
 }
 
 impl Time {
@@ -27,17 +27,17 @@ impl Time {
     }
 
     #[allow(missing_docs)]
-    pub fn to_seconds(&self, consts: &Consts) -> f32 {
+    pub fn to_seconds(&self, consts: &Consts) -> f64 {
         match self {
             Time::Seconds(seconds) => *seconds,
-            Time::Ticks(ticks) => *ticks as f32 / consts.sample_hz,
+            Time::Ticks(ticks) => *ticks as f64 / consts.sample_hz,
             Time::Beats(beats) => (beats * 60.0) / consts.beats_per_minute,
             bars => Time::Beats(bars.to_beats(consts)).to_seconds(consts),
         }
     }
 
     #[allow(missing_docs)]
-    pub fn to_beats(&self, consts: &Consts) -> f32 {
+    pub fn to_beats(&self, consts: &Consts) -> f64 {
         match self {
             Time::Beats(beats) => *beats,
             Time::Bars(bars) => bars * consts.beats_per_bar,

@@ -17,7 +17,7 @@ impl Wave {
     #[allow(missing_docs)]
     pub fn player(
         input: Box<input::Bounded>,
-        frequency: f32,
+        frequency: f64,
     ) -> Result<Box<Player>>
     {
         Speed::player(PlayInput::player(input), f64::from(frequency))
@@ -33,7 +33,7 @@ impl create::FromSpec<Box<Player>> for Wave {
             Some(string) => inputs::Function::from_string(string)?,
             None => inputs::Function::default(),
         };
-        let frequency: f32 = spec.consume("frequency")?;
+        let frequency: f64 = spec.consume("frequency")?;
         spec.ensure_all_used()?;
         Wave::player(function, frequency)
     }

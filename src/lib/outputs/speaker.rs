@@ -38,7 +38,7 @@ pub struct Speaker {
 
 impl Speaker {
     #[allow(missing_docs)]
-    fn new(output_frequency: f32) -> Result<Self> {
+    fn new(output_frequency: f64) -> Result<Self> {
         // Initialize portaudio interface
         let audio = portaudio::PortAudio::new()
             .chain_err(|| "Failed to initialize PortAudio")?;

@@ -22,8 +22,8 @@ impl Player for PlayInput {
     fn play(&mut self, state: &State) -> Playable {
         Playable::new(self.input.get_with_bounds(
             state,
-            i32::MIN as f32 * state.consts.loudness_factor,
-            i32::MAX as f32 * state.consts.loudness_factor,
+            i32::MIN as f64 * state.consts.loudness_factor,
+            i32::MAX as f64 * state.consts.loudness_factor,
         ) as i32)
     }
 }

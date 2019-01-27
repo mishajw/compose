@@ -13,13 +13,13 @@ const DEFAULT_CHORD_DEFINITION_PATH: &str = "resources/chords.yaml";
 /// Constants in the composition
 pub struct Consts {
     /// How many samples are in a second in the output audio
-    pub sample_hz: f32,
+    pub sample_hz: f64,
     /// How many beats are in a minute (i.e. bpm)
-    pub beats_per_minute: f32,
+    pub beats_per_minute: f64,
     /// How many beats are in a bar (i.e. time signature)
-    pub beats_per_bar: f32,
+    pub beats_per_bar: f64,
     /// How loud sound is by default
-    pub loudness_factor: f32,
+    pub loudness_factor: f64,
     /// How often to reload the input configuration file
     pub reload_time: Time,
     /// Maps scale names to scales
@@ -31,10 +31,10 @@ pub struct Consts {
 impl Consts {
     #[allow(missing_docs)]
     pub fn new(
-        sample_hz: f32,
-        beats_per_minute: f32,
-        beats_per_bar: f32,
-        loudness_factor: f32,
+        sample_hz: f64,
+        beats_per_minute: f64,
+        beats_per_bar: f64,
+        loudness_factor: f64,
         reload_time: Time,
         scale_definition_path: String,
         chord_definition_path: String,

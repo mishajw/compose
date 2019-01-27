@@ -12,8 +12,8 @@ pub struct Note {
 
 impl Note {
     #[allow(missing_docs)]
-    pub fn to_frequency(&self) -> f32 {
-        self.note.to_frequency() * 2f32.powi(self.octave as i32 - 5)
+    pub fn to_frequency(&self) -> f64 {
+        self.note.to_frequency() * 2f64.powi(self.octave as i32 - 5)
     }
 
     /// Get the next note
@@ -85,7 +85,7 @@ enum AbstractNote {
 
 impl AbstractNote {
     /// Return the frequency of the key in the 5th octave
-    fn to_frequency(&self) -> f32 {
+    fn to_frequency(&self) -> f64 {
         match *self {
             AbstractNote::C => 523.25,
             AbstractNote::Cs => 554.37,

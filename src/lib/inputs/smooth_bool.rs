@@ -14,7 +14,7 @@ pub struct SmoothBool {
     smooth_fn: Box<input::Bounded>,
     smooth_in_duration: Time,
     smooth_out_duration: Time,
-    activation: f32,
+    activation: f64,
 }
 
 impl SmoothBool {
@@ -52,15 +52,15 @@ impl SmoothBool {
 }
 
 impl input::Bounded for SmoothBool {
-    fn get(&mut self, state: &State) -> f32 {
+    fn get(&mut self, state: &State) -> f64 {
         let input = self.bool_input.get(state);
         if input && self.activation < 1.0 {
             self.activation +=
-                1.0 / self.smooth_in_duration.to_ticks(&state.consts) as f32;
+                1.0 / self.smooth_in_duration.to_ticks(&state.consts) as f64;
             self.activation = self.activation.min(1.0);
         } else if !input && self.activation > 0.0 {
             self.activation -=
-                1.0 / self.smooth_out_duration.to_ticks(&state.consts) as f32;
+                1.0 / self.smooth_out_duration.to_ticks(&state.consts) as f64;
             self.activation = self.activation.max(0.0);
         }
         self.smooth_fn.get_with_bounds(
@@ -72,7 +72,7 @@ impl input::Bounded for SmoothBool {
         )
     }
 
-    fn get_bounds(&self) -> (f32, f32) { (0.0, 1.0) }
+    fn get_bounds(&self) -> (f64, f64) { (0.0, 1.0) }
 }
 
 impl Tree for SmoothBool {

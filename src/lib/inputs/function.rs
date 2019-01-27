@@ -9,18 +9,18 @@ use error::*;
 
 /// A function input, returns values from a function
 pub struct Function {
-    function: Box<Fn(f32) -> f32 + Send + Sync>,
-    lower_bound: f32,
-    upper_bound: f32,
+    function: Box<Fn(f64) -> f64 + Send + Sync>,
+    lower_bound: f64,
+    upper_bound: f64,
     time_mod: Option<Time>,
 }
 
 impl Function {
     #[allow(missing_docs)]
     pub fn bounded(
-        function: Box<Fn(f32) -> f32 + Send + Sync>,
-        lower_bound: f32,
-        upper_bound: f32,
+        function: Box<Fn(f64) -> f64 + Send + Sync>,
+        lower_bound: f64,
+        upper_bound: f64,
     ) -> Box<input::Bounded>
     {
         Box::new(Function {
@@ -33,9 +33,9 @@ impl Function {
 
     #[allow(missing_docs)]
     pub fn with_mod(
-        function: Box<Fn(f32) -> f32 + Send + Sync>,
-        lower_bound: f32,
-        upper_bound: f32,
+        function: Box<Fn(f64) -> f64 + Send + Sync>,
+        lower_bound: f64,
+        upper_bound: f64,
         time_mod: Time,
     ) -> Box<input::Bounded>
     {
@@ -51,13 +51,13 @@ impl Function {
     pub fn from_string(wave_string: String) -> Result<Box<input::Bounded>> {
         let function = match wave_string.as_ref() {
             "sine" => Function::with_mod(
-                Box::new(|x| f32::sin(x * 2.0 * ::std::f32::consts::PI)),
+                Box::new(|x| f64::sin(x * 2.0 * ::std::f64::consts::PI)),
                 -1.0,
                 1.0,
                 Time::Seconds(1.0),
             ),
             "cosine" => Function::with_mod(
-                Box::new(|x| f32::cos(x * 2.0 * ::std::f32::consts::PI)),
+                Box::new(|x| f64::cos(x * 2.0 * ::std::f64::consts::PI)),
                 -1.0,
                 1.0,
                 Time::Seconds(1.0),
@@ -80,17 +80,16 @@ impl Function {
 }
 
 impl input::Bounded for Function {
-    fn get(&mut self, state: &State) -> f32 {
-        self.time_mod.clone().unwrap();
+    fn get(&mut self, state: &State) -> f64 {
         let tick = match &self.time_mod {
             Some(time_mod) => state.tick % time_mod.to_ticks(&state.consts),
             None => state.tick,
         };
-        let fn_input = tick as f32 / state.consts.sample_hz;
+        let fn_input = tick as f64 / state.consts.sample_hz;
         (*self.function)(fn_input)
     }
 
-    fn get_bounds(&self) -> (f32, f32) { (self.lower_bound, self.upper_bound) }
+    fn get_bounds(&self) -> (f64, f64) { (self.lower_bound, self.upper_bound) }
 }
 
 impl Tree for Function {
