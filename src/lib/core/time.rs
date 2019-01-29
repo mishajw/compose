@@ -88,10 +88,10 @@ impl FromValue for Time {
             [number, "bars"] => Ok(Time::Bars(
                 number.parse().chain_err(|| "Failed to parse bars number")?,
             )),
-            _ => Err(ErrorKind::SpecBadValue(
-                "time".into(),
-                format!("Didn't recognize qualifier in {}", string),
-            )
+            _ => Err(ErrorKind::SpecError(format!(
+                "Unrecognized time unit: {}",
+                string
+            ))
             .into()),
         }
     }

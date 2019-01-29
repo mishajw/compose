@@ -23,10 +23,10 @@ pub fn parse(yaml_str: String) -> Result<Spec> {
     if let Value::Spec(spec) = value {
         Ok(spec)
     } else {
-        Err(
-            ErrorKind::BadInput("Top level Spec yaml must be an object".into())
-                .into(),
+        Err(ErrorKind::SpecError(
+            "Top level Spec yaml must be an object".into(),
         )
+        .into())
     }
 }
 
@@ -45,7 +45,7 @@ fn get_yaml(yaml_str: String) -> Result<Yaml> {
         .chain_err(|| "Failed to parse Spec yaml file")?;
 
     if yaml_list.len() > 1 {
-        return Err(ErrorKind::BadInput(format!(
+        return Err(ErrorKind::SpecError(format!(
             "Expected one element in the Spec yaml, found {}",
             yaml_list.len()
         ))
@@ -53,7 +53,7 @@ fn get_yaml(yaml_str: String) -> Result<Yaml> {
     }
 
     if yaml_list.is_empty() {
-        return Err(ErrorKind::BadInput("Empty Spec yaml file".into()).into());
+        return Err(ErrorKind::SpecError("Empty Spec yaml file".into()).into());
     }
 
     Ok(yaml_list.swap_remove(0))
@@ -65,7 +65,7 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
             let mut spec_values = HashMap::new();
             for (key, value) in dict {
                 let value_name: Result<&str> = key.as_str().ok_or_else(|| {
-                    ErrorKind::BadInput("Non-string key in Spec yaml".into())
+                    ErrorKind::SpecError("Non-string key in Spec yaml".into())
                         .into()
                 });
                 let value_name: String = value_name?.into();
@@ -92,7 +92,7 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
                 list.into_iter().map(yaml_to_value).collect();
             Ok(Value::List(values?))
         }
-        yaml_value => Err(ErrorKind::BadInput(format!(
+        yaml_value => Err(ErrorKind::SpecError(format!(
             "Unexpected type in Spec yaml: {:?}",
             yaml_value
         ))

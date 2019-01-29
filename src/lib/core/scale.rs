@@ -19,8 +19,11 @@ impl Scale {
             .scale_map
             .get(scale_name)
             .ok_or_else(|| -> Error {
-                ErrorKind::SpecBadValue("scale type".into(), scale_name.into())
-                    .into()
+                ErrorKind::SpecError(format!(
+                    "Unrecongnized scale name: {}",
+                    scale_name
+                ))
+                .into()
             })?
             .clone();
         let steps_total: usize = steps.iter().sum();

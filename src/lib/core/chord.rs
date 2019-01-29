@@ -22,8 +22,11 @@ impl Chord {
 
         let chord_indices =
             consts.chord_map.get(chord_name).ok_or_else(|| -> Error {
-                ErrorKind::SpecBadValue("chord".into(), chord_name.into())
-                    .into()
+                ErrorKind::SpecError(format!(
+                    "Unrecognized chord name: {}",
+                    chord_name
+                ))
+                .into()
             })?;
 
         let notes = chord_indices.iter().map(|i| scale.at_index(&i)).collect();
@@ -57,7 +60,10 @@ impl Chord {
                 })?;
             Ok(Chord::from_scale_index(scale, index))
         } else {
-            bail!(ErrorKind::SpecBadValue("chord".into(), s.into()));
+            bail!(ErrorKind::SpecError(format!(
+                "Failed to recognize chord format: {}",
+                s
+            )));
         }
     }
 

@@ -27,7 +27,7 @@ impl Speed {
     fn new(child: Box<Player>, scale: f64) -> Result<Speed> {
         let ratio = match Ratio::from_float(scale) {
             Some(ratio) => ratio,
-            None => bail!(ErrorKind::BadInput(format!(
+            None => bail!(ErrorKind::SpecError(format!(
                 "Failed to convert scale {} into ratio",
                 scale
             ))),

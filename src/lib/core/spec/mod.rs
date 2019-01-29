@@ -55,12 +55,16 @@ impl Spec {
         value_name: &str,
     ) -> Result<&'a T>
     {
-        let value: &'a Value = self
-            .values
-            .get(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+        let value: &'a Value =
+            self.values.get(value_name).ok_or_else(|| {
+                ErrorKind::SpecError(format!("Missing value: {}", value_name))
+            })?;
         T::from_value_opt(value).ok_or_else(|| {
-            ErrorKind::SpecTypeError(value_name.into(), T::name().into()).into()
+            ErrorKind::SpecError(format!(
+                "Incorrect type, expected: {}",
+                T::name()
+            ))
+            .into()
         })
     }
 
@@ -70,12 +74,16 @@ impl Spec {
         value_name: &str,
     ) -> Result<&'a mut T>
     {
-        let value: &'a mut Value = self
-            .values
-            .get_mut(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+        let value: &'a mut Value =
+            self.values.get_mut(value_name).ok_or_else(|| {
+                ErrorKind::SpecError(format!("Missing value: {}", value_name))
+            })?;
         T::from_value_mut(value).ok_or_else(|| {
-            ErrorKind::SpecTypeError(value_name.into(), T::name().into()).into()
+            ErrorKind::SpecError(format!(
+                "Incorrect type, expected: {}",
+                T::name()
+            ))
+            .into()
         })
     }
 
@@ -86,10 +94,9 @@ impl Spec {
         consts: &Consts,
     ) -> Result<T>
     {
-        let value: Value = self
-            .values
-            .remove(value_name)
-            .ok_or_else(|| ErrorKind::SpecMissingError(value_name.into()))?;
+        let value: Value = self.values.remove(value_name).ok_or_else(|| {
+            ErrorKind::SpecError(format!("Missing value: {}", value_name))
+        })?;
         T::from_value(value, consts).chain_err(|| {
             format!("Failed to consume {} as type {}", value_name, T::name())
         })
@@ -168,9 +175,10 @@ impl Spec {
         if self.values.is_empty() {
             Ok(())
         } else {
-            Err(ErrorKind::SpecExtraValuesError(
-                self.values.keys().cloned().collect(),
-            )
+            Err(ErrorKind::SpecError(format!(
+                "Extra values in spec: {:?}",
+                self.values.keys().cloned().collect::<Vec<_>>(),
+            ))
             .into())
         }
     }

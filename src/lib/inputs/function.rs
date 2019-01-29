@@ -62,10 +62,12 @@ impl Function {
                 1.0,
                 Time::Seconds(1.0),
             ),
-            value => {
-                return Err(
-                    ErrorKind::SpecBadValue("fn".into(), value.into()).into()
-                );
+            function => {
+                return Err(ErrorKind::SpecError(format!(
+                    "Unrecognized function: {}",
+                    function
+                ))
+                .into());
             }
         };
 

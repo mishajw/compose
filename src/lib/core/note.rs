@@ -43,9 +43,9 @@ impl Note {
 impl std::str::FromStr for Note {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        let captures = regex::NOTE_REGEX
-            .captures(s)
-            .ok_or_else(|| ErrorKind::SpecBadValue("note".into(), s.into()))?;
+        let captures = regex::NOTE_REGEX.captures(s).ok_or_else(|| {
+            ErrorKind::SpecError(format!("Unrecognized note format: {}", s))
+        })?;
         let abstract_note_str = captures.get(1).unwrap().as_str();
         let octave_str = captures.get(2).unwrap().as_str();
         let octave = if octave_str.is_empty() {
@@ -136,8 +136,9 @@ impl std::str::FromStr for AbstractNote {
             "a" => Ok(AbstractNote::A),
             "a#" => Ok(AbstractNote::As),
             "b" => Ok(AbstractNote::B),
-            s => Err(ErrorKind::SpecBadValue("abstract note".into(), s.into())
-                .into()),
+            s => {
+                bail!(ErrorKind::SpecError(format!("Unrecognized note: {}", s)))
+            }
         }
     }
 }

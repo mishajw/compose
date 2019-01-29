@@ -18,9 +18,8 @@ pub fn resolve_root_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
         .chain_err(|| "Failed to resolve macros")?;
     match resolved {
         Value::Spec(spec) => Ok(spec),
-        _ => Err(ErrorKind::SpecBadValue(
-            "root".into(),
-            "Root value for players was not an object".into(),
+        _ => Err(ErrorKind::SpecError(
+            "Macro-resolved spec was not an object".into(),
         )
         .into()),
     }

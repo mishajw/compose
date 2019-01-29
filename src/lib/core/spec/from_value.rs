@@ -34,7 +34,7 @@ macro_rules! from_primitive_value_impl {
             fn from_value(value: Value, _consts: &Consts) -> Result<Self> {
                 match value {
                     Value::$value_pattern(extracted) => Ok(extracted),
-                    value => Err(ErrorKind::BadInput(format!(
+                    value => Err(ErrorKind::SpecError(format!(
                         "Incorrect type, expected {}, got {:?}",
                         Self::name().to_string(),
                         value
@@ -121,7 +121,9 @@ macro_rules! impl_from_value_switch {
                         create_fn(Value::Spec(spec), consts)
                             .chain_err(|| format!("Failed to create {}", name))
                     },
-                    None => bail!(ErrorKind::SpecUnknownName(name.clone()))
+                    None => bail!(ErrorKind::SpecError(format!(
+                        "Unrecognized name: {}", name
+                    )))
                 }
             }
         }

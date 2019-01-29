@@ -76,7 +76,7 @@ fn apply_spec_fn(
         }
     }
 
-    bail!(ErrorKind::BadInput(format!(
+    bail!(ErrorKind::SpecError(format!(
         "Map fn does not contain variable {}",
         var_name
     )))

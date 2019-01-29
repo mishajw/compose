@@ -21,14 +21,12 @@ impl FromValue<Combiner> for Keyboard {
         spec.ensure_all_used()?;
 
         if children.len() != inputs.len() {
-            return Err(ErrorKind::SpecBadValue(
-                "children/inputs".into(),
-                format!(
-                    "Different lengths: {}, {}",
-                    children.len(),
-                    inputs.len()
-                ),
-            )
+            return Err(ErrorKind::SpecError(format!(
+                "Children and inputs are different lengths: {} and {} \
+                 respectively",
+                children.len(),
+                inputs.len()
+            ))
             .into());
         }
 
