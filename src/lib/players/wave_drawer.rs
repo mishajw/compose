@@ -17,6 +17,8 @@ use sfml::graphics::{
 };
 use sfml::system::Vector2f;
 
+const PADDING_PERC: f64 = 0.1;
+
 /// Visualize the sound wave of a player
 pub struct WaveDrawer {
     child: Box<Player>,
@@ -93,11 +95,14 @@ impl Drawable for WaveDrawer {
         };
 
         let scale_to_window = |x: i32| {
-            (i64::from(x) - i64::from(sample_bucketer.all_min_max.0)) as f64
+            let scaled = (i64::from(x)
+                - i64::from(sample_bucketer.all_min_max.0))
+                as f64
                 / (i64::from(sample_bucketer.all_min_max.1)
                     - i64::from(sample_bucketer.all_min_max.0))
-                    as f64
-                * f64::from(height)
+                    as f64;
+            scaled * f64::from(height) * (1.0 - 2.0 * PADDING_PERC)
+                + f64::from(height) * PADDING_PERC
         };
 
         for (i, (range_min, range_max)) in sample_bucketer.iter().enumerate() {
