@@ -20,7 +20,7 @@ impl Linear {
 
 impl Player for Linear {
     fn play(&mut self, state: &State) -> Playable {
-        Playable::new(state.tick as i32 * self.scale )
+        Playable::new(state.tick() as i32 * self.scale )
     }
 }
 

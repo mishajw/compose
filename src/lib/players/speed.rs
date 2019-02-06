@@ -54,8 +54,8 @@ impl Speed {
 
 impl Player for Speed {
     fn play(&mut self, state: &State) -> Playable {
-        let scaled_tick = self.scale(state.tick);
-        self.child.play(&state.with_tick(scaled_tick))
+        let scaled_tick = self.scale(state.milli_tick);
+        self.child.play(&state.with_milli_tick(scaled_tick))
     }
 }
 
@@ -83,6 +83,9 @@ impl FromValue for Speed {
 mod test {
     use super::*;
     use players::Empty;
+    use players::Linear;
+
+    use std::sync::Arc;
 
     #[test]
     fn test_scale_accuracy() {
@@ -118,6 +121,30 @@ mod test {
         let first_diff = value_diffs[0];
         for diff in value_diffs {
             assert!((diff - first_diff).abs() <= 1);
+        }
+    }
+
+    #[test]
+    fn test_double() {
+        let scale = 1.1;
+        let mut speed0 =
+            Speed::new(Box::new(Linear::player(100)), scale * scale).unwrap();
+        let mut speed1 = Speed::new(
+            Box::new(Speed::new(Box::new(Linear::player(100)), scale).unwrap()),
+            scale,
+        )
+        .unwrap();
+
+        let mut state = State::initial(Arc::new(Consts::default().unwrap()));
+        loop {
+            let played0 = speed0.play(&state).get_value();
+            let played1 = speed1.play(&state).get_value();
+            let diff = dbg!((played0 - played1).abs());
+            assert!(diff <= 1);
+            state.increment();
+            if state.tick() > 100000 {
+                break;
+            }
         }
     }
 }

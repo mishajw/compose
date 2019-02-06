@@ -29,7 +29,7 @@ impl Buffer {
 
 impl input::Bounded for Buffer {
     fn get(&mut self, state: &State) -> f64 {
-        self.buffer[state.tick % self.buffer.len()]
+        self.buffer[state.tick() % self.buffer.len()]
     }
 
     fn get_bounds(&self) -> (f64, f64) { (self.lower_bound, self.upper_bound) }

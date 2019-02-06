@@ -83,11 +83,13 @@ impl Function {
 
 impl input::Bounded for Function {
     fn get(&mut self, state: &State) -> f64 {
-        let tick = match &self.time_mod {
-            Some(time_mod) => state.tick % time_mod.to_ticks(&state.consts),
-            None => state.tick,
+        let milli_tick = match &self.time_mod {
+            Some(time_mod) => {
+                state.milli_tick % (time_mod.to_ticks(&state.consts) * 1000)
+            }
+            None => state.milli_tick,
         };
-        let fn_input = tick as f64 / state.consts.sample_hz;
+        let fn_input = (milli_tick as f64) / 1000.0 / state.consts.sample_hz;
         (*self.function)(fn_input)
     }
 

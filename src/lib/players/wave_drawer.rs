@@ -50,7 +50,7 @@ impl Player for WaveDrawer {
     fn play(&mut self, state: &State) -> Playable {
         let played = self.child.play(state);
         if let Some(ref mut sample_bucketer) = self.sample_bucketer {
-            sample_bucketer.add_sample(played.get_value(), state.tick);
+            sample_bucketer.add_sample(played.get_value(), state.tick());
         } else {
             // If the sample bucketer has not been initialized, try and
             // initialize it using the window width from the draw thread

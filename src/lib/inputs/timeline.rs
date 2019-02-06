@@ -34,7 +34,7 @@ impl Timeline {
 
 impl input::Bool for Timeline {
     fn get(&mut self, state: &State) -> bool {
-        let event_index = state.tick as usize
+        let event_index = state.tick() as usize
             % (self.events.len() * self.event_duration.to_ticks(&state.consts))
             / (self.event_duration.to_ticks(&state.consts));
         self.events[event_index]
