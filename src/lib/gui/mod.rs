@@ -19,6 +19,16 @@ const MAX_FPS: u32 = 30;
 const WINDOW_WIDTH: u32 = 600;
 const WINDOW_HEIGHT: u32 = 400;
 
+lazy_static! {
+    static ref COLORS: Vec<Color> = vec![
+        Color::rgb(255, 128, 128),
+        Color::rgb(128, 255, 128),
+        Color::rgb(128, 128, 255),
+        Color::rgb(255, 255, 128),
+        Color::rgb(255, 200, 128),
+    ];
+}
+
 /// Start showing the GUI for a composition
 pub fn start(composition: Arc<ReloadingComposition>) -> Result<()> {
     thread::spawn(|| {
@@ -92,6 +102,7 @@ fn draw_composition(
     for (i, drawable) in drawables.into_iter().enumerate() {
         drawable.draw(
             window,
+            &COLORS[i % COLORS.len()],
             size.x as u32,
             drawable_height,
             0,

@@ -1,6 +1,6 @@
 use error::*;
 
-use sfml::graphics::RenderWindow;
+use sfml::graphics::{Color, RenderWindow};
 
 /// Implementors can be drawn to a GUI
 pub trait Drawable {
@@ -8,6 +8,7 @@ pub trait Drawable {
     fn draw(
         &self,
         window: &mut RenderWindow,
+        color: &Color,
         width: u32,
         height: u32,
         offset_x: u32,

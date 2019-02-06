@@ -13,7 +13,7 @@ use gui::Drawable;
 use std::sync::Mutex;
 
 use sfml::graphics::{
-    RectangleShape, RenderStates, RenderTarget, RenderWindow,
+    Color, RectangleShape, RenderStates, RenderTarget, RenderWindow, Shape,
 };
 use sfml::system::Vector2f;
 
@@ -79,6 +79,7 @@ impl Drawable for WaveDrawer {
     fn draw(
         &self,
         window: &mut RenderWindow,
+        color: &Color,
         width: u32,
         height: u32,
         offset_x: u32,
@@ -109,20 +110,19 @@ impl Drawable for WaveDrawer {
             let window_min = scale_to_window(*range_min);
             let window_max = scale_to_window(*range_max);
             let range_height = (window_max - window_min).max(1.0);
-            window.draw_with_renderstates(
-                &RectangleShape::with_size(Vector2f::new(
-                    1.0,
-                    range_height as f32,
-                )),
-                {
-                    let mut state = RenderStates::default();
-                    state.transform.translate(
-                        (offset_x + i as u32) as f32,
-                        offset_y as f32 + window_min as f32,
-                    );
-                    state
-                },
-            );
+            let mut shape = RectangleShape::with_size(Vector2f::new(
+                1.0,
+                range_height as f32,
+            ));
+            shape.set_fill_color(color);
+            window.draw_with_renderstates(&shape, {
+                let mut state = RenderStates::default();
+                state.transform.translate(
+                    (offset_x + i as u32) as f32,
+                    offset_y as f32 + window_min as f32,
+                );
+                state
+            });
         }
 
         Ok(())
