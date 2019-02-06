@@ -62,6 +62,12 @@ impl Function {
                 1.0,
                 Time::Seconds(1.0),
             ),
+            "saw" => Function::with_mod(
+                Box::new(|x| x * x),
+                0.0,
+                1.0,
+                Time::Seconds(1.0),
+            ),
             function => {
                 return Err(ErrorKind::SpecError(format!(
                     "Unrecognized function: {}",
