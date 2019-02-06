@@ -116,6 +116,7 @@ impl FromValue for Function {
 mod test {
     use super::*;
     use core::Consts;
+    use core::input::Bounded;
     use std::sync::Arc;
 
     #[test]

@@ -102,7 +102,7 @@ mod test {
 
     fn test_ranges(scale: f64) {
         println!("Testing scale {}", scale);
-        let speed = Speed::new(Empty::player(), scale).unwrap();
+        let speed = Speed::new(Box::new(Empty::player()), scale).unwrap();
         test_range(&speed, 0, 100, 1);
         test_range(&speed, 1000000, 2000000, 100000);
         test_range(&speed, 10000000, 20000000, 10000);
