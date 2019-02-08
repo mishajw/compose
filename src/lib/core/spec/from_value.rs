@@ -12,7 +12,7 @@ pub trait FromValue<CreatedType = Self>: Sized {
     fn from_value(value: Value, consts: &Consts) -> Result<CreatedType>;
 }
 
-/// A primitive type that can be extracted from a `Value``````
+/// A primitive type that can be extracted from a `Value`
 pub trait FromPrimitiveValue: FromValue {
     /// Get a reference to the type from the `Value`, returns `None` if
     /// incorrect value

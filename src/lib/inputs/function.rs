@@ -121,8 +121,8 @@ impl FromValue for Function {
 #[cfg(test)]
 mod test {
     use super::*;
-    use core::Consts;
     use core::input::Bounded;
+    use core::Consts;
     use std::sync::Arc;
 
     #[test]

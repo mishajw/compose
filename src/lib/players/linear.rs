@@ -1,6 +1,6 @@
 use core::spec::FromValue;
-use core::spec::Value;
 use core::spec::Spec;
+use core::spec::Value;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
@@ -10,7 +10,7 @@ use error::*;
 
 /// Plays the step it's played on
 pub struct Linear {
-    scale: i32
+    scale: i32,
 }
 
 impl Linear {
@@ -20,7 +20,7 @@ impl Linear {
 
 impl Player for Linear {
     fn play(&mut self, state: &State) -> Playable {
-        Playable::new(state.tick() as i32 * self.scale )
+        Playable::new(state.tick() as i32 * self.scale)
     }
 }
 
