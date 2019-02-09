@@ -67,7 +67,6 @@ from_primitive_value_impl!(String, Str);
 from_primitive_value_impl!(i32, Int);
 from_primitive_value_impl!(f64, Float);
 from_primitive_value_impl!(bool, Bool);
-from_primitive_value_impl!(Vec<Value>, List);
 // TODO: Do we want this implementation?
 from_primitive_value_impl!(Spec, Spec);
 
@@ -83,6 +82,21 @@ impl FromPrimitiveValue for Value {
     fn from_value_mut(value: &mut Value) -> Option<&mut Self> { Some(value) }
 
     fn into_value(self) -> Value { self }
+}
+
+impl<T: FromValue> FromValue for Vec<T> {
+    // TODO: Add list specifier to type
+    fn name() -> &'static str { T::name() }
+
+    fn from_value(value: Value, consts: &Consts) -> Result<Vec<T>> {
+        if let Value::List(list) = value {
+            list.into_iter()
+                .map(|v| T::from_value(v, consts))
+                .collect::<Result<_>>()
+        } else {
+            bail!(ErrorKind::SpecError("Expected list type".into()));
+        }
+    }
 }
 
 macro_rules! impl_from_value_switch {
