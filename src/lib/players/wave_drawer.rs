@@ -83,7 +83,7 @@ impl Drawable for WaveDrawer {
     fn draw(
         &self,
         window: &mut RenderWindow,
-        color: &Color,
+        color: Color,
         width: u32,
         height: u32,
         offset_x: u32,
@@ -118,7 +118,7 @@ impl Drawable for WaveDrawer {
                 1.0,
                 range_height as f32,
             ));
-            shape.set_fill_color(color);
+            shape.set_fill_color(&color);
             window.draw_with_renderstates(&shape, {
                 let mut state = RenderStates::default();
                 state.transform.translate(

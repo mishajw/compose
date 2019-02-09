@@ -102,7 +102,7 @@ fn draw_composition(
     for (i, drawable) in drawables.into_iter().enumerate() {
         drawable.draw(
             window,
-            &COLORS[i % COLORS.len()],
+            COLORS[i % COLORS.len()],
             size.x as u32,
             drawable_height,
             0,

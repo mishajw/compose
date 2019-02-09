@@ -8,7 +8,7 @@ pub trait Drawable {
     fn draw(
         &self,
         window: &mut RenderWindow,
-        color: &Color,
+        color: Color,
         width: u32,
         height: u32,
         offset_x: u32,
