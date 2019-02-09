@@ -73,3 +73,35 @@ pub struct FieldDescription {
     type_name: String,
     has_default: bool,
 }
+
+/// Macro to define fields easier
+macro_rules! field_decl {
+    (
+        $field_name:ident,
+        $field_type:ty,
+        $description:expr
+    ) => {
+        lazy_static! {
+            static ref $field_name: FieldDeclaration<$field_type> =
+                FieldDeclaration::new(
+                    stringify!($field_name).to_lowercase().replace("_", "-"),
+                    $description
+                );
+        }
+    };
+    (
+        $field_name:ident,
+        $field_type:ty,
+        $description:expr,
+        $default_fn:expr
+    ) => {
+        lazy_static! {
+            static ref $field_name: FieldDeclaration<$field_type> =
+                FieldDeclaration::with_default(
+                    stringify!($field_name).to_lowercase().replace("_", "-"),
+                    $description,
+                    $default_fn,
+                );
+        }
+    };
+}

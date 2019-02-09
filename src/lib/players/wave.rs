@@ -2,24 +2,20 @@ use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
 use core::spec::FromSpec;
-use error::*;
-use inputs;
-
 use core::spec::Spec;
 use core::Consts;
+use error::*;
+use inputs::Function;
 use players::PlayInput;
 use players::Speed;
 
-lazy_static! {
-    static ref FN: FieldDeclaration<Box<input::Bounded>> =
-        FieldDeclaration::with_default(
-            "fn",
-            "The function that defines the wave shape",
-            |_| Box::new(inputs::Function::default()) as Box<input::Bounded>
-        );
-    static ref FREQUENCY: FieldDeclaration<f64> =
-        FieldDeclaration::new("frequency", "Frequency of the wave",);
-}
+field_decl!(
+    FN,
+    Box<input::Bounded>,
+    "The function that defines the wave shape",
+    |_| Box::new(Function::default()) as Box<input::Bounded>
+);
+field_decl!(FREQUENCY, f64, "Frequency of the wave");
 
 /// Play a wave from a wave function
 pub struct Wave {}

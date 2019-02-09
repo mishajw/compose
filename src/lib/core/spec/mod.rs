@@ -5,6 +5,7 @@ use error::*;
 
 use std::collections::HashMap;
 
+#[macro_use]
 mod field_declaration;
 mod from_spec;
 mod spec_macro;
