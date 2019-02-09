@@ -1,6 +1,7 @@
-use core::spec::FromValue;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
 use core::spec::Spec;
-use core::spec::Value;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
@@ -10,6 +11,9 @@ use error::*;
 
 use num::rational::Ratio;
 use num::traits::ToPrimitive;
+
+field_decl!(CHILD, Box<Player>, "Child to adjust the speed of");
+field_decl!(SPEED, f64, "Speed adjustment factor");
 
 /// Adjust the speed of a child player
 pub struct Speed {
@@ -67,13 +71,16 @@ impl Tree for Speed {
     }
 }
 
-impl FromValue for Speed {
+impl FromSpec for Speed {
     fn name() -> &'static str { "speed" }
 
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let child = spec.consume("child", consts)?;
-        let speed: f64 = spec.consume("speed", consts)?;
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![CHILD.to_description(), SPEED.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let child = CHILD.get(&mut spec, consts)?;
+        let speed = SPEED.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
         Speed::player(child, speed)
     }

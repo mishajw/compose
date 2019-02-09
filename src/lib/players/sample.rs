@@ -1,6 +1,7 @@
-use core::spec::FromValue;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
 use core::spec::Spec;
-use core::spec::Value;
 use core::Consts;
 use core::Time;
 use error::*;
@@ -8,6 +9,10 @@ use hound;
 use inputs::Buffer;
 use players::PlayInput;
 use players::Speed;
+
+field_decl!(PATH, String, "Path of the .wav file to sample from");
+field_decl!(START, Time, "Start of the sample in the .wav file");
+field_decl!(DURATION, Time, "Duration of the sample in the .wav file");
 
 /// Sample music from a .wav file
 pub struct Sample {}
@@ -49,14 +54,21 @@ impl Sample {
     }
 }
 
-impl FromValue<Speed> for Sample {
+impl FromSpec<Speed> for Sample {
     fn name() -> &'static str { "sample" }
 
-    fn from_value(value: Value, consts: &Consts) -> Result<Speed> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let wav_path: String = spec.consume("path", consts)?;
-        let start: Time = spec.consume("start", consts)?;
-        let duration: Time = spec.consume("duration", consts)?;
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![
+            PATH.to_description(),
+            START.to_description(),
+            DURATION.to_description(),
+        ]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Speed> {
+        let wav_path = PATH.get(&mut spec, consts)?;
+        let start = START.get(&mut spec, consts)?;
+        let duration = DURATION.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
         Sample::player(wav_path, start, duration, consts)
     }

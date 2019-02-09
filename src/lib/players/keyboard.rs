@@ -1,23 +1,36 @@
 use core::input;
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::Consts;
 use core::Player;
 use error::*;
 use players::Combiner;
 use players::Volume;
 
+field_decl!(
+    CHILDREN,
+    Vec<Box<Player>>,
+    "The sounds played by the keyboard"
+);
+field_decl!(
+    INPUTS,
+    Vec<Box<input::Bounded>>,
+    "Controls what sounds are played"
+);
+
 /// Selectively plays from its children
 pub struct Keyboard {}
 
-impl FromValue<Combiner> for Keyboard {
+impl FromSpec<Combiner> for Keyboard {
     fn name() -> &'static str { "keyboard" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Combiner> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let children: Vec<Box<Player>> =
-            spec.consume_list("children", consts)?;
-        let inputs: Vec<Box<input::Bounded>> =
-            spec.consume_list("inputs", consts)?;
+
+    fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Combiner> {
+        let children = CHILDREN.get(&mut spec, consts)?;
+        let inputs = INPUTS.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
 
         if children.len() != inputs.len() {

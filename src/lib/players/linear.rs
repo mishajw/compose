@@ -1,12 +1,18 @@
-use core::spec::FromValue;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
 use core::spec::Spec;
-use core::spec::Value;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
 use error::*;
+
+lazy_static! {
+    static ref SCALE: FieldDeclaration<i32> =
+        FieldDeclaration::new("scale", "Scale of linear player",);
+}
 
 /// Plays the step it's played on
 pub struct Linear {
@@ -28,12 +34,15 @@ impl Tree for Linear {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromValue for Linear {
+impl FromSpec for Linear {
     fn name() -> &'static str { "linear" }
 
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let scale: i32 = spec.consume_with_default("scale", 1, consts)?;
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![SCALE.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let scale = SCALE.get(&mut spec, consts)?;
         Ok(Linear::player(scale))
     }
 }

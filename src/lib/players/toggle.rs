@@ -1,11 +1,16 @@
 use core::input;
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FromSpec;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::Spec;
 use core::Consts;
 use core::Player;
 use error::*;
 use inputs::BoolToBounded;
 use players::Volume;
+
+field_decl!(CHILD, Box<Player>, "Child to toggle on and off");
+field_decl!(INPUT, Box<input::Bool>, "Controls the toggling");
 
 /// Toggle a player on and off
 pub struct Toggle {}
@@ -31,12 +36,16 @@ impl Toggle {
     }
 }
 
-impl FromValue<Volume> for Toggle {
+impl FromSpec<Volume> for Toggle {
     fn name() -> &'static str { "toggle" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Volume> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let child: Box<Player> = spec.consume("child", consts)?;
-        let bool_input: Box<input::Bool> = spec.consume("input", consts)?;
-        Ok(Toggle::from_bool(child, bool_input))
+
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![CHILD.to_description(), INPUT.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Volume> {
+        let child = CHILD.get(&mut spec, consts)?;
+        let input = INPUT.get(&mut spec, consts)?;
+        Ok(Toggle::from_bool(child, input))
     }
 }

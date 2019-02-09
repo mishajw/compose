@@ -1,12 +1,17 @@
 use core::input;
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FromSpec;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
 use error::*;
+
+field_decl!(CHILD, Box<Player>, "Child to change the volume of");
+field_decl!(INPUT, Box<input::Bounded>, "Controls the volume level");
 
 /// Adjust the volume of a child player
 pub struct Volume {
@@ -35,12 +40,16 @@ impl Tree for Volume {
     }
 }
 
-impl FromValue for Volume {
+impl FromSpec for Volume {
     fn name() -> &'static str { "volume" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let child = spec.consume("child", consts)?;
-        let input = spec.consume("input", consts)?;
+
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![CHILD.to_description(), INPUT.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let child = CHILD.get(&mut spec, consts)?;
+        let input = INPUT.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
         Ok(Volume::player(child, input))
     }

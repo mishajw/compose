@@ -1,5 +1,6 @@
-use core::spec::FromValue;
-use core::spec::Value;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
@@ -23,10 +24,12 @@ impl Tree for Empty {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromValue for Empty {
+impl FromSpec for Empty {
     fn name() -> &'static str { "empty" }
 
-    fn from_value(_value: Value, _consts: &Consts) -> Result<Self> {
+    fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }
+
+    fn from_spec(_spec: Spec, _consts: &Consts) -> Result<Self> {
         Ok(Empty::player())
     }
 }

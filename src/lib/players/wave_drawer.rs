@@ -1,6 +1,7 @@
-use core::spec::FromValue;
+use core::spec::FromSpec;
 use core::spec::Spec;
-use core::spec::Value;
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
@@ -16,6 +17,9 @@ use sfml::graphics::{
     Color, RectangleShape, RenderStates, RenderTarget, RenderWindow, Shape,
 };
 use sfml::system::Vector2f;
+
+field_decl!(CHILD, Box<Player>, "Wave of this child is drawn");
+field_decl!(DISPLAY_TIME, Time, "How much time is displayed on screen");
 
 const PADDING_PERC: f64 = 0.1;
 
@@ -129,13 +133,16 @@ impl Drawable for WaveDrawer {
     }
 }
 
-impl FromValue for WaveDrawer {
+impl FromSpec for WaveDrawer {
     fn name() -> &'static str { "wave-drawer" }
 
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let child: Box<Player> = spec.consume("child", consts)?;
-        let display_time: Time = spec.consume("display-time", consts)?;
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![CHILD.to_description(), DISPLAY_TIME.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let child = CHILD.get(&mut spec, consts)?;
+        let display_time = DISPLAY_TIME.get(&mut spec, consts)?;
         Ok(WaveDrawer::new(child, display_time, consts))
     }
 }

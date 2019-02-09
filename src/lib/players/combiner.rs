@@ -1,11 +1,19 @@
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;
 use core::Player;
 use core::State;
 use error::*;
+
+field_decl!(
+    CHILDREN,
+    Vec<Box<Player>>,
+    "Children players that are combined"
+);
 
 /// Sum several children `Player` output into one output
 pub struct Combiner {
@@ -31,11 +39,15 @@ impl Tree for Combiner {
     }
 }
 
-impl FromValue for Combiner {
+impl FromSpec for Combiner {
     fn name() -> &'static str { "combiner" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(&consts)?;
-        let children = spec.consume_list("children", consts)?;
+
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![CHILDREN.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let children = CHILDREN.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
         Ok(Combiner::player(children))
     }
