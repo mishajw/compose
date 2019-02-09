@@ -1,11 +1,20 @@
 use core::input;
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::State;
 use core::Time;
 use error::*;
+
+field_decl!(
+    EVENTS,
+    String,
+    "The events, where a space means false and other characters mean true"
+);
+field_decl!(EVENT_DURATION, Time, "The duration of an event");
 
 /// `input::Bool` defined by a list of booleans
 pub struct Timeline {
@@ -45,12 +54,16 @@ impl Tree for Timeline {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromValue for Timeline {
+impl FromSpec for Timeline {
     fn name() -> &'static str { "timeline" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let event_duration = spec.consume("event-duration", consts)?;
-        let events: String = spec.consume("events", consts)?;
+
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![EVENTS.to_description(), EVENT_DURATION.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let event_duration = EVENT_DURATION.get(&mut spec, consts)?;
+        let events = EVENTS.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
         Ok(Timeline::from_string(events, event_duration))
     }

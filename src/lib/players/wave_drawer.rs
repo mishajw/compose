@@ -1,7 +1,7 @@
-use core::spec::FromSpec;
-use core::spec::Spec;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;

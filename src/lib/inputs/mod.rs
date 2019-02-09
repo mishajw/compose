@@ -2,14 +2,16 @@
 
 use core::input;
 
+mod bool_to_bounded;
+mod bounded_to_bool;
 mod buffer;
-mod converters;
 mod function;
 mod smooth_bool;
 mod timeline;
 
+pub use self::bool_to_bounded::BoolToBounded;
+pub use self::bounded_to_bool::BoundedToBool;
 pub use self::buffer::Buffer;
-pub use self::converters::{BoolToBounded, BoundedToBool};
 pub use self::function::Function;
 pub use self::smooth_bool::SmoothBool;
 pub use self::timeline::Timeline;

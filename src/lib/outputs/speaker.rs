@@ -1,7 +1,8 @@
 //! Play music to the device speaker
 
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::Output;
 use core::Playable;
 use error::*;
@@ -139,10 +140,12 @@ impl Output for Speaker {
     }
 }
 
-impl FromValue for Speaker {
+impl FromSpec for Speaker {
     fn name() -> &'static str { "speaker" }
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let spec: Spec = value.into_type(consts)?;
+
+    fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }
+
+    fn from_spec(spec: Spec, consts: &Consts) -> Result<Self> {
         spec.ensure_all_used()?;
         Speaker::new(consts.sample_hz)
     }

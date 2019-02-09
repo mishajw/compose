@@ -1,11 +1,16 @@
 use core::input;
-use core::spec::FromValue;
-use core::spec::{Spec, Value};
+use core::spec::FieldDeclaration;
+use core::spec::FieldDescription;
+use core::spec::FromSpec;
+use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
 use core::State;
 use core::Time;
 use error::*;
+
+field_decl!(FN, String, "The name of the function", |_| "sine"
+    .to_string());
 
 /// A function input, returns values from a function
 pub struct Function {
@@ -106,15 +111,17 @@ impl Tree for Function {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromValue for Function {
+impl FromSpec for Function {
     fn name() -> &'static str { "function" }
 
-    fn from_value(value: Value, consts: &Consts) -> Result<Self> {
-        let mut spec: Spec = value.into_type(consts)?;
-        let wave_fn_name: String =
-            spec.consume_with_default("fn", "sine".into(), consts)?;
+    fn field_descriptions() -> Vec<FieldDescription> {
+        vec![FN.to_description()]
+    }
+
+    fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
+        let fn_name = FN.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
-        Ok(Function::from_string(wave_fn_name)?)
+        Ok(Function::from_string(fn_name)?)
     }
 }
 

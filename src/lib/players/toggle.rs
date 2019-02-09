@@ -1,7 +1,7 @@
 use core::input;
-use core::spec::FromSpec;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
+use core::spec::FromSpec;
 use core::spec::Spec;
 use core::Consts;
 use core::Player;
