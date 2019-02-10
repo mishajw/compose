@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::Consts;
 use error::*;
@@ -27,7 +27,7 @@ impl Wave {
     }
 }
 
-impl FromSpec<Speed> for Wave {
+impl SpecType<Speed> for Wave {
     fn name() -> &'static str { "wave" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

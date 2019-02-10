@@ -6,7 +6,7 @@ use core::Consts;
 use error::*;
 
 /// Implementors can be created from a spec
-pub trait FromSpec<CreatedType = Self>: Sized {
+pub trait SpecType<CreatedType = Self>: Sized {
     /// Get the name of the type
     fn name() -> &'static str;
 
@@ -17,8 +17,8 @@ pub trait FromSpec<CreatedType = Self>: Sized {
     fn from_spec(spec: Spec, consts: &Consts) -> Result<CreatedType>;
 }
 
-impl<S: FromSpec<T>, T> FromValue<T> for S {
-    fn name() -> &'static str { <Self as FromSpec<T>>::name() }
+impl<S: SpecType<T>, T> FromValue<T> for S {
+    fn name() -> &'static str { <Self as SpecType<T>>::name() }
 
     fn from_value(value: Value, consts: &Consts) -> Result<T> {
         let spec: Spec = value.into_type(consts)?;

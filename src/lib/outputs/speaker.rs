@@ -1,7 +1,7 @@
 //! Play music to the device speaker
 
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::Output;
 use core::Playable;
@@ -140,7 +140,7 @@ impl Output for Speaker {
     }
 }
 
-impl FromSpec for Speaker {
+impl SpecType for Speaker {
     fn name() -> &'static str { "speaker" }
 
     fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }

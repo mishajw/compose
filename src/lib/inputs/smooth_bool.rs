@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -85,7 +85,7 @@ impl Tree for SmoothBool {
     }
 }
 
-impl FromSpec for SmoothBool {
+impl SpecType for SmoothBool {
     fn name() -> &'static str { "smooth-bool" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

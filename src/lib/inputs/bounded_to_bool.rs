@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -40,7 +40,7 @@ impl Tree for BoundedToBool {
     }
 }
 
-impl FromSpec for BoundedToBool {
+impl SpecType for BoundedToBool {
     fn name() -> &'static str { "bounded-to-bool" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

@@ -1,6 +1,6 @@
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -71,7 +71,7 @@ impl Tree for Speed {
     }
 }
 
-impl FromSpec for Speed {
+impl SpecType for Speed {
     fn name() -> &'static str { "speed" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

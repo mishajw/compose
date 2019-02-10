@@ -1,5 +1,5 @@
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -24,7 +24,7 @@ impl Tree for Empty {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromSpec for Empty {
+impl SpecType for Empty {
     fn name() -> &'static str { "empty" }
 
     fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }

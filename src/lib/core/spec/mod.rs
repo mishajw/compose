@@ -7,14 +7,14 @@ use std::collections::HashMap;
 
 #[macro_use]
 mod field_declaration;
-mod from_spec;
+mod spec_type;
 mod spec_macro;
 #[macro_use]
 mod from_value;
 pub mod yaml;
 
 pub use self::field_declaration::{FieldDeclaration, FieldDescription};
-pub use self::from_spec::FromSpec;
+pub use self::spec_type::SpecType;
 pub use self::from_value::{FromPrimitiveValue, FromValue};
 pub use self::spec_macro::{
     resolve_root_macros, resolve_spec_value, SpecMacro,

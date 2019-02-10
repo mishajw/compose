@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::Consts;
 use core::Player;
@@ -36,7 +36,7 @@ impl Toggle {
     }
 }
 
-impl FromSpec<Volume> for Toggle {
+impl SpecType<Volume> for Toggle {
     fn name() -> &'static str { "toggle" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

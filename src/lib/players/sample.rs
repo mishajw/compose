@@ -1,6 +1,6 @@
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::Consts;
 use core::Time;
@@ -54,7 +54,7 @@ impl Sample {
     }
 }
 
-impl FromSpec<Speed> for Sample {
+impl SpecType<Speed> for Sample {
     fn name() -> &'static str { "sample" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

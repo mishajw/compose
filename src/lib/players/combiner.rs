@@ -1,6 +1,6 @@
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -39,7 +39,7 @@ impl Tree for Combiner {
     }
 }
 
-impl FromSpec for Combiner {
+impl SpecType for Combiner {
     fn name() -> &'static str { "combiner" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

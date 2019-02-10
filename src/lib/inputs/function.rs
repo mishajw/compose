@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -111,7 +111,7 @@ impl Tree for Function {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromSpec for Function {
+impl SpecType for Function {
     fn name() -> &'static str { "function" }
 
     fn field_descriptions() -> Vec<FieldDescription> {

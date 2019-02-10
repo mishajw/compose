@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::Consts;
 use core::Player;
@@ -23,7 +23,7 @@ field_decl!(
 /// Selectively plays from its children
 pub struct Keyboard {}
 
-impl FromSpec<Combiner> for Keyboard {
+impl SpecType<Combiner> for Keyboard {
     fn name() -> &'static str { "keyboard" }
 
     fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }

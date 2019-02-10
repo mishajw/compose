@@ -1,7 +1,7 @@
 use core::input;
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::FromSpec;
+use core::spec::SpecType;
 use core::spec::Spec;
 use core::tree::Tree;
 use core::Consts;
@@ -54,7 +54,7 @@ impl Tree for Timeline {
     fn to_tree(&self) -> &Tree { self as &Tree }
 }
 
-impl FromSpec for Timeline {
+impl SpecType for Timeline {
     fn name() -> &'static str { "timeline" }
 
     fn field_descriptions() -> Vec<FieldDescription> {
