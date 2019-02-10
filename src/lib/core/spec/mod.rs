@@ -30,18 +30,13 @@ pub struct Spec {
 
 /// A value in a [`Spec`](struct.Spec.html)
 #[derive(Clone, Debug)]
+#[allow(missing_docs)]
 pub enum Value {
-    #[allow(missing_docs)]
     Str(String),
-    #[allow(missing_docs)]
     Int(i32),
-    #[allow(missing_docs)]
     Float(f64),
-    #[allow(missing_docs)]
     Spec(Spec),
-    #[allow(missing_docs)]
     Bool(bool),
-    #[allow(missing_docs)]
     List(Vec<Value>),
 }
 
