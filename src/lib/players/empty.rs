@@ -1,5 +1,5 @@
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
@@ -27,7 +27,7 @@ impl Tree for Empty {
 impl SpecType for Empty {
     fn name() -> &'static str { "empty" }
 
-    fn field_descriptions() -> Vec<FieldDescription> { Vec::new() }
+    fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
 
     fn from_spec(_spec: Spec, _consts: &Consts) -> Result<Self> {
         Ok(Empty::player())

@@ -1,7 +1,7 @@
 use core::input;
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
@@ -114,7 +114,7 @@ impl Tree for Function {
 impl SpecType for Function {
     fn name() -> &'static str { "function" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description()]
     }
 

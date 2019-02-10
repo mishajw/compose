@@ -4,13 +4,13 @@ use core::Consts;
 use error::*;
 
 /// Defines a field in a spec
-pub struct FieldDeclaration<T: FromValue> {
+pub struct SpecField<T: FromValue> {
     name: String,
     description: String,
     default_fn: Option<Box<Fn(&Consts) -> T + Sync + 'static>>,
 }
 
-impl<T: FromValue> FieldDeclaration<T> {
+impl<T: FromValue> SpecField<T> {
     #[allow(missing_docs)]
     pub fn new(
         name: impl Into<String>,
@@ -39,8 +39,8 @@ impl<T: FromValue> FieldDeclaration<T> {
     }
 
     /// Get the description of the field
-    pub fn to_description(&self) -> FieldDescription {
-        FieldDescription {
+    pub fn to_description(&self) -> SpecFieldDescription {
+        SpecFieldDescription {
             name: self.name.clone(),
             description: self.description.clone(),
             type_name: T::name().to_string(),
@@ -67,7 +67,7 @@ impl<T: FromValue> FieldDeclaration<T> {
 /// Contains no compile-time type information, so that we can pass descriptions
 /// around without worrying about generics
 #[allow(unused)]
-pub struct FieldDescription {
+pub struct SpecFieldDescription {
     name: String,
     description: String,
     type_name: String,
@@ -82,11 +82,10 @@ macro_rules! field_decl {
         $description:expr
     ) => {
         lazy_static! {
-            static ref $field_name: FieldDeclaration<$field_type> =
-                FieldDeclaration::new(
-                    stringify!($field_name).to_lowercase().replace("_", "-"),
-                    $description
-                );
+            static ref $field_name: SpecField<$field_type> = SpecField::new(
+                stringify!($field_name).to_lowercase().replace("_", "-"),
+                $description
+            );
         }
     };
     (
@@ -96,8 +95,8 @@ macro_rules! field_decl {
         $default_fn:expr
     ) => {
         lazy_static! {
-            static ref $field_name: FieldDeclaration<$field_type> =
-                FieldDeclaration::with_default(
+            static ref $field_name: SpecField<$field_type> =
+                SpecField::with_default(
                     stringify!($field_name).to_lowercase().replace("_", "-"),
                     $description,
                     $default_fn,

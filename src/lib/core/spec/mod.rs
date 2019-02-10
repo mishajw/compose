@@ -6,7 +6,7 @@ use error::*;
 use std::collections::HashMap;
 
 #[macro_use]
-mod field_declaration;
+mod spec_field;
 #[macro_use]
 mod super_spec_type;
 mod from_value;
@@ -14,8 +14,8 @@ mod spec_macro;
 mod spec_type;
 pub mod yaml;
 
-pub use self::field_declaration::{FieldDeclaration, FieldDescription};
 pub use self::from_value::{FromPrimitiveValue, FromValue};
+pub use self::spec_field::{SpecField, SpecFieldDescription};
 pub use self::spec_macro::{
     resolve_root_macros, resolve_spec_value, SpecMacro,
 };

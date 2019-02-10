@@ -1,7 +1,7 @@
 use core::input;
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::Consts;
 use error::*;
@@ -30,7 +30,7 @@ impl Wave {
 impl SpecType<Speed> for Wave {
     fn name() -> &'static str { "wave" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description()]
     }
 

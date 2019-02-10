@@ -1,6 +1,6 @@
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::Consts;
 use core::Time;
@@ -57,7 +57,7 @@ impl Sample {
 impl SpecType<Speed> for Sample {
     fn name() -> &'static str { "sample" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![
             PATH.to_description(),
             START.to_description(),

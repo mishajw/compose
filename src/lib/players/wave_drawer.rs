@@ -1,6 +1,6 @@
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
@@ -136,7 +136,7 @@ impl Drawable for WaveDrawer {
 impl SpecType for WaveDrawer {
     fn name() -> &'static str { "wave-drawer" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), DISPLAY_TIME.to_description()]
     }
 

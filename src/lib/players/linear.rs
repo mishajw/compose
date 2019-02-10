@@ -1,6 +1,6 @@
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
@@ -10,8 +10,8 @@ use core::State;
 use error::*;
 
 lazy_static! {
-    static ref SCALE: FieldDeclaration<i32> =
-        FieldDeclaration::new("scale", "Scale of linear player",);
+    static ref SCALE: SpecField<i32> =
+        SpecField::new("scale", "Scale of linear player",);
 }
 
 /// Plays the step it's played on
@@ -37,7 +37,7 @@ impl Tree for Linear {
 impl SpecType for Linear {
     fn name() -> &'static str { "linear" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![SCALE.to_description()]
     }
 

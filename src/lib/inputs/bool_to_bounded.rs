@@ -1,7 +1,7 @@
 use core::input;
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
@@ -47,7 +47,7 @@ impl Tree for BoolToBounded {
 impl SpecType for BoolToBounded {
     fn name() -> &'static str { "bool-to-bounded" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![INPUT.to_description()]
     }
 

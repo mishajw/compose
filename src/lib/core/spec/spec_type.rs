@@ -1,6 +1,6 @@
-use core::spec::FieldDescription;
 use core::spec::FromValue;
 use core::spec::Spec;
+use core::spec::SpecFieldDescription;
 use core::spec::Value;
 use core::Consts;
 use error::*;
@@ -11,7 +11,7 @@ pub trait SpecType<CreatedType = Self>: Sized {
     fn name() -> &'static str;
 
     /// Get a list of field descriptions for the spec
-    fn field_descriptions() -> Vec<FieldDescription>;
+    fn field_descriptions() -> Vec<SpecFieldDescription>;
 
     /// Create the value from the spec
     fn from_spec(spec: Spec, consts: &Consts) -> Result<CreatedType>;

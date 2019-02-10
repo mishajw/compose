@@ -1,7 +1,7 @@
 use core::input;
-use core::spec::FieldDeclaration;
-use core::spec::FieldDescription;
 use core::spec::Spec;
+use core::spec::SpecField;
+use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::Consts;
 use core::Player;
@@ -39,7 +39,7 @@ impl Toggle {
 impl SpecType<Volume> for Toggle {
     fn name() -> &'static str { "toggle" }
 
-    fn field_descriptions() -> Vec<FieldDescription> {
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), INPUT.to_description()]
     }
 
