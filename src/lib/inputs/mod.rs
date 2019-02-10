@@ -18,12 +18,12 @@ pub use self::timeline::Timeline;
 
 mod bool_impl {
     use super::*;
-    impl_from_value_switch!(input::Bool, "bool-input", BoundedToBool, Timeline);
+    impl_super_from_value!(input::Bool, "bool-input", BoundedToBool, Timeline);
 }
 
 mod bounded_impl {
     use super::*;
-    impl_from_value_switch!(
+    impl_super_from_value!(
         input::Bounded,
         "bounded-input",
         Function,

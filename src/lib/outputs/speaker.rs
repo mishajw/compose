@@ -1,8 +1,8 @@
 //! Play music to the device speaker
 
 use core::spec::FieldDescription;
-use core::spec::SpecType;
 use core::spec::Spec;
+use core::spec::SpecType;
 use core::Output;
 use core::Playable;
 use error::*;

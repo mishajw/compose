@@ -26,7 +26,7 @@ pub use self::volume::Volume;
 pub use self::wave::Wave;
 pub use self::wave_drawer::WaveDrawer;
 
-impl_from_value_switch!(
+impl_super_from_value!(
     Player, "player", Wave, Volume, Combiner, Toggle, Keyboard, Sample,
     WaveDrawer, Speed, Empty, Linear
 );

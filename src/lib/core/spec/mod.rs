@@ -7,18 +7,20 @@ use std::collections::HashMap;
 
 #[macro_use]
 mod field_declaration;
-mod spec_type;
-mod spec_macro;
 #[macro_use]
+mod super_spec_type;
 mod from_value;
+mod spec_macro;
+mod spec_type;
 pub mod yaml;
 
 pub use self::field_declaration::{FieldDeclaration, FieldDescription};
-pub use self::spec_type::SpecType;
 pub use self::from_value::{FromPrimitiveValue, FromValue};
 pub use self::spec_macro::{
     resolve_root_macros, resolve_spec_value, SpecMacro,
 };
+pub use self::spec_type::SpecType;
+pub use self::super_spec_type::SuperSpecType;
 
 /// A key-value store for defining compositions
 #[derive(Clone, Debug)]

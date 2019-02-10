@@ -1,6 +1,6 @@
 use core::spec::FieldDescription;
-use core::spec::SpecType;
 use core::spec::Spec;
+use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
 use core::Playable;

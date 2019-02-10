@@ -1,7 +1,7 @@
 use core::spec::FieldDeclaration;
 use core::spec::FieldDescription;
-use core::spec::SpecType;
 use core::spec::Spec;
+use core::spec::SpecType;
 use core::Consts;
 use core::Time;
 use error::*;
