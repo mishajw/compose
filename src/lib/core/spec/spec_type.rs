@@ -15,6 +15,14 @@ pub trait SpecType<CreatedType = Self>: Sized {
 
     /// Create the value from the spec
     fn from_spec(spec: Spec, consts: &Consts) -> Result<CreatedType>;
+
+    /// Get the description of the type
+    fn to_description() -> SpecTypeDescription {
+        SpecTypeDescription {
+            name: Self::name().into(),
+            field_descriptions: Self::field_descriptions(),
+        }
+    }
 }
 
 impl<S: SpecType<T>, T> FromValue<T> for S {
@@ -24,4 +32,13 @@ impl<S: SpecType<T>, T> FromValue<T> for S {
         let spec: Spec = value.into_type(consts)?;
         Self::from_spec(spec, consts)
     }
+}
+
+/// Describes the spec type
+///
+/// Contains no compile-time type information, so that we can pass descriptions
+/// around without worrying about generics
+pub struct SpecTypeDescription {
+    name: String,
+    field_descriptions: Vec<SpecFieldDescription>,
 }

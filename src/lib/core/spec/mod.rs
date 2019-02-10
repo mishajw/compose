@@ -19,7 +19,7 @@ pub use self::spec_field::{SpecField, SpecFieldDescription};
 pub use self::spec_macro::{
     resolve_root_macros, resolve_spec_value, SpecMacro,
 };
-pub use self::spec_type::SpecType;
+pub use self::spec_type::{SpecType, SpecTypeDescription};
 pub use self::super_spec_type::SuperSpecType;
 
 /// A key-value store for defining compositions
