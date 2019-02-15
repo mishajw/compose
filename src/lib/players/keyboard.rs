@@ -24,7 +24,7 @@ field_decl!(
 pub struct Keyboard {}
 
 impl SpecType<Combiner> for Keyboard {
-    fn name() -> &'static str { "keyboard" }
+    fn name() -> String { "keyboard".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
 

@@ -40,7 +40,7 @@ impl Tree for Combiner {
 }
 
 impl SpecType for Combiner {
-    fn name() -> &'static str { "combiner" }
+    fn name() -> String { "combiner".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILDREN.to_description()]

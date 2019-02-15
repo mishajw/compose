@@ -37,7 +37,7 @@ impl Toggle {
 }
 
 impl SpecType<Volume> for Toggle {
-    fn name() -> &'static str { "toggle" }
+    fn name() -> String { "toggle".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), INPUT.to_description()]

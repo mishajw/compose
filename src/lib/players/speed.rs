@@ -72,7 +72,7 @@ impl Tree for Speed {
 }
 
 impl SpecType for Speed {
-    fn name() -> &'static str { "speed" }
+    fn name() -> String { "speed".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), SPEED.to_description()]

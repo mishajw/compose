@@ -20,7 +20,7 @@ pub struct Composition {
 }
 
 impl FromValue for Composition {
-    fn name() -> &'static str { "composition" }
+    fn name() -> String { "composition".into() }
 
     fn from_value(value: Value, consts: &Consts) -> Result<Composition> {
         let mut spec: Spec = value.into_type(consts)?;

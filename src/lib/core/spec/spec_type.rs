@@ -8,7 +8,7 @@ use error::*;
 /// Implementors can be created from a spec
 pub trait SpecType<CreatedType = Self>: Sized {
     /// Get the name of the type
-    fn name() -> &'static str;
+    fn name() -> String;
 
     /// Get a list of field descriptions for the spec
     fn field_descriptions() -> Vec<SpecFieldDescription>;
@@ -26,7 +26,7 @@ pub trait SpecType<CreatedType = Self>: Sized {
 }
 
 impl<S: SpecType<T>, T> FromValue<T> for S {
-    fn name() -> &'static str { <Self as SpecType<T>>::name() }
+    fn name() -> String { <Self as SpecType<T>>::name() }
 
     fn from_value(value: Value, consts: &Consts) -> Result<T> {
         let spec: Spec = value.into_type(consts)?;

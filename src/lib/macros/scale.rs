@@ -10,7 +10,7 @@ use error::*;
 pub struct Scale {}
 
 impl SpecMacro for Scale {
-    fn name() -> &'static str { "scale" }
+    fn name() -> String { "scale".into() }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         let scale_str: String = spec.consume("scale", consts)?;

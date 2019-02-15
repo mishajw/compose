@@ -41,7 +41,7 @@ macro_rules! impl_super_from_value {
         }
 
         impl FromValue for Box<$super_type> {
-            fn name() -> &'static str { $super_name }
+            fn name() -> String { $super_name.into() }
 
             fn from_value(value: Value, consts: &Consts) -> Result<Self> {
                 let mut spec: Spec = value.into_type(consts)?;

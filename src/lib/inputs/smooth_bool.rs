@@ -86,7 +86,7 @@ impl Tree for SmoothBool {
 }
 
 impl SpecType for SmoothBool {
-    fn name() -> &'static str { "smooth-bool" }
+    fn name() -> String { "smooth-bool".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![

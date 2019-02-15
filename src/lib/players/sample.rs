@@ -55,7 +55,7 @@ impl Sample {
 }
 
 impl SpecType<Speed> for Sample {
-    fn name() -> &'static str { "sample" }
+    fn name() -> String { "sample".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![

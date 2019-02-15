@@ -7,7 +7,7 @@ use error::*;
 pub struct Chord {}
 
 impl SpecMacro for Chord {
-    fn name() -> &'static str { "chord" }
+    fn name() -> String { "chord".into() }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         // TODO: Make Chord impl FromValue

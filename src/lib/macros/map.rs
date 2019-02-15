@@ -9,7 +9,7 @@ const DEFAULT_VAR: &str = "$1";
 pub struct Map {}
 
 impl SpecMacro for Map {
-    fn name() -> &'static str { "map" }
+    fn name() -> String { "map".into() }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         resolve_spec_value(spec, "list".into(), consts)?;

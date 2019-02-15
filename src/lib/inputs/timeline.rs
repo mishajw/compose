@@ -55,7 +55,7 @@ impl Tree for Timeline {
 }
 
 impl SpecType for Timeline {
-    fn name() -> &'static str { "timeline" }
+    fn name() -> String { "timeline".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![EVENTS.to_description(), EVENT_DURATION.to_description()]

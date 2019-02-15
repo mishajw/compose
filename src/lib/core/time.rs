@@ -68,7 +68,7 @@ impl Time {
 }
 
 impl FromValue for Time {
-    fn name() -> &'static str { "time" }
+    fn name() -> String { "time".into() }
     fn from_value(value: Value, consts: &Consts) -> Result<Time> {
         let string: String = value.into_type(consts)?;
         match string.trim().split(' ').collect::<Vec<_>>().as_slice() {

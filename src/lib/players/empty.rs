@@ -25,7 +25,7 @@ impl Tree for Empty {
 }
 
 impl SpecType for Empty {
-    fn name() -> &'static str { "empty" }
+    fn name() -> String { "empty".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
 

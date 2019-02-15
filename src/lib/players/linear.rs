@@ -35,7 +35,7 @@ impl Tree for Linear {
 }
 
 impl SpecType for Linear {
-    fn name() -> &'static str { "linear" }
+    fn name() -> String { "linear".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![SCALE.to_description()]

@@ -108,7 +108,7 @@ impl Consts {
 }
 
 impl FromValue for Consts {
-    fn name() -> &'static str { "consts" }
+    fn name() -> String { "consts".into() }
     fn from_value(value: Value, consts: &Consts) -> Result<Consts> {
         let mut spec: Spec = value.into_type(consts)?;
         let consts = Consts::new(

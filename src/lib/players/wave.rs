@@ -28,7 +28,7 @@ impl Wave {
 }
 
 impl SpecType<Speed> for Wave {
-    fn name() -> &'static str { "wave" }
+    fn name() -> String { "wave".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description()]

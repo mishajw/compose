@@ -41,7 +41,7 @@ impl Tree for Volume {
 }
 
 impl SpecType for Volume {
-    fn name() -> &'static str { "volume" }
+    fn name() -> String { "volume".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), INPUT.to_description()]

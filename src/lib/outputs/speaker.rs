@@ -141,7 +141,7 @@ impl Output for Speaker {
 }
 
 impl SpecType for Speaker {
-    fn name() -> &'static str { "speaker" }
+    fn name() -> String { "speaker".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
 

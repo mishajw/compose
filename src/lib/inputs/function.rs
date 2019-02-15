@@ -112,7 +112,7 @@ impl Tree for Function {
 }
 
 impl SpecType for Function {
-    fn name() -> &'static str { "function" }
+    fn name() -> String { "function".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description()]

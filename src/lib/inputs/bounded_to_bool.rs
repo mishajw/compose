@@ -41,7 +41,7 @@ impl Tree for BoundedToBool {
 }
 
 impl SpecType for BoundedToBool {
-    fn name() -> &'static str { "bounded-to-bool" }
+    fn name() -> String { "bounded-to-bool".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![INPUT.to_description()]

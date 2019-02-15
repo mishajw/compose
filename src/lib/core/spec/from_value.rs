@@ -6,7 +6,7 @@ use error::*;
 /// A type that can be extracted from a `Value`
 pub trait FromValue<CreatedType = Self>: Sized {
     /// Get the name of the type for error messages
-    fn name() -> &'static str;
+    fn name() -> String;
 
     /// Create the type from a `Value`
     fn from_value(value: Value, consts: &Consts) -> Result<CreatedType>;
@@ -29,7 +29,7 @@ pub trait FromPrimitiveValue: FromValue {
 macro_rules! from_primitive_value_impl {
     ($extracted_type:ty, $value_pattern:tt) => {
         impl FromValue for $extracted_type {
-            fn name() -> &'static str { stringify!($extracted_type) }
+            fn name() -> String { stringify!($extracted_type).into() }
 
             fn from_value(value: Value, _consts: &Consts) -> Result<Self> {
                 match value {
@@ -71,7 +71,7 @@ from_primitive_value_impl!(bool, Bool);
 from_primitive_value_impl!(Spec, Spec);
 
 impl FromValue for Value {
-    fn name() -> &'static str { "value" }
+    fn name() -> String { "value".into() }
 
     fn from_value(value: Value, _consts: &Consts) -> Result<Self> { Ok(value) }
 }
@@ -85,8 +85,7 @@ impl FromPrimitiveValue for Value {
 }
 
 impl<T: FromValue> FromValue for Vec<T> {
-    // TODO: Add list specifier to type
-    fn name() -> &'static str { T::name() }
+    fn name() -> String { T::name() + "[]" }
 
     fn from_value(value: Value, consts: &Consts) -> Result<Vec<T>> {
         if let Value::List(list) = value {

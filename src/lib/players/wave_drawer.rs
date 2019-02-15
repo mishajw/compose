@@ -134,7 +134,7 @@ impl Drawable for WaveDrawer {
 }
 
 impl SpecType for WaveDrawer {
-    fn name() -> &'static str { "wave-drawer" }
+    fn name() -> String { "wave-drawer".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), DISPLAY_TIME.to_description()]
