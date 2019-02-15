@@ -26,7 +26,9 @@ pub struct Keyboard {}
 impl SpecType<Combiner> for Keyboard {
     fn name() -> String { "keyboard".into() }
 
-    fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
+        vec![CHILDREN.to_description(), INPUTS.to_description()]
+    }
 
     fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Combiner> {
         let children = CHILDREN.get(&mut spec, consts)?;
