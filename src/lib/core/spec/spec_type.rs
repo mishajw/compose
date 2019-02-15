@@ -39,6 +39,8 @@ impl<S: SpecType<T>, T> FromValue<T> for S {
 /// Contains no compile-time type information, so that we can pass descriptions
 /// around without worrying about generics
 pub struct SpecTypeDescription {
-    name: String,
-    field_descriptions: Vec<SpecFieldDescription>,
+    /// The name of the type
+    pub name: String,
+    /// The descriptions of each field in the spec
+    pub field_descriptions: Vec<SpecFieldDescription>,
 }

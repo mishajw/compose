@@ -68,10 +68,14 @@ impl<T: FromValue> SpecField<T> {
 /// around without worrying about generics
 #[allow(unused)]
 pub struct SpecFieldDescription {
-    name: String,
-    description: String,
-    type_name: String,
-    has_default: bool,
+    /// The name of the field
+    pub name: String,
+    /// Description of the field
+    pub description: String,
+    /// The type of the field
+    pub type_name: String,
+    /// True if the field has a default value
+    pub has_default: bool,
 }
 
 /// Macro to define fields easier
