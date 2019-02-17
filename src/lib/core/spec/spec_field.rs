@@ -67,6 +67,7 @@ impl<T: FromValue> SpecField<T> {
 /// Contains no compile-time type information, so that we can pass descriptions
 /// around without worrying about generics
 #[allow(unused)]
+#[derive(Clone)]
 pub struct SpecFieldDescription {
     /// The name of the field
     pub name: String,

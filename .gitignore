@@ -1,3 +1,5 @@
-/target
-/resources/local
 /composer.config
+/pycomposer/gen
+/resources/local
+/target
+__pycache__
