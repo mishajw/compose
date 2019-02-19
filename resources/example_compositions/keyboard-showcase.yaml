@@ -1,24 +1,20 @@
-players:
-  name: keyboard
-  children:
-    - name: wave
-      frequency: 440.0
-    - name: wave
-      frequency: 523.25
-    - name: wave
-      frequency: 659.25
-  inputs:
-    name: map
-    fn:
-      name: bool-to-bounded
-      bool: $1
-    list:
-      name: timeline-multi
-      event-duration: 1 beats
-      events: |
-        X__X
-        _X_X
-        __XX
-outputs: [{ name: speaker }]
-consts:
-  beats-per-minute: 80.0
+name: keyboard
+children:
+- name: wave
+  frequency: 440.0
+- name: wave
+  frequency: 523.25
+- name: wave
+  frequency: 659.25
+inputs:
+  name: map
+  fn:
+    name: bool-to-bounded
+    input: $1
+  list:
+    name: timeline-multi
+    event-duration: 1 beats
+    events: |
+      X__X
+      _X_X
+      __XX

@@ -1,11 +1,9 @@
-players:
-  name: combiner
-  children:
-    name: map
-    list:
-      name: chord
-      chord: a4 maj
-    fn:
-      name: wave
-      frequency: $1
-outputs: [{ name: speaker }]
+name: combiner
+children:
+  name: map
+  list:
+    name: chord
+    chord: a4 maj
+  fn:
+    name: wave
+    frequency: $1

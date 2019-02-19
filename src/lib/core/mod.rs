@@ -17,7 +17,7 @@ mod output;
 mod playable;
 mod player;
 pub mod regex;
-mod reload_composition;
+mod reload_player;
 mod scale;
 mod scale_index;
 #[macro_use]
@@ -33,7 +33,7 @@ pub use self::note::Note;
 pub use self::output::Output;
 pub use self::playable::Playable;
 pub use self::player::Player;
-pub use self::reload_composition::ReloadingComposition;
+pub use self::reload_player::get_reloading_player;
 pub use self::scale::Scale;
 pub use self::scale_index::ScaleIndex;
 pub use self::state::State;

@@ -1,40 +1,36 @@
-# The players tree
-players:
-  # Combines several children into one
-  name: combiner
-  children:
-  # Plays a sine wave
-  - name: wave
-    frequency: 440.0 # A
-  # Controls the volume of its child
-  - name: volume
+# Combines several children into one
+name: combiner
+children:
+# Plays a sine wave
+- name: wave
+  frequency: 440.0 # A
+# Controls the volume of its child
+- name: volume
+  input:
+    name: function
+  child:
+    name: wave
+    frequency: 523.25 # C
+# Toggle input on/off
+- name: toggle
+  input:
+    name: bounded-to-bool
     input:
       name: function
-    child:
-      name: wave
-      frequency: 523.25 # C
-  # Toggle input on/off
-  - name: toggle
+  child:
+    name: wave
+    frequency: 659.25 # E
+# Toggle input on/off, smoothly
+- name: toggle
+  smooth:
+    smooth-in-duration: 0.05 seconds
+    smooth-out-duration: 0.1 seconds
+  input:
+    name: bounded-to-bool
     input:
-      name: bounded-to-bool
-      bounded:
-        name: function
-    child:
-      name: wave
-      frequency: 659.25 # E
-  # Toggle input on/off, smoothly
-  - name: toggle
-    smooth:
-      smooth-in-duration: 0.05 seconds
-      smooth-out-duration: 0.1 seconds
-    input:
-      name: bounded-to-bool
-      bounded:
-        name: function
-    child:
-      name: wave
-      fn:
-        name: function
-      frequency: 880.0 # A
-# Play the composition to speakers
-outputs: [{ name: speaker }]
+      name: function
+  child:
+    name: wave
+    fn:
+      name: function
+    frequency: 880.0 # A

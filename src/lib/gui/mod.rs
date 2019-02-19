@@ -1,10 +1,10 @@
 //! Draw composition GUI
 
 use core::tree;
-use core::ReloadingComposition;
+use core::Player;
 use error::*;
 
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -30,9 +30,9 @@ lazy_static! {
 }
 
 /// Start showing the GUI for a composition
-pub fn start(composition: Arc<ReloadingComposition>) -> Result<()> {
+pub fn start(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
     thread::spawn(|| {
-        if let Err(err) = start_window(composition) {
+        if let Err(err) = start_window(player) {
             error!("Error in GUI thread: {}", err.display_chain());
         }
     });
@@ -40,7 +40,7 @@ pub fn start(composition: Arc<ReloadingComposition>) -> Result<()> {
     Ok(())
 }
 
-fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
+fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
     let mut window = RenderWindow::new(
         (WINDOW_WIDTH, WINDOW_HEIGHT),
         "Composer",
@@ -72,7 +72,7 @@ fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
         }
 
         window.clear(&Color::BLACK);
-        draw_composition(&mut window, &composition)?;
+        draw_composition(&mut window, &*player)?;
         window.display();
 
         last_draw_time = Instant::now();
@@ -81,13 +81,12 @@ fn start_window(composition: Arc<ReloadingComposition>) -> Result<()> {
 
 fn draw_composition(
     window: &mut RenderWindow,
-    composition: &ReloadingComposition,
+    reloading_player: &Mutex<Box<Player>>,
 ) -> Result<()>
 {
     // Get what to draw
-    let composition = composition.get_composition();
-    let player = composition.root_player.lock().unwrap();
-    let drawables: Vec<&Drawable> = tree::flatten_tree(player.to_tree())
+    let locked_player = reloading_player.lock().unwrap();
+    let drawables: Vec<&Drawable> = tree::flatten_tree(locked_player.to_tree())
         .into_iter()
         .flat_map(tree::Tree::get_drawables)
         .collect();
