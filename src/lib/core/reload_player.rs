@@ -104,8 +104,5 @@ fn load_player(
 {
     let spec = read::string_to_spec(yaml_str, read_type)?;
     let resolved_macros = spec::resolve_root_macros(spec, consts)?;
-    // TODO
-    Ok(Value::Spec(resolved_macros)
-        .into_type::<Box<Player>>(consts)?
-        .into())
+    Value::Spec(resolved_macros).into_type(consts)
 }
