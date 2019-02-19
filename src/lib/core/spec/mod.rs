@@ -10,9 +10,9 @@ mod spec_field;
 #[macro_use]
 mod super_spec_type;
 mod from_value;
+pub mod read;
 mod spec_macro;
 mod spec_type;
-pub mod yaml;
 
 pub use self::from_value::{FromPrimitiveValue, FromValue};
 pub use self::spec_field::{SpecField, SpecFieldDescription};

@@ -6,5 +6,9 @@ error_chain! {
         SpecError(message: String) {
             display("Error when parsing spec: {}", message)
         }
+        /// Error when parsing executing a command
+        ExecutionError(message: String) {
+            display("Error when executing a command: {}", message)
+        }
     }
 }

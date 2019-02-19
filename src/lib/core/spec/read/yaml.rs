@@ -1,23 +1,12 @@
-//! Read `.yaml`. files into [`Spec`](../struct.Spec.html)s
-
 use core::spec::{Spec, Value};
 use error::*;
 
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::Read;
-use std::path::Path;
 
 use yaml_rust::{Yaml, YamlLoader};
 
-/// Read a `.yaml` file into a `Spec`
-pub fn read(path: &Path) -> Result<Spec> {
-    let yaml_str = get_yaml_str(path)?;
-    parse(yaml_str)
-}
-
-/// Parse a `.yaml` file into a `Spec`
-pub fn parse(yaml_str: String) -> Result<Spec> {
+/// Parse a YAML string into a `Spec`
+pub fn yaml_string_to_spec(yaml_str: String) -> Result<Spec> {
     let yaml = get_yaml(yaml_str)?;
     let value = yaml_to_value(yaml)?;
     if let Value::Spec(spec) = value {
@@ -28,16 +17,6 @@ pub fn parse(yaml_str: String) -> Result<Spec> {
         )
         .into())
     }
-}
-
-/// Get the .yaml text
-pub fn get_yaml_str(path: &Path) -> Result<String> {
-    let mut file =
-        File::open(path).chain_err(|| "Failed to open Spec yaml file")?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)
-        .chain_err(|| "Failed to read from Spec yaml file")?;
-    Ok(contents)
 }
 
 fn get_yaml(yaml_str: String) -> Result<Yaml> {

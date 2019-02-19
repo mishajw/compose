@@ -1,4 +1,5 @@
-use core::spec::yaml;
+use core::spec::read;
+use core::spec::read::ReadType;
 use core::spec::{FromValue, Spec, Value};
 use core::ScaleIndex;
 use core::Time;
@@ -70,7 +71,10 @@ impl Consts {
         consts: &Consts,
     ) -> Result<HashMap<String, Vec<usize>>>
     {
-        let mut scale_spec = yaml::read(Path::new(&scale_definition_path))?;
+        let mut scale_spec = read::path_to_spec(
+            Path::new(&scale_definition_path),
+            ReadType::Yaml,
+        )?;
         scale_spec
             .value_names()
             .into_iter()
@@ -89,7 +93,10 @@ impl Consts {
         consts: &Consts,
     ) -> Result<HashMap<String, Vec<ScaleIndex>>>
     {
-        let mut chord_spec = yaml::read(Path::new(&chord_definition_path))?;
+        let mut chord_spec = read::path_to_spec(
+            Path::new(&chord_definition_path),
+            ReadType::Yaml,
+        )?;
         chord_spec
             .value_names()
             .into_iter()
