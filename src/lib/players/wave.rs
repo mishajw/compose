@@ -31,7 +31,7 @@ impl SpecType<Speed> for Wave {
     fn name() -> String { "wave".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
-        vec![FN.to_description()]
+        vec![FN.to_description(), FREQUENCY.to_description()]
     }
 
     fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Speed> {
