@@ -12,7 +12,7 @@ name = "composer"
 path = "src/main.rs"
 
 [[bin]]
-name = "python"
+name = "generate-python"
 path = "src/python/generate.rs"
 
 [dependencies]
