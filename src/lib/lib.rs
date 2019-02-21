@@ -9,6 +9,9 @@
 
 #![warn(missing_docs)]
 
+/// Default configuration file path
+pub const DEFAULT_CONFIG_PATH: &str = "./composer.config";
+
 #[macro_use]
 extern crate error_chain;
 extern crate portaudio;

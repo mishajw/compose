@@ -7,8 +7,7 @@ extern crate clap;
 
 use composer::core::spec::read::ReadType;
 use composer::error::*;
-
-const DEFAULT_CONFIG_PATH: &str = "./composer.config";
+use composer::DEFAULT_CONFIG_PATH;
 
 quick_main!(run);
 

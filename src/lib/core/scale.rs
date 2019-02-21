@@ -48,7 +48,7 @@ impl Scale {
     pub fn default_size(&self) -> usize { self.steps.len() }
 
     /// Get notes of the scale
-    pub fn get_notes(&self, num: usize) -> Vec<Note> {
+    pub fn to_notes(&self, num: usize) -> Vec<Note> {
         let mut note = self.base.clone();
         let mut result = vec![note.clone()];
         for step in self.steps.iter().cycle().take(num - 1) {

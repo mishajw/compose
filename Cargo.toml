@@ -15,6 +15,10 @@ path = "src/main.rs"
 name = "generate-python"
 path = "src/python/generate.rs"
 
+[[bin]]
+name = "freq-resolver"
+path = "src/frequency_resolver.rs"
+
 [dependencies]
 error-chain = "*"
 yaml-rust = "*"

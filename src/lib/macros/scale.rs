@@ -24,7 +24,7 @@ impl SpecMacro for Scale {
 
         Ok(Value::List(
             scale
-                .get_notes(num_notes)
+                .to_notes(num_notes)
                 .iter()
                 .map(Note::to_frequency)
                 .map(Value::Float)
