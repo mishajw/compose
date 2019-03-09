@@ -6,7 +6,7 @@ use core::Output;
 use core::Player;
 use error::*;
 
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 /// A composition to be played
 pub struct Composition {
@@ -15,8 +15,7 @@ pub struct Composition {
     /// Outputs to play the composition to
     pub outputs: Mutex<Vec<Box<Output>>>,
     /// Constants shared across the composition
-    // TODO: Why arc?
-    pub consts: Arc<Consts>,
+    pub consts: Consts,
 }
 
 impl FromValue for Composition {
@@ -53,7 +52,7 @@ impl FromValue for Composition {
         Ok(Composition {
             root_player: Mutex::new(root_player),
             outputs: Mutex::new(outputs),
-            consts: Arc::new(consts),
+            consts: consts,
         })
     }
 }
