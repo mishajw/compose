@@ -12,10 +12,6 @@ name = "composer"
 path = "src/main.rs"
 
 [[bin]]
-name = "generate-python"
-path = "src/python/generate.rs"
-
-[[bin]]
 name = "freq-resolver"
 path = "src/frequency_resolver.rs"
 

@@ -7,6 +7,7 @@ extern crate clap;
 
 use composer::core::spec::read::ReadType;
 use composer::error::*;
+use composer::pycomposer;
 use composer::DEFAULT_CONFIG_PATH;
 
 quick_main!(run);
@@ -37,6 +38,10 @@ fn run() -> Result<()> {
     let env = env_logger::Env::default()
         .filter_or(env_logger::DEFAULT_FILTER_ENV, "composer=debug");
     env_logger::Builder::from_env(env).init();
+
+    // Create python library
+    // TODO: Only do this when reading a python file
+    pycomposer::write_library()?;
 
     composer::core::composer::compose_from_file(
         spec_path.into(),

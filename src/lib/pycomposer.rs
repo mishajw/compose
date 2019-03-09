@@ -1,12 +1,13 @@
-extern crate composer;
+//! Generate a python library for constructing specs
 
-use composer::core::input::Bool;
-use composer::core::input::Bounded;
-use composer::core::spec::SpecFieldDescription;
-use composer::core::spec::SpecTypeDescription;
-use composer::core::spec::SuperSpecType;
-use composer::core::Output;
-use composer::core::Player;
+use core::input::Bool;
+use core::input::Bounded;
+use core::spec::SpecFieldDescription;
+use core::spec::SpecTypeDescription;
+use core::spec::SuperSpecType;
+use core::Output;
+use core::Player;
+use error::*;
 
 use std::fs;
 
@@ -16,9 +17,12 @@ from typing import Optional, Iterable
 from pycomposer import ToSpec, Time
 ";
 
-fn main() {
+/// Write out the python library
+pub fn write_library() -> Result<()> {
     let python_output = create_all();
-    fs::write(OUTPUT_PATH, python_output).expect("Failed to write python file");
+    fs::write(OUTPUT_PATH, python_output)
+        .chain_err(|| "Failed to write python file")?;
+    Ok(())
 }
 
 fn create_all() -> String {
