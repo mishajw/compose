@@ -9,7 +9,6 @@ mod linear;
 mod play_input;
 mod sample;
 mod speed;
-mod toggle;
 mod volume;
 mod wave;
 mod wave_drawer;
@@ -21,12 +20,11 @@ pub use self::linear::Linear;
 pub use self::play_input::PlayInput;
 pub use self::sample::Sample;
 pub use self::speed::Speed;
-pub use self::toggle::Toggle;
 pub use self::volume::Volume;
 pub use self::wave::Wave;
 pub use self::wave_drawer::WaveDrawer;
 
 impl_super_from_value!(
-    Player, "player", Wave, Volume, Combiner, Toggle, Keyboard, Sample,
-    WaveDrawer, Speed, Empty, Linear
+    Player, "player", Wave, Volume, Combiner, Keyboard, Sample, WaveDrawer,
+    Speed, Empty, Linear
 );

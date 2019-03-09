@@ -1,34 +1,27 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
+use core::Input;
 use core::State;
 use core::Time;
 use error::*;
 use inputs::Function;
 
-field_decl!(INPUT, Box<input::Bool>, "Bool to smooth");
+field_decl!(INPUT, Box<Input>, "Input to smooth");
 field_decl!(SMOOTH_IN, Time, "How long to smooth in for");
 field_decl!(SMOOTH_OUT, Time, "How long to smooth out for");
-field_decl!(
-    SMOOTH_FN,
-    Box<input::Bounded>,
-    "Smoothing function",
-    |_| Box::new(Function::with_mod(
-        Box::new(|x| x),
-        0.0,
-        1.0,
-        Time::Seconds(1.1),
-    )) as Box<input::Bounded>
-);
+field_decl!(SMOOTH_FN, Box<Input>, "Smoothing function", |_| Box::new(
+    Function::with_mod(Box::new(|x| x), Time::Seconds(1.0),)
+)
+    as Box<Input>);
 
 /// Smooth a bool transition
 pub struct SmoothBool {
-    bool_input: Box<input::Bool>,
-    smooth_fn: Box<input::Bounded>,
+    bool_input: Box<Input>,
+    smooth_fn: Box<Input>,
     smooth_in_duration: Time,
     smooth_out_duration: Time,
     activation: f64,
@@ -37,12 +30,13 @@ pub struct SmoothBool {
 impl SmoothBool {
     #[allow(missing_docs)]
     pub fn bounded(
-        bool_input: Box<input::Bool>,
-        smooth_fn: Box<input::Bounded>,
+        bool_input: Box<Input>,
+        smooth_fn: Box<Input>,
         smooth_in_duration: Time,
         smooth_out_duration: Time,
     ) -> SmoothBool
     {
+        // TODO: Enfore smooth_fn limit [0, 1]
         SmoothBool {
             bool_input,
             smooth_fn,
@@ -53,9 +47,9 @@ impl SmoothBool {
     }
 }
 
-impl input::Bounded for SmoothBool {
+impl Input for SmoothBool {
     fn get(&mut self, state: &State) -> f64 {
-        let input = self.bool_input.get(state);
+        let input = self.bool_input.get_bool(state);
         if input && self.activation < 1.0 {
             self.activation +=
                 1.0 / self.smooth_in_duration.to_ticks(&state.consts) as f64;
@@ -65,16 +59,12 @@ impl input::Bounded for SmoothBool {
                 1.0 / self.smooth_out_duration.to_ticks(&state.consts) as f64;
             self.activation = self.activation.max(0.0);
         }
-        self.smooth_fn.get_with_bounds(
+        self.smooth_fn.get(
             &state.with_tick(
                 Time::Seconds(self.activation).to_ticks(&state.consts),
             ),
-            0.0,
-            1.0,
         )
     }
-
-    fn get_bounds(&self) -> (f64, f64) { (0.0, 1.0) }
 }
 
 impl Tree for SmoothBool {

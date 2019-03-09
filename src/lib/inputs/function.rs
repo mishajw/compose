@@ -1,10 +1,10 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
+use core::Input;
 use core::State;
 use core::Time;
 use error::*;
@@ -15,23 +15,14 @@ field_decl!(FN, String, "The name of the function", |_| "sine"
 /// A function input, returns values from a function
 pub struct Function {
     function: Box<Fn(f64) -> f64 + Send + Sync>,
-    lower_bound: f64,
-    upper_bound: f64,
     time_mod: Option<Time>,
 }
 
 impl Function {
     #[allow(missing_docs)]
-    pub fn bounded(
-        function: Box<Fn(f64) -> f64 + Send + Sync>,
-        lower_bound: f64,
-        upper_bound: f64,
-    ) -> Function
-    {
+    pub fn bounded(function: Box<Fn(f64) -> f64 + Send + Sync>) -> Function {
         Function {
             function,
-            lower_bound,
-            upper_bound,
             time_mod: None,
         }
     }
@@ -39,15 +30,11 @@ impl Function {
     #[allow(missing_docs)]
     pub fn with_mod(
         function: Box<Fn(f64) -> f64 + Send + Sync>,
-        lower_bound: f64,
-        upper_bound: f64,
         time_mod: Time,
     ) -> Function
     {
         Function {
             function,
-            lower_bound,
-            upper_bound,
             time_mod: Some(time_mod),
         }
     }
@@ -57,22 +44,15 @@ impl Function {
         let function = match wave_string.as_ref() {
             "sine" => Function::with_mod(
                 Box::new(|x| f64::sin(x * 2.0 * ::std::f64::consts::PI)),
-                -1.0,
-                1.0,
                 Time::Seconds(1.0),
             ),
             "cosine" => Function::with_mod(
                 Box::new(|x| f64::cos(x * 2.0 * ::std::f64::consts::PI)),
-                -1.0,
-                1.0,
                 Time::Seconds(1.0),
             ),
-            "saw" => Function::with_mod(
-                Box::new(|x| x * x),
-                0.0,
-                1.0,
-                Time::Seconds(1.0),
-            ),
+            "saw" => {
+                Function::with_mod(Box::new(|x| x * x), Time::Seconds(1.0))
+            }
             function => {
                 return Err(ErrorKind::SpecError(format!(
                     "Unrecognized function: {}",
@@ -92,7 +72,7 @@ impl Function {
     }
 }
 
-impl input::Bounded for Function {
+impl Input for Function {
     fn get(&mut self, state: &State) -> f64 {
         let milli_tick = match &self.time_mod {
             Some(time_mod) => {
@@ -103,8 +83,6 @@ impl input::Bounded for Function {
         let fn_input = (milli_tick as f64) / 1000.0 / state.consts.sample_hz;
         (*self.function)(fn_input)
     }
-
-    fn get_bounds(&self) -> (f64, f64) { (self.lower_bound, self.upper_bound) }
 }
 
 impl Tree for Function {

@@ -1,30 +1,31 @@
-use core::input;
 use core::tree::Tree;
+use core::Consts;
+use core::Input;
 use core::Playable;
 use core::Player;
 use core::State;
+use inputs::InputMod;
 
 use std::i32;
 
 /// Play directly from a bounded input
 pub struct PlayInput {
-    input: Box<input::Bounded>,
+    input: Box<Input>,
 }
 
 impl PlayInput {
     #[allow(missing_docs)]
-    pub fn player(input: Box<input::Bounded>) -> Box<Player> {
-        Box::new(PlayInput { input })
+    pub fn new(input: Box<Input>, consts: &Consts) -> Box<Player> {
+        let mult = consts.loudness_factor * i32::MAX as f64;
+        Box::new(PlayInput {
+            input: Box::new(InputMod::new(input, 0.0, mult)),
+        })
     }
 }
 
 impl Player for PlayInput {
     fn play(&mut self, state: &State) -> Playable {
-        Playable::new(self.input.get_with_bounds(
-            state,
-            f64::from(i32::MIN) * state.consts.loudness_factor,
-            f64::from(i32::MAX) * state.consts.loudness_factor,
-        ) as i32)
+        Playable::new(self.input.get(state) as i32)
     }
 }
 

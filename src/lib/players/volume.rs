@@ -1,34 +1,34 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
+use core::Input;
 use core::Playable;
 use core::Player;
 use core::State;
 use error::*;
 
 field_decl!(CHILD, Box<Player>, "Child to change the volume of");
-field_decl!(INPUT, Box<input::Bounded>, "Controls the volume level");
+field_decl!(INPUT, Box<Input>, "Controls the volume level");
 
 /// Adjust the volume of a child player
 pub struct Volume {
     child: Box<Player>,
-    input: Box<input::Bounded>,
+    input: Box<Input>,
 }
 
 impl Volume {
     #[allow(missing_docs)]
-    pub fn player(child: Box<Player>, input: Box<input::Bounded>) -> Volume {
+    pub fn player(child: Box<Player>, input: Box<Input>) -> Volume {
         Volume { child, input }
     }
 }
 
 impl Player for Volume {
     fn play(&mut self, state: &State) -> Playable {
-        self.child.play(state) * self.input.get_with_bounds(state, 0.0, 1.0)
+        self.child.play(state) * self.input.get(state)
     }
 }
 

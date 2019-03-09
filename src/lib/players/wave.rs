@@ -1,9 +1,9 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::Consts;
+use core::Input;
 use error::*;
 use inputs::Function;
 use players::PlayInput;
@@ -11,9 +11,9 @@ use players::Speed;
 
 field_decl!(
     FN,
-    Box<input::Bounded>,
+    Box<Input>,
     "The function that defines the wave shape",
-    |_| Box::new(Function::default()) as Box<input::Bounded>
+    |_| Box::new(Function::default()) as Box<Input>
 );
 field_decl!(FREQUENCY, f64, "Frequency of the wave");
 
@@ -22,8 +22,13 @@ pub struct Wave {}
 
 impl Wave {
     #[allow(missing_docs)]
-    pub fn player(input: Box<input::Bounded>, frequency: f64) -> Result<Speed> {
-        Speed::player(PlayInput::player(input), frequency)
+    pub fn new(
+        input: Box<Input>,
+        frequency: f64,
+        consts: &Consts,
+    ) -> Result<Speed>
+    {
+        Speed::player(PlayInput::new(input, consts), frequency)
     }
 }
 
@@ -38,6 +43,6 @@ impl SpecType<Speed> for Wave {
         let function = FN.get(&mut spec, consts)?;
         let frequency = FREQUENCY.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
-        Wave::player(function, frequency)
+        Wave::new(function, frequency, consts)
     }
 }

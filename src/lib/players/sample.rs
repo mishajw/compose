@@ -48,7 +48,7 @@ impl Sample {
             .chain_err(|| "Failed to read sample")?;
 
         Ok(Speed::player(
-            PlayInput::player(Buffer::bounded(buffer)),
+            PlayInput::new(Buffer::new(buffer), consts),
             f64::from(sample_hz) / consts.sample_hz,
         )?)
     }

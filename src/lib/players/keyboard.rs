@@ -1,9 +1,9 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::Consts;
+use core::Input;
 use core::Player;
 use error::*;
 use players::Combiner;
@@ -14,11 +14,7 @@ field_decl!(
     Vec<Box<Player>>,
     "The sounds played by the keyboard"
 );
-field_decl!(
-    INPUTS,
-    Vec<Box<input::Bounded>>,
-    "Controls what sounds are played"
-);
+field_decl!(INPUTS, Vec<Box<Input>>, "Controls what sounds are played");
 
 /// Selectively plays from its children
 pub struct Keyboard {}

@@ -1,10 +1,9 @@
 //! Generate a python library for constructing specs
 
-use core::input::Bool;
-use core::input::Bounded;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecTypeDescription;
 use core::spec::SuperSpecType;
+use core::Input;
 use core::Output;
 use core::Player;
 use error::*;
@@ -27,8 +26,7 @@ pub fn write_library() -> Result<()> {
 
 fn create_all() -> String {
     PREAMBLE.to_string()
-        + &create_super_type::<Box<Bool>>()
-        + &create_super_type::<Box<Bounded>>()
+        + &create_super_type::<Box<Input>>()
         + &create_super_type::<Box<Player>>()
         + &create_super_type::<Box<Output>>()
 }

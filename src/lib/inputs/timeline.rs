@@ -1,10 +1,10 @@
-use core::input;
 use core::spec::Spec;
 use core::spec::SpecField;
 use core::spec::SpecFieldDescription;
 use core::spec::SpecType;
 use core::tree::Tree;
 use core::Consts;
+use core::Input;
 use core::State;
 use core::Time;
 use error::*;
@@ -41,12 +41,16 @@ impl Timeline {
     }
 }
 
-impl input::Bool for Timeline {
-    fn get(&mut self, state: &State) -> bool {
+impl Input for Timeline {
+    fn get(&mut self, state: &State) -> f64 {
         let event_index = state.tick() as usize
             % (self.events.len() * self.event_duration.to_ticks(&state.consts))
             / (self.event_duration.to_ticks(&state.consts));
-        self.events[event_index]
+        if self.events[event_index] {
+            1.0
+        } else {
+            0.0
+        }
     }
 }
 
