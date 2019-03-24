@@ -5,10 +5,11 @@ use core::spec::SpecType;
 use core::Consts;
 use core::Time;
 use error::*;
-use hound;
 use inputs::Buffer;
 use players::PlayInput;
 use players::Speed;
+
+use hound;
 
 field_decl!(PATH, String, "Path of the .wav file to sample from");
 field_decl!(START, Time, "Start of the sample in the .wav file");
@@ -31,6 +32,7 @@ impl Sample {
         let start_seconds = start.to_seconds(consts);
         let duration_seconds = duration.to_seconds(consts);
         let sample_hz = reader.spec().sample_rate;
+        let num_channels = reader.spec().channels as usize;
 
         // Skip to the part of the sample we want
         reader
@@ -42,6 +44,10 @@ impl Sample {
         // Extract the samples we need
         let buffer: Vec<f64> = reader
             .samples::<i32>()
+            // Only take the first channel
+            .enumerate()
+            .filter(|(i, _)| i % num_channels == 0)
+            .map(|(_, r)| r)
             .take((f64::from(sample_hz) * duration_seconds) as usize)
             .map(|r| r.map(f64::from))
             .collect::<std::result::Result<_, _>>()
