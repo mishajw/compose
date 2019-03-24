@@ -11,6 +11,7 @@ use std::time::{Duration, Instant};
 use error_chain::ChainedError;
 use sfml::graphics::{Color, RenderTarget, RenderWindow};
 use sfml::window::{Event, Key, Style};
+use sfml::system::Vector2u;
 
 mod drawable;
 pub use self::drawable::Drawable;
@@ -48,6 +49,7 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
         &Default::default(),
     );
     window.set_vertical_sync_enabled(true);
+    let window_size = window.size();
 
     let mut last_draw_time = Instant::now();
     let min_draw_gap =
@@ -59,9 +61,6 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
                 | Event::KeyPressed {
                     code: Key::Escape, ..
                 } => return Ok(()),
-                Event::Resized { width, height } => {
-                    window.set_size((width, height))
-                }
                 _ => {}
             }
         }
@@ -72,7 +71,7 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
         }
 
         window.clear(&Color::BLACK);
-        draw_composition(&mut window, &*player)?;
+        draw_composition(&mut window, &window_size, &*player)?;
         window.display();
 
         last_draw_time = Instant::now();
@@ -81,6 +80,7 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
 
 fn draw_composition(
     window: &mut RenderWindow,
+    window_size: &Vector2u,
     reloading_player: &Mutex<Box<Player>>,
 ) -> Result<()>
 {
@@ -95,14 +95,13 @@ fn draw_composition(
     }
 
     let num_drawables = drawables.len();
-    let size = window.size();
-    let drawable_height = size.y as u32 / num_drawables as u32;
+    let drawable_height = window_size.y as u32 / num_drawables as u32;
 
     for (i, drawable) in drawables.into_iter().enumerate() {
         drawable.draw(
             window,
             COLORS[i % COLORS.len()],
-            size.x as u32,
+            window_size.x as u32,
             drawable_height,
             0,
             drawable_height * i as u32,
