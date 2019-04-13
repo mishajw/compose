@@ -23,12 +23,14 @@ extern crate regex;
 #[macro_use]
 extern crate lazy_static;
 extern crate num;
+extern crate rustfft;
 extern crate sfml;
 
 #[macro_use]
 pub mod core;
 
 pub mod error;
+pub mod fourier;
 pub mod gui;
 pub mod inputs;
 pub mod macros;
