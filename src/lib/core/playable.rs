@@ -16,6 +16,9 @@ impl Playable {
 
     #[allow(missing_docs)]
     pub fn get_value(self) -> i32 { self.value }
+
+    /// Get the zero value for the playable
+    pub fn zero() -> Playable { Playable::new(0) }
 }
 
 impl ops::Add for Playable {
