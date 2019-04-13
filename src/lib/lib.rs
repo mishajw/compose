@@ -23,6 +23,7 @@ extern crate regex;
 #[macro_use]
 extern crate lazy_static;
 extern crate num;
+extern crate rand;
 extern crate rustfft;
 extern crate sfml;
 
