@@ -44,7 +44,11 @@ impl SpecType for InputMod {
     fn name() -> String { "input-mod".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
-        vec![INPUT.to_description()]
+        vec![
+            INPUT.to_description(),
+            ADD.to_description(),
+            MULT.to_description(),
+        ]
     }
 
     fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {

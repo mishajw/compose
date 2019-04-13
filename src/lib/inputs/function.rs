@@ -50,9 +50,7 @@ impl Function {
                 Box::new(|x| f64::cos(x * 2.0 * ::std::f64::consts::PI)),
                 Time::Seconds(1.0),
             ),
-            "saw" => {
-                Function::with_mod(Box::new(|x| x * x), Time::Seconds(1.0))
-            }
+            "saw" => Function::with_mod(Box::new(|x| x), Time::Seconds(1.0)),
             function => {
                 return Err(ErrorKind::SpecError(format!(
                     "Unrecognized function: {}",

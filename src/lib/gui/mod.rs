@@ -10,8 +10,8 @@ use std::time::{Duration, Instant};
 
 use error_chain::ChainedError;
 use sfml::graphics::{Color, RenderTarget, RenderWindow};
-use sfml::window::{Event, Key, Style};
 use sfml::system::Vector2u;
+use sfml::window::{Event, Key, Style};
 
 mod drawable;
 pub use self::drawable::Drawable;
