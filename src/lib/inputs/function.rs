@@ -11,19 +11,24 @@ use error::*;
 
 field_decl!(FN, String, "The name of the function", |_| "sine"
     .to_string());
+field_decl!(REVERSED, bool, "Whether the function is reversed", |_| {
+    false
+});
 
 /// A function input, returns values from a function
 pub struct Function {
     function: Box<Fn(f64) -> f64 + Send + Sync>,
     time_mod: Option<Time>,
+    reversed: bool,
 }
 
 impl Function {
     #[allow(missing_docs)]
-    pub fn bounded(function: Box<Fn(f64) -> f64 + Send + Sync>) -> Function {
+    pub fn new(function: Box<Fn(f64) -> f64 + Send + Sync>) -> Function {
         Function {
             function,
             time_mod: None,
+            reversed: false,
         }
     }
 
@@ -31,29 +36,38 @@ impl Function {
     pub fn with_mod(
         function: Box<Fn(f64) -> f64 + Send + Sync>,
         time_mod: Time,
+        reversed: bool,
     ) -> Function
     {
         Function {
             function,
             time_mod: Some(time_mod),
+            reversed,
         }
     }
 
-    #[allow(missing_docs)]
-    pub fn from_string(wave_string: String) -> Result<Function> {
+    fn from_string(wave_string: String, reversed: bool) -> Result<Function> {
         let function = match wave_string.as_ref() {
             "sine" => Function::with_mod(
                 Box::new(|x| f64::sin(x * 2.0 * ::std::f64::consts::PI)),
                 Time::Seconds(1.0),
+                reversed,
             ),
             "cosine" => Function::with_mod(
                 Box::new(|x| f64::cos(x * 2.0 * ::std::f64::consts::PI)),
                 Time::Seconds(1.0),
+                reversed,
             ),
-            "saw" => Function::with_mod(Box::new(|x| x), Time::Seconds(1.0)),
-            "saw-exp" => {
-                Function::with_mod(Box::new(|x| x * x), Time::Seconds(1.0))
-            }
+            "saw" => Function::with_mod(
+                Box::new(|x| x),
+                Time::Seconds(1.0),
+                reversed,
+            ),
+            "saw-exp" => Function::with_mod(
+                Box::new(|x| x * x),
+                Time::Seconds(1.0),
+                reversed,
+            ),
             function => {
                 return Err(ErrorKind::SpecError(format!(
                     "Unrecognized function: {}",
@@ -68,7 +82,7 @@ impl Function {
 
     #[allow(missing_docs)]
     pub fn default() -> Function {
-        Self::from_string("sine".into())
+        Self::from_string("sine".into(), false)
             .expect("Failed to create default function")
     }
 }
@@ -77,7 +91,13 @@ impl Input for Function {
     fn get(&mut self, state: &State) -> f64 {
         let milli_tick = match &self.time_mod {
             Some(time_mod) => {
-                state.milli_tick % (time_mod.to_ticks(&state.consts) * 1000)
+                let time_milli_tick = time_mod.to_ticks(&state.consts) * 1000;
+                let milli_tick_mod = state.milli_tick % time_milli_tick;
+                if self.reversed {
+                    time_milli_tick - milli_tick_mod
+                } else {
+                    milli_tick_mod
+                }
             }
             None => state.milli_tick,
         };
@@ -94,13 +114,14 @@ impl SpecType for Function {
     fn name() -> String { "function".into() }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
-        vec![FN.to_description()]
+        vec![FN.to_description(), REVERSED.to_description()]
     }
 
     fn from_spec(mut spec: Spec, consts: &Consts) -> Result<Self> {
         let fn_name = FN.get(&mut spec, consts)?;
+        let reversed = REVERSED.get(&mut spec, consts)?;
         spec.ensure_all_used()?;
-        Ok(Function::from_string(fn_name)?)
+        Ok(Function::from_string(fn_name, reversed)?)
     }
 }
 
