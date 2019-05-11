@@ -35,7 +35,7 @@ impl Player for Volume {
 impl Tree for Volume {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+    fn get_children(&self) -> Vec<&Tree> {
         vec![self.child.to_tree(), self.input.to_tree()]
     }
 }

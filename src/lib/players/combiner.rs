@@ -34,7 +34,7 @@ impl Player for Combiner {
 impl Tree for Combiner {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+    fn get_children(&self) -> Vec<&Tree> {
         self.children.iter().map(|c| c.to_tree()).collect()
     }
 }

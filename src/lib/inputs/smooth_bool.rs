@@ -70,7 +70,7 @@ impl Input for SmoothBool {
 impl Tree for SmoothBool {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+    fn get_children(&self) -> Vec<&Tree> {
         vec![self.bool_input.to_tree()]
     }
 }

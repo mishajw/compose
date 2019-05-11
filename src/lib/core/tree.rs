@@ -15,14 +15,14 @@ pub trait Tree {
     fn to_tree(&self) -> &Tree;
 
     /// Get the children of this tree
-    fn get_children<'a>(&'a self) -> Vec<&'a Tree> { Vec::new() }
+    fn get_children(&self) -> Vec<&Tree> { Vec::new() }
 
     /// Get the child drawables of this tree
-    fn get_drawables<'a>(&'a self) -> Vec<&'a Drawable> { Vec::new() }
+    fn get_drawables(&self) -> Vec<&Drawable> { Vec::new() }
 }
 
 /// Return a list of all nodes in a tree
-pub fn flatten_tree<'a>(root: &'a Tree) -> Vec<&'a Tree> {
+pub fn flatten_tree(root: &Tree) -> Vec<&Tree> {
     root.get_children()
         .into_iter()
         .map(flatten_tree)

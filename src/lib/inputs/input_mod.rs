@@ -35,7 +35,7 @@ impl Input for InputMod {
 impl Tree for InputMod {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children<'a>(&'a self) -> Vec<&'a Tree> {
+    fn get_children(&self) -> Vec<&Tree> {
         vec![self.input.to_tree()]
     }
 }
