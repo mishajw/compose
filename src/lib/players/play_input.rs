@@ -32,7 +32,5 @@ impl Player for PlayInput {
 impl Tree for PlayInput {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children(&self) -> Vec<&Tree> {
-        vec![self.input.to_tree()]
-    }
+    fn get_children(&self) -> Vec<&Tree> { vec![self.input.to_tree()] }
 }

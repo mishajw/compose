@@ -68,9 +68,7 @@ impl Player for WaveDrawer {
 impl Tree for WaveDrawer {
     fn to_tree(&self) -> &Tree { self as &Tree }
 
-    fn get_children(&self) -> Vec<&Tree> {
-        vec![self.child.to_tree()]
-    }
+    fn get_children(&self) -> Vec<&Tree> { vec![self.child.to_tree()] }
 
     fn get_drawables(&self) -> Vec<&Drawable> { vec![self] }
 }
