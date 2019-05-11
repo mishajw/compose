@@ -31,10 +31,14 @@ extern crate sfml;
 pub mod core;
 
 pub mod error;
-pub mod fourier;
+mod fourier;
 pub mod gui;
 pub mod inputs;
 pub mod macros;
 pub mod outputs;
 pub mod players;
 pub mod pycomposer;
+mod sample_bucketer;
+
+pub use fourier::fourier;
+pub use sample_bucketer::SampleBucketer;
