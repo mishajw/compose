@@ -128,7 +128,6 @@ impl SpecType for Function {
 #[cfg(test)]
 mod test {
     use super::*;
-    use core::input::Bounded;
     use core::Consts;
     use std::sync::Arc;
 
@@ -136,7 +135,7 @@ mod test {
     fn test_sine() {
         let consts = Arc::new(Consts::default().unwrap());
         let state = State::initial(consts.clone());
-        let mut function = Function::from_string("sine".into()).unwrap();
+        let mut function = Function::from_string("sine".into(), false).unwrap();
         assert!((0.0 - function.get(&state.with_tick(0))).abs() < 0.001);
         assert!(
             (1.0 - function
