@@ -14,7 +14,7 @@ field_decl!(INPUT, Box<Input>, "Input to smooth");
 field_decl!(SMOOTH_IN, Time, "How long to smooth in for");
 field_decl!(SMOOTH_OUT, Time, "How long to smooth out for");
 field_decl!(SMOOTH_FN, Box<Input>, "Smoothing function", |_| Box::new(
-    Function::with_mod(Box::new(|x| x), Time::Seconds(1.0), false)
+    Function::new(Box::new(|x| x))
 )
     as Box<Input>);
 
