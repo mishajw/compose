@@ -11,16 +11,22 @@ use players::Volume;
 
 field_decl!(
     CHILDREN,
-    Vec<Box<Player>>,
+    Vec<Box<dyn Player>>,
     "The sounds played by the keyboard"
 );
-field_decl!(INPUTS, Vec<Box<Input>>, "Controls what sounds are played");
+field_decl!(
+    INPUTS,
+    Vec<Box<dyn Input>>,
+    "Controls what sounds are played"
+);
 
 /// Selectively plays from its children
 pub struct Keyboard {}
 
 impl SpecType<Combiner> for Keyboard {
-    fn name() -> String { "keyboard".into() }
+    fn name() -> String {
+        "keyboard".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILDREN.to_description(), INPUTS.to_description()]
@@ -44,9 +50,7 @@ impl SpecType<Combiner> for Keyboard {
         let children_with_input = children
             .into_iter()
             .zip(inputs)
-            .map(|(player, input)| {
-                Box::new(Volume::player(player, input)) as Box<Player>
-            })
+            .map(|(player, input)| Box::new(Volume::player(player, input)) as Box<dyn Player>)
             .collect();
 
         Ok(Combiner::player(children_with_input))

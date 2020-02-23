@@ -8,15 +8,15 @@ use core::Player;
 use error::*;
 use players::Volume;
 
-field_decl!(CHILD, Box<Player>, "Child to toggle on and off");
-field_decl!(INPUT, Box<Input>, "Controls the toggling");
+field_decl!(CHILD, Box<dyn Player>, "Child to toggle on and off");
+field_decl!(INPUT, Box<dyn Input>, "Controls the toggling");
 
 /// Toggle a player on and off
 pub struct Toggle {}
 
 impl Toggle {
     #[allow(missing_docs)]
-    pub fn new(child: Box<Player>, input: Box<Input>) -> Volume {
+    pub fn new(child: Box<dyn Player>, input: Box<dyn Input>) -> Volume {
         Volume::player(child, input)
     }
 }

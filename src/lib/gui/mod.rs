@@ -31,7 +31,7 @@ lazy_static! {
 }
 
 /// Start showing the GUI for a composition
-pub fn start(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
+pub fn start(player: Arc<Mutex<Box<dyn Player>>>) -> Result<()> {
     thread::spawn(|| {
         if let Err(err) = start_window(player) {
             error!("Error in GUI thread: {}", err.display_chain());
@@ -41,7 +41,7 @@ pub fn start(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
     Ok(())
 }
 
-fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
+fn start_window(player: Arc<Mutex<Box<dyn Player>>>) -> Result<()> {
     let mut window = RenderWindow::new(
         (WINDOW_WIDTH, WINDOW_HEIGHT),
         "Composer",
@@ -52,8 +52,7 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
     let window_size = window.size();
 
     let mut last_draw_time = Instant::now();
-    let min_draw_gap =
-        Duration::from_millis((1000.0 / f64::from(MAX_FPS)) as u64);
+    let min_draw_gap = Duration::from_millis((1000.0 / f64::from(MAX_FPS)) as u64);
     loop {
         while let Some(event) = window.poll_event() {
             match event {
@@ -81,12 +80,11 @@ fn start_window(player: Arc<Mutex<Box<Player>>>) -> Result<()> {
 fn draw_composition(
     window: &mut RenderWindow,
     window_size: &Vector2u,
-    reloading_player: &Mutex<Box<Player>>,
-) -> Result<()>
-{
+    reloading_player: &Mutex<Box<dyn Player>>,
+) -> Result<()> {
     // Get what to draw
     let locked_player = reloading_player.lock().unwrap();
-    let drawables: Vec<&Drawable> = tree::flatten_tree(locked_player.to_tree())
+    let drawables: Vec<&dyn Drawable> = tree::flatten_tree(locked_player.to_tree())
         .into_iter()
         .flat_map(tree::Tree::get_drawables)
         .collect();

@@ -29,7 +29,9 @@ pub trait FromPrimitiveValue: FromValue {
 macro_rules! from_primitive_value_impl {
     ($extracted_type:ty, $value_pattern:tt) => {
         impl FromValue for $extracted_type {
-            fn name() -> String { stringify!($extracted_type).into() }
+            fn name() -> String {
+                stringify!($extracted_type).into()
+            }
 
             fn from_value(value: Value, _consts: &Consts) -> Result<Self> {
                 match value {
@@ -58,7 +60,9 @@ macro_rules! from_primitive_value_impl {
                 }
             }
 
-            fn into_value(self) -> Value { Value::$value_pattern(self) }
+            fn into_value(self) -> Value {
+                Value::$value_pattern(self)
+            }
         }
     };
 }
@@ -71,21 +75,33 @@ from_primitive_value_impl!(bool, Bool);
 from_primitive_value_impl!(Spec, Spec);
 
 impl FromValue for Value {
-    fn name() -> String { "value".into() }
+    fn name() -> String {
+        "value".into()
+    }
 
-    fn from_value(value: Value, _consts: &Consts) -> Result<Self> { Ok(value) }
+    fn from_value(value: Value, _consts: &Consts) -> Result<Self> {
+        Ok(value)
+    }
 }
 
 impl FromPrimitiveValue for Value {
-    fn from_value_opt(value: &Value) -> Option<&Self> { Some(value) }
+    fn from_value_opt(value: &Value) -> Option<&Self> {
+        Some(value)
+    }
 
-    fn from_value_mut(value: &mut Value) -> Option<&mut Self> { Some(value) }
+    fn from_value_mut(value: &mut Value) -> Option<&mut Self> {
+        Some(value)
+    }
 
-    fn into_value(self) -> Value { self }
+    fn into_value(self) -> Value {
+        self
+    }
 }
 
 impl<T: FromValue> FromValue for Vec<T> {
-    fn name() -> String { T::name() + "[]" }
+    fn name() -> String {
+        T::name() + "[]"
+    }
 
     fn from_value(value: Value, consts: &Consts) -> Result<Vec<T>> {
         if let Value::List(list) = value {

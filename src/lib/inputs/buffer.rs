@@ -9,7 +9,7 @@ pub struct Buffer {
 
 impl Buffer {
     #[allow(missing_docs)]
-    pub fn new(buffer: Vec<f64>) -> Box<Input> {
+    pub fn new(buffer: Vec<f64>) -> Box<dyn Input> {
         assert!(!buffer.is_empty());
         let min = *buffer
             .iter()
@@ -32,5 +32,7 @@ impl Input for Buffer {
 }
 
 impl Tree for Buffer {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }

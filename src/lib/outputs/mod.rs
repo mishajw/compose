@@ -6,4 +6,4 @@ mod speaker;
 
 pub use self::speaker::Speaker;
 
-impl_super_from_value!(Output, "output", Speaker);
+impl_super_from_value!(dyn Output, "output", Speaker);

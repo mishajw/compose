@@ -10,12 +10,12 @@ use std::i32;
 
 /// Play directly from a bounded input
 pub struct PlayInput {
-    input: Box<Input>,
+    input: Box<dyn Input>,
 }
 
 impl PlayInput {
     #[allow(missing_docs)]
-    pub fn new(input: Box<Input>, consts: &Consts) -> Box<Player> {
+    pub fn new(input: Box<dyn Input>, consts: &Consts) -> Box<dyn Player> {
         let mult = consts.loudness_factor * i32::MAX as f64;
         Box::new(PlayInput {
             input: Box::new(InputMod::new(input, 0.0, mult)),
@@ -30,7 +30,11 @@ impl Player for PlayInput {
 }
 
 impl Tree for PlayInput {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.input.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.input.to_tree()]
+    }
 }

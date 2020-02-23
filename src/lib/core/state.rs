@@ -22,10 +22,14 @@ impl State {
     }
 
     /// Get progress through the composition in ticks
-    pub fn tick(&self) -> usize { self.milli_tick / 1000 }
+    pub fn tick(&self) -> usize {
+        self.milli_tick / 1000
+    }
 
     /// Step to the next state in the composition
-    pub fn increment(&mut self) { self.milli_tick += 1000; }
+    pub fn increment(&mut self) {
+        self.milli_tick += 1000;
+    }
 
     /// Get a copy of the state with a custom tick value
     pub fn with_tick(&self, tick: usize) -> Self {

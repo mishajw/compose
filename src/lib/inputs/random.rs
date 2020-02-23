@@ -28,13 +28,19 @@ impl Input for Random {
 }
 
 impl Tree for Random {
-    fn to_tree(&self) -> &Tree { self }
+    fn to_tree(&self) -> &dyn Tree {
+        self
+    }
 }
 
 impl SpecType for Random {
-    fn name() -> String { "random".into() }
+    fn name() -> String {
+        "random".into()
+    }
 
-    fn field_descriptions() -> Vec<SpecFieldDescription> { vec![] }
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
+        vec![]
+    }
 
     fn from_spec(_spec: Spec, _consts: &Consts) -> Result<Self> {
         Ok(Random {})

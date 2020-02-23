@@ -11,9 +11,9 @@ use players::Speed;
 
 field_decl!(
     FN,
-    Box<Input>,
+    Box<dyn Input>,
     "The function that defines the wave shape",
-    |_| Box::new(Function::default()) as Box<Input>
+    |_| Box::new(Function::default()) as Box<dyn Input>
 );
 field_decl!(FREQUENCY, f64, "Frequency of the wave");
 
@@ -22,18 +22,15 @@ pub struct Wave {}
 
 impl Wave {
     #[allow(missing_docs)]
-    pub fn new(
-        input: Box<Input>,
-        frequency: f64,
-        consts: &Consts,
-    ) -> Result<Speed>
-    {
+    pub fn new(input: Box<dyn Input>, frequency: f64, consts: &Consts) -> Result<Speed> {
         Speed::player(PlayInput::new(input, consts), frequency)
     }
 }
 
 impl SpecType<Speed> for Wave {
-    fn name() -> String { "wave".into() }
+    fn name() -> String {
+        "wave".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description(), FREQUENCY.to_description()]

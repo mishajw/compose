@@ -41,9 +41,7 @@ impl Time {
         match self {
             Time::Beats(beats) => *beats,
             Time::Bars(bars) => bars * consts.beats_per_bar,
-            Time::Seconds(seconds) => {
-                (seconds * consts.beats_per_minute) / 60.0
-            }
+            Time::Seconds(seconds) => (seconds * consts.beats_per_minute) / 60.0,
             ticks => Time::Seconds(ticks.to_seconds(consts)).to_beats(consts),
         }
     }
@@ -54,7 +52,9 @@ impl Time {
     }
 
     /// Represents zero time
-    pub fn zero() -> Time { Time::Ticks(0) }
+    pub fn zero() -> Time {
+        Time::Ticks(0)
+    }
 
     /// Check if represents no time
     pub fn is_zero(&self) -> bool {
@@ -68,7 +68,9 @@ impl Time {
 }
 
 impl FromValue for Time {
-    fn name() -> String { "time".into() }
+    fn name() -> String {
+        "time".into()
+    }
     fn from_value(value: Value, consts: &Consts) -> Result<Time> {
         let string: String = value.into_type(consts)?;
         match string.trim().split(' ').collect::<Vec<_>>().as_slice() {
@@ -88,11 +90,7 @@ impl FromValue for Time {
             [number, "bars"] => Ok(Time::Bars(
                 number.parse().chain_err(|| "Failed to parse bars number")?,
             )),
-            _ => Err(ErrorKind::SpecError(format!(
-                "Unrecognized time unit: {}",
-                string
-            ))
-            .into()),
+            _ => Err(ErrorKind::SpecError(format!("Unrecognized time unit: {}", string)).into()),
         }
     }
 }

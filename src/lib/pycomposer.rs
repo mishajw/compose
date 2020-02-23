@@ -19,16 +19,15 @@ from pycomposer import ToSpec, Time
 /// Write out the python library
 pub fn write_library() -> Result<()> {
     let python_output = create_all();
-    fs::write(OUTPUT_PATH, python_output)
-        .chain_err(|| "Failed to write python file")?;
+    fs::write(OUTPUT_PATH, python_output).chain_err(|| "Failed to write python file")?;
     Ok(())
 }
 
 fn create_all() -> String {
     PREAMBLE.to_string()
-        + &create_super_type::<Box<Input>>()
-        + &create_super_type::<Box<Player>>()
-        + &create_super_type::<Box<Output>>()
+        + &create_super_type::<Box<dyn Input>>()
+        + &create_super_type::<Box<dyn Player>>()
+        + &create_super_type::<Box<dyn Output>>()
 }
 
 fn create_super_type<T: SuperSpecType>() -> String {
@@ -171,4 +170,6 @@ fn generated_class_name(s: &str) -> String {
     result
 }
 
-fn variable_name(s: &str) -> String { s.to_string().replace("-", "_") }
+fn variable_name(s: &str) -> String {
+    s.to_string().replace("-", "_")
+}

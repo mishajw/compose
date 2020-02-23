@@ -9,13 +9,14 @@ const DEFAULT_VAR: &str = "$1";
 pub struct Map {}
 
 impl SpecMacro for Map {
-    fn name() -> String { "map".into() }
+    fn name() -> String {
+        "map".into()
+    }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         resolve_spec_value(spec, "list".into(), consts)?;
         let spec_fn: Spec = spec.consume("fn", consts)?;
-        let var_name: String =
-            spec.consume_with_default("var", DEFAULT_VAR.into(), consts)?;
+        let var_name: String = spec.consume_with_default("var", DEFAULT_VAR.into(), consts)?;
         let list: Vec<Value> = spec.consume("list", consts)?;
         Ok(Value::List(
             list.into_iter()
@@ -29,36 +30,25 @@ impl SpecMacro for Map {
     }
 }
 
-fn apply_spec_fn(
-    spec_fn: &mut Spec,
-    value: &Value,
-    var_name: &str,
-    consts: &Consts,
-) -> Result<()>
-{
+fn apply_spec_fn(spec_fn: &mut Spec, value: &Value, var_name: &str, consts: &Consts) -> Result<()> {
     let value_names = spec_fn.value_names();
 
     {
-        let found_name: Option<&String> =
-            value_names.iter().find(|value_name| {
-                if let Ok(s) = spec_fn.get::<String>(&value_name) {
-                    s.contains(var_name)
-                } else {
-                    false
-                }
-            });
+        let found_name: Option<&String> = value_names.iter().find(|value_name| {
+            if let Ok(s) = spec_fn.get::<String>(&value_name) {
+                s.contains(var_name)
+            } else {
+                false
+            }
+        });
 
         if let Some(found_name) = found_name {
             // Unwrap, as we're sure it exists and is a string field
-            let found_value =
-                spec_fn.consume::<String>(found_name, consts).unwrap();
+            let found_value = spec_fn.consume::<String>(found_name, consts).unwrap();
             if let Value::Str(value) = value {
                 // If we're replacing with a string, replace the variable name
                 // inside the string
-                spec_fn.put(
-                    found_name.clone(),
-                    found_value.replace(var_name, value),
-                )
+                spec_fn.put(found_name.clone(), found_value.replace(var_name, value))
             } else {
                 // If we're replacing with another type, remove the old value
                 // completely

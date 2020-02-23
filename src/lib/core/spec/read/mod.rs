@@ -37,8 +37,7 @@ pub fn string_to_spec(string: String, read_type: ReadType) -> Result<Spec> {
 
 /// Get string from a path
 pub fn path_to_string(path: &Path) -> Result<String> {
-    let mut file =
-        File::open(path).chain_err(|| "Failed to open configuration file")?;
+    let mut file = File::open(path).chain_err(|| "Failed to open configuration file")?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)
         .chain_err(|| "Failed to read from configuration file")?;

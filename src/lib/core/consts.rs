@@ -39,8 +39,7 @@ impl Consts {
         reload_time: Time,
         scale_map: HashMap<String, Vec<usize>>,
         chord_map: HashMap<String, Vec<ScaleIndex>>,
-    ) -> Result<Self>
-    {
+    ) -> Result<Self> {
         Ok(Consts {
             sample_hz,
             beats_per_minute,
@@ -69,12 +68,8 @@ impl Consts {
     fn create_scale_map(
         scale_definition_path: String,
         consts: &Consts,
-    ) -> Result<HashMap<String, Vec<usize>>>
-    {
-        let mut scale_spec = read::path_to_spec(
-            Path::new(&scale_definition_path),
-            ReadType::Yaml,
-        )?;
+    ) -> Result<HashMap<String, Vec<usize>>> {
+        let mut scale_spec = read::path_to_spec(Path::new(&scale_definition_path), ReadType::Yaml)?;
         scale_spec
             .value_names()
             .into_iter()
@@ -91,23 +86,15 @@ impl Consts {
     fn create_chord_map(
         chord_definition_path: String,
         consts: &Consts,
-    ) -> Result<HashMap<String, Vec<ScaleIndex>>>
-    {
-        let mut chord_spec = read::path_to_spec(
-            Path::new(&chord_definition_path),
-            ReadType::Yaml,
-        )?;
+    ) -> Result<HashMap<String, Vec<ScaleIndex>>> {
+        let mut chord_spec = read::path_to_spec(Path::new(&chord_definition_path), ReadType::Yaml)?;
         chord_spec
             .value_names()
             .into_iter()
             .map(|name| {
                 chord_spec
                     .consume_list::<String>(&name, consts)
-                    .and_then(|list| {
-                        list.into_iter()
-                            .map(|s| s.parse())
-                            .collect::<Result<_>>()
-                    })
+                    .and_then(|list| list.into_iter().map(|s| s.parse()).collect::<Result<_>>())
                     .map(|list| (name, list))
             })
             .collect::<Result<_>>()
@@ -115,26 +102,16 @@ impl Consts {
 }
 
 impl FromValue for Consts {
-    fn name() -> String { "consts".into() }
+    fn name() -> String {
+        "consts".into()
+    }
     fn from_value(value: Value, consts: &Consts) -> Result<Consts> {
         let mut spec: Spec = value.into_type(consts)?;
         let consts = Consts::new(
             spec.consume_with_default("sample-hz", consts.sample_hz, consts)?,
-            spec.consume_with_default(
-                "beats-per-minute",
-                consts.beats_per_minute,
-                consts,
-            )?,
-            spec.consume_with_default(
-                "beats-per-bar",
-                consts.beats_per_bar,
-                consts,
-            )?,
-            spec.consume_with_default(
-                "loudness-factor",
-                consts.loudness_factor,
-                consts,
-            )?,
+            spec.consume_with_default("beats-per-minute", consts.beats_per_minute, consts)?,
+            spec.consume_with_default("beats-per-bar", consts.beats_per_bar, consts)?,
+            spec.consume_with_default("loudness-factor", consts.loudness_factor, consts)?,
             spec.consume_with_default("reload-time", Time::zero(), consts)?,
             Consts::create_scale_map(
                 spec.consume_with_default(

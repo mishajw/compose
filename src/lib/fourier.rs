@@ -12,9 +12,7 @@ pub fn fourier(input: &Vec<i32>) -> Vec<i32> {
     let input_max = input.into_iter().max().unwrap();
     let mut input = input
         .into_iter()
-        .map(|x| {
-            (x - input_min) as f64 / (input_max - input_min) as f64 * 2.0 - 1.0
-        })
+        .map(|x| (x - input_min) as f64 / (input_max - input_min) as f64 * 2.0 - 1.0)
         .map(|x| Complex::new(x, 0.0))
         .collect::<Vec<_>>();
     let mut output = vec![Complex::zero(); input.len()];

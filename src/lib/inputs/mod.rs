@@ -19,7 +19,7 @@ pub use self::smooth_bool::SmoothBool;
 pub use self::timeline::Timeline;
 
 impl_super_from_value!(
-    Input,
+    dyn Input,
     "bounded-input",
     Function,
     SmoothBool,

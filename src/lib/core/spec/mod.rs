@@ -16,9 +16,7 @@ mod spec_type;
 
 pub use self::from_value::{FromPrimitiveValue, FromValue};
 pub use self::spec_field::{SpecField, SpecFieldDescription};
-pub use self::spec_macro::{
-    resolve_root_macros, resolve_spec_value, SpecMacro,
-};
+pub use self::spec_macro::{resolve_root_macros, resolve_spec_value, SpecMacro};
 pub use self::spec_type::{SpecType, SpecTypeDescription};
 pub use self::super_spec_type::SuperSpecType;
 
@@ -42,7 +40,9 @@ pub enum Value {
 
 impl Spec {
     #[allow(missing_docs)]
-    pub fn new(values: HashMap<String, Value>) -> Self { Spec { values } }
+    pub fn new(values: HashMap<String, Value>) -> Self {
+        Spec { values }
+    }
 
     #[allow(missing_docs)]
     pub fn empty() -> Self {
@@ -52,56 +52,35 @@ impl Spec {
     }
 
     /// Get a reference to a value in the spec
-    pub fn get<'a, T: FromPrimitiveValue>(
-        &'a self,
-        value_name: &str,
-    ) -> Result<&'a T>
-    {
-        let value: &'a Value =
-            self.values.get(value_name).ok_or_else(|| {
-                ErrorKind::SpecError(format!("Missing value: {}", value_name))
-            })?;
+    pub fn get<'a, T: FromPrimitiveValue>(&'a self, value_name: &str) -> Result<&'a T> {
+        let value: &'a Value = self
+            .values
+            .get(value_name)
+            .ok_or_else(|| ErrorKind::SpecError(format!("Missing value: {}", value_name)))?;
         T::from_value_opt(value).ok_or_else(|| {
-            ErrorKind::SpecError(format!(
-                "Incorrect type, expected: {}",
-                T::name()
-            ))
-            .into()
+            ErrorKind::SpecError(format!("Incorrect type, expected: {}", T::name())).into()
         })
     }
 
     /// Get a mutable reference to a value in the spec
-    pub fn get_mut<'a, T: FromPrimitiveValue>(
-        &'a mut self,
-        value_name: &str,
-    ) -> Result<&'a mut T>
-    {
-        let value: &'a mut Value =
-            self.values.get_mut(value_name).ok_or_else(|| {
-                ErrorKind::SpecError(format!("Missing value: {}", value_name))
-            })?;
+    pub fn get_mut<'a, T: FromPrimitiveValue>(&'a mut self, value_name: &str) -> Result<&'a mut T> {
+        let value: &'a mut Value = self
+            .values
+            .get_mut(value_name)
+            .ok_or_else(|| ErrorKind::SpecError(format!("Missing value: {}", value_name)))?;
         T::from_value_mut(value).ok_or_else(|| {
-            ErrorKind::SpecError(format!(
-                "Incorrect type, expected: {}",
-                T::name()
-            ))
-            .into()
+            ErrorKind::SpecError(format!("Incorrect type, expected: {}", T::name())).into()
         })
     }
 
     /// Get a value from the spec, and remove it
-    pub fn consume<T: FromValue>(
-        &mut self,
-        value_name: &str,
-        consts: &Consts,
-    ) -> Result<T>
-    {
-        let value: Value = self.values.remove(value_name).ok_or_else(|| {
-            ErrorKind::SpecError(format!("Missing value: {}", value_name))
-        })?;
-        T::from_value(value, consts).chain_err(|| {
-            format!("Failed to consume {} as type {}", value_name, T::name())
-        })
+    pub fn consume<T: FromValue>(&mut self, value_name: &str, consts: &Consts) -> Result<T> {
+        let value: Value = self
+            .values
+            .remove(value_name)
+            .ok_or_else(|| ErrorKind::SpecError(format!("Missing value: {}", value_name)))?;
+        T::from_value(value, consts)
+            .chain_err(|| format!("Failed to consume {} as type {}", value_name, T::name()))
     }
 
     /// Get a value from the spec, and remove it. If it doesn't exist, return
@@ -111,8 +90,7 @@ impl Spec {
         value_name: &str,
         default: T,
         consts: &Consts,
-    ) -> Result<T>
-    {
+    ) -> Result<T> {
         match self.values.remove(value_name) {
             Some(value) => T::from_value(value, consts),
             None => Ok(default),
@@ -125,8 +103,7 @@ impl Spec {
         &mut self,
         value_name: &str,
         consts: &Consts,
-    ) -> Result<Option<T>>
-    {
+    ) -> Result<Option<T>> {
         match self.values.remove(value_name) {
             Some(value) => T::from_value(value, consts).map(Some),
             None => Ok(None),
@@ -138,17 +115,15 @@ impl Spec {
         &mut self,
         list_name: &str,
         consts: &Consts,
-    ) -> Result<Vec<T>>
-    {
-        let value_list: Vec<Value> = if let Some(value_list) =
-            self.consume_optional(list_name, consts)?
-        {
-            value_list
-        } else {
-            // If the field doesn't exist, return an empty list
-            // TODO: What about showing that no list was given?
-            return Ok(vec![]);
-        };
+    ) -> Result<Vec<T>> {
+        let value_list: Vec<Value> =
+            if let Some(value_list) = self.consume_optional(list_name, consts)? {
+                value_list
+            } else {
+                // If the field doesn't exist, return an empty list
+                // TODO: What about showing that no list was given?
+                return Ok(vec![]);
+            };
 
         value_list
             .into_iter()
@@ -157,12 +132,7 @@ impl Spec {
     }
 
     /// Add a field to the spec, returning the modified spec
-    pub fn with<T: FromPrimitiveValue>(
-        mut self,
-        value_name: String,
-        value: T,
-    ) -> Spec
-    {
+    pub fn with<T: FromPrimitiveValue>(mut self, value_name: String, value: T) -> Spec {
         self.values.insert(value_name, value.into_value());
         self
     }

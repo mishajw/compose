@@ -16,12 +16,12 @@ use std::sync::Mutex;
 
 use sfml::graphics::{Color, RenderWindow};
 
-field_decl!(CHILD, Box<Player>, "Wave of this child is drawn");
+field_decl!(CHILD, Box<dyn Player>, "Wave of this child is drawn");
 field_decl!(DISPLAY_TIME, Time, "How much time is displayed on screen");
 
 /// Visualize the sound wave of a player
 pub struct WaveDrawer {
-    child: Box<Player>,
+    child: Box<dyn Player>,
     display_ticks: usize,
     /// Initialized once `window_width` is filled
     sample_bucketer: Option<SampleBucketer>,
@@ -30,12 +30,7 @@ pub struct WaveDrawer {
 }
 
 impl WaveDrawer {
-    fn new(
-        child: Box<Player>,
-        display_time: Time,
-        consts: &Consts,
-    ) -> WaveDrawer
-    {
+    fn new(child: Box<dyn Player>, display_time: Time, consts: &Consts) -> WaveDrawer {
         let display_ticks = display_time.to_ticks(consts);
         WaveDrawer {
             child,
@@ -66,11 +61,17 @@ impl Player for WaveDrawer {
 }
 
 impl Tree for WaveDrawer {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.child.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.child.to_tree()]
+    }
 
-    fn get_drawables(&self) -> Vec<&Drawable> { vec![self] }
+    fn get_drawables(&self) -> Vec<&dyn Drawable> {
+        vec![self]
+    }
 }
 
 impl Drawable for WaveDrawer {
@@ -82,8 +83,7 @@ impl Drawable for WaveDrawer {
         height: u32,
         offset_x: u32,
         offset_y: u32,
-    ) -> Result<()>
-    {
+    ) -> Result<()> {
         match &self.sample_bucketer {
             Some(sample_bucketer) => {
                 sample_bucketer.draw(window, color, height, offset_x, offset_y)
@@ -97,7 +97,9 @@ impl Drawable for WaveDrawer {
 }
 
 impl SpecType for WaveDrawer {
-    fn name() -> String { "wave-drawer".into() }
+    fn name() -> String {
+        "wave-drawer".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), DISPLAY_TIME.to_description()]

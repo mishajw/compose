@@ -10,8 +10,7 @@ use core::State;
 use error::*;
 
 lazy_static! {
-    static ref SCALE: SpecField<i32> =
-        SpecField::new("scale", "Scale of linear player",);
+    static ref SCALE: SpecField<i32> = SpecField::new("scale", "Scale of linear player",);
 }
 
 /// Plays the step it's played on
@@ -21,7 +20,9 @@ pub struct Linear {
 
 impl Linear {
     #[allow(missing_docs)]
-    pub fn player(scale: i32) -> Linear { Linear { scale } }
+    pub fn player(scale: i32) -> Linear {
+        Linear { scale }
+    }
 }
 
 impl Player for Linear {
@@ -31,11 +32,15 @@ impl Player for Linear {
 }
 
 impl Tree for Linear {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }
 
 impl SpecType for Linear {
-    fn name() -> String { "linear".into() }
+    fn name() -> String {
+        "linear".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![SCALE.to_description()]

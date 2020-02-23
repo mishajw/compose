@@ -12,16 +12,13 @@ pub fn yaml_string_to_spec(yaml_str: String) -> Result<Spec> {
     if let Value::Spec(spec) = value {
         Ok(spec)
     } else {
-        Err(ErrorKind::SpecError(
-            "Top level Spec yaml must be an object".into(),
-        )
-        .into())
+        Err(ErrorKind::SpecError("Top level Spec yaml must be an object".into()).into())
     }
 }
 
 fn get_yaml(yaml_str: String) -> Result<Yaml> {
-    let mut yaml_list = YamlLoader::load_from_str(&yaml_str)
-        .chain_err(|| "Failed to parse Spec yaml file")?;
+    let mut yaml_list =
+        YamlLoader::load_from_str(&yaml_str).chain_err(|| "Failed to parse Spec yaml file")?;
 
     if yaml_list.len() > 1 {
         return Err(ErrorKind::SpecError(format!(
@@ -44,16 +41,14 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
             let mut spec_values = HashMap::new();
             for (key, value) in dict {
                 let value_name: Result<&str> = key.as_str().ok_or_else(|| {
-                    ErrorKind::SpecError("Non-string key in Spec yaml".into())
-                        .into()
+                    ErrorKind::SpecError("Non-string key in Spec yaml".into()).into()
                 });
                 let value_name: String = value_name?.into();
 
                 spec_values.insert(
                     value_name.clone(),
-                    yaml_to_value(value).chain_err(|| {
-                        format!("Error parsing \"{}\" field", value_name)
-                    })?,
+                    yaml_to_value(value)
+                        .chain_err(|| format!("Error parsing \"{}\" field", value_name))?,
                 );
             }
             Ok(Value::Spec(Spec::new(spec_values)))
@@ -67,8 +62,7 @@ fn yaml_to_value(yaml: Yaml) -> Result<Value> {
         )),
         Yaml::Boolean(boolean) => Ok(Value::Bool(boolean)),
         Yaml::Array(list) => {
-            let values: Result<Vec<_>> =
-                list.into_iter().map(yaml_to_value).collect();
+            let values: Result<Vec<_>> = list.into_iter().map(yaml_to_value).collect();
             Ok(Value::List(values?))
         }
         yaml_value => Err(ErrorKind::SpecError(format!(

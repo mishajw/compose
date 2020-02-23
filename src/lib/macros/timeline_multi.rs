@@ -6,7 +6,9 @@ use error::*;
 pub struct TimelineMulti {}
 
 impl SpecMacro for TimelineMulti {
-    fn name() -> String { "timeline-multi".into() }
+    fn name() -> String {
+        "timeline-multi".into()
+    }
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         let event_duration: String = spec.consume("event-duration", consts)?;
         let events: String = spec.consume("events", consts)?;
@@ -20,10 +22,7 @@ impl SpecMacro for TimelineMulti {
                     Value::Spec(
                         Spec::empty()
                             .with("name".into(), "timeline".to_string())
-                            .with(
-                                "event-duration".into(),
-                                event_duration.clone().into_value(),
-                            )
+                            .with("event-duration".into(), event_duration.clone().into_value())
                             .with("events".into(), event_line.to_string()),
                     )
                 })

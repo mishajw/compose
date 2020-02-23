@@ -10,24 +10,24 @@ use core::Player;
 use core::State;
 use error::*;
 
-field_decl!(CHILD, Box<Player>, "Child to play");
+field_decl!(CHILD, Box<dyn Player>, "Child to play");
 field_decl!(
     INPUT,
-    Box<Input>,
+    Box<dyn Input>,
     "When turns to positive, the child is played from the beginning"
 );
 
 /// Plays the beginning of a player every time it's triggered
 pub struct OneOff {
-    child: Box<Player>,
-    input: Box<Input>,
+    child: Box<dyn Player>,
+    input: Box<dyn Input>,
     child_play_history: Vec<Playable>,
     play_index: usize,
 }
 
 impl OneOff {
     #[allow(missing_docs)]
-    pub fn new(child: Box<Player>, input: Box<Input>) -> OneOff {
+    pub fn new(child: Box<dyn Player>, input: Box<dyn Input>) -> OneOff {
         OneOff {
             child,
             input,
@@ -56,15 +56,19 @@ impl Player for OneOff {
 }
 
 impl Tree for OneOff {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> {
+    fn get_children(&self) -> Vec<&dyn Tree> {
         vec![self.child.to_tree(), self.input.to_tree()]
     }
 }
 
 impl SpecType for OneOff {
-    fn name() -> String { "one-off".into() }
+    fn name() -> String {
+        "one-off".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), INPUT.to_description()]

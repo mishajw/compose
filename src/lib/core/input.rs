@@ -7,5 +7,7 @@ pub trait Input: Tree + Send + Sync {
     fn get(&mut self, state: &State) -> f64;
 
     /// Casts float input to a boolean input. Is false if == 0
-    fn get_bool(&mut self, state: &State) -> bool { self.get(state) != 0.0 }
+    fn get_bool(&mut self, state: &State) -> bool {
+        self.get(state) != 0.0
+    }
 }

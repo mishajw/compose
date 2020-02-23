@@ -26,7 +26,9 @@ pub trait SpecType<CreatedType = Self>: Sized {
 }
 
 impl<S: SpecType<T>, T> FromValue<T> for S {
-    fn name() -> String { <Self as SpecType<T>>::name() }
+    fn name() -> String {
+        <Self as SpecType<T>>::name()
+    }
 
     fn from_value(value: Value, consts: &Consts) -> Result<T> {
         let spec: Spec = value.into_type(consts)?;

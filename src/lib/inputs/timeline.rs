@@ -55,11 +55,15 @@ impl Input for Timeline {
 }
 
 impl Tree for Timeline {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }
 
 impl SpecType for Timeline {
-    fn name() -> String { "timeline".into() }
+    fn name() -> String {
+        "timeline".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![EVENTS.to_description(), EVENT_DURATION.to_description()]

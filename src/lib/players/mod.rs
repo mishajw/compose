@@ -29,7 +29,7 @@ pub use self::wave::Wave;
 pub use self::wave_drawer::WaveDrawer;
 
 impl_super_from_value!(
-    Player,
+    dyn Player,
     "player",
     Wave,
     Volume,

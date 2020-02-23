@@ -21,7 +21,7 @@ macro_rules! impl_super_from_value {
         use std::collections::HashMap;
 
         type GetFn =
-            Box<Fn(Value, &Consts) -> Result<Box<$super_type>> + Send + Sync>;
+            Box<dyn Fn(Value, &Consts) -> Result<Box<$super_type>> + Send + Sync>;
 
         lazy_static! {
             static ref MAP: HashMap<String, GetFn> = {

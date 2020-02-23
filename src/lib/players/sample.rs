@@ -20,13 +20,7 @@ pub struct Sample {}
 
 impl Sample {
     #[allow(missing_docs)]
-    pub fn player(
-        wav_path: String,
-        start: Time,
-        duration: Time,
-        consts: &Consts,
-    ) -> Result<Speed>
-    {
+    pub fn player(wav_path: String, start: Time, duration: Time, consts: &Consts) -> Result<Speed> {
         let mut reader = hound::WavReader::open(&wav_path)
             .chain_err(|| format!("Failed to open .wav file: {}", wav_path))?;
         let start_seconds = start.to_seconds(consts);
@@ -37,9 +31,7 @@ impl Sample {
         // Skip to the part of the sample we want
         reader
             .seek((f64::from(sample_hz) * start_seconds) as u32)
-            .chain_err(|| {
-                format!("Failed to get seek to {} seconds", start_seconds)
-            })?;
+            .chain_err(|| format!("Failed to get seek to {} seconds", start_seconds))?;
 
         // Extract the samples we need
         let buffer: Vec<f64> = reader
@@ -61,7 +53,9 @@ impl Sample {
 }
 
 impl SpecType<Speed> for Sample {
-    fn name() -> String { "sample".into() }
+    fn name() -> String {
+        "sample".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![

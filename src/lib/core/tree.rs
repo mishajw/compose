@@ -12,17 +12,21 @@ pub trait Tree {
     ///
     /// Need this to convert `Player` and input types to `Tree` types, see:
     /// https://stackoverflow.com/questions/28632968/why-doesnt-rust-support-trait-object-upcasting
-    fn to_tree(&self) -> &Tree;
+    fn to_tree(&self) -> &dyn Tree;
 
     /// Get the children of this tree
-    fn get_children(&self) -> Vec<&Tree> { Vec::new() }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        Vec::new()
+    }
 
     /// Get the child drawables of this tree
-    fn get_drawables(&self) -> Vec<&Drawable> { Vec::new() }
+    fn get_drawables(&self) -> Vec<&dyn Drawable> {
+        Vec::new()
+    }
 }
 
 /// Return a list of all nodes in a tree
-pub fn flatten_tree(root: &Tree) -> Vec<&Tree> {
+pub fn flatten_tree(root: &dyn Tree) -> Vec<&dyn Tree> {
     root.get_children()
         .into_iter()
         .map(flatten_tree)

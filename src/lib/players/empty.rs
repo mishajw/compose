@@ -13,21 +13,31 @@ pub struct Empty;
 
 impl Empty {
     #[allow(missing_docs)]
-    pub fn player() -> Empty { Empty {} }
+    pub fn player() -> Empty {
+        Empty {}
+    }
 }
 
 impl Player for Empty {
-    fn play(&mut self, _state: &State) -> Playable { Playable::new(0) }
+    fn play(&mut self, _state: &State) -> Playable {
+        Playable::new(0)
+    }
 }
 
 impl Tree for Empty {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }
 
 impl SpecType for Empty {
-    fn name() -> String { "empty".into() }
+    fn name() -> String {
+        "empty".into()
+    }
 
-    fn field_descriptions() -> Vec<SpecFieldDescription> { Vec::new() }
+    fn field_descriptions() -> Vec<SpecFieldDescription> {
+        Vec::new()
+    }
 
     fn from_spec(_spec: Spec, _consts: &Consts) -> Result<Self> {
         Ok(Empty::player())

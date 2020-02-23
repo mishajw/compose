@@ -35,18 +35,14 @@ fn run() -> Result<()> {
     };
 
     // Initialize logging
-    let env = env_logger::Env::default()
-        .filter_or(env_logger::DEFAULT_FILTER_ENV, "composer=debug");
+    let env =
+        env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "composer=debug");
     env_logger::Builder::from_env(env).init();
 
     // Create python library
     // TODO: Only do this when reading a python file
     pycomposer::write_library()?;
 
-    composer::core::composer::compose_from_file(
-        spec_path.into(),
-        read_type,
-        config_path.into(),
-    )?;
+    composer::core::composer::compose_from_file(spec_path.into(), read_type, config_path.into())?;
     Ok(())
 }

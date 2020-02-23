@@ -7,14 +7,13 @@ use error::*;
 pub struct Chord {}
 
 impl SpecMacro for Chord {
-    fn name() -> String { "chord".into() }
+    fn name() -> String {
+        "chord".into()
+    }
 
     fn resolve(spec: &mut Spec, consts: &Consts) -> Result<Value> {
         // TODO: Make Chord impl FromValue
-        let chord = core::Chord::from_str(
-            &spec.consume::<String>("chord", consts)?,
-            consts,
-        )?;
+        let chord = core::Chord::from_str(&spec.consume::<String>("chord", consts)?, consts)?;
         spec.ensure_all_used()?;
         Ok(Value::List(
             chord

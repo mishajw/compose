@@ -11,18 +11,20 @@ use error::*;
 
 field_decl!(
     CHILDREN,
-    Vec<Box<Player>>,
+    Vec<Box<dyn Player>>,
     "Children players that are combined"
 );
 
 /// Sum several children `Player` output into one output
 pub struct Combiner {
-    children: Vec<Box<Player>>,
+    children: Vec<Box<dyn Player>>,
 }
 
 impl Combiner {
     #[allow(missing_docs)]
-    pub fn player(children: Vec<Box<Player>>) -> Self { Combiner { children } }
+    pub fn player(children: Vec<Box<dyn Player>>) -> Self {
+        Combiner { children }
+    }
 }
 
 impl Player for Combiner {
@@ -32,15 +34,19 @@ impl Player for Combiner {
 }
 
 impl Tree for Combiner {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> {
+    fn get_children(&self) -> Vec<&dyn Tree> {
         self.children.iter().map(|c| c.to_tree()).collect()
     }
 }
 
 impl SpecType for Combiner {
-    fn name() -> String { "combiner".into() }
+    fn name() -> String {
+        "combiner".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILDREN.to_description()]

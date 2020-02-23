@@ -12,8 +12,8 @@ pub fn python_string_to_spec(python_str: String) -> Result<Spec> {
         .env("PATH", &get_path()?)
         .output()
         .chain_err(|| "Failed to execute python file for spec")?;
-    let stdout = String::from_utf8(output.stdout)
-        .chain_err(|| "Failed to parse python stdout as utf8")?;
+    let stdout =
+        String::from_utf8(output.stdout).chain_err(|| "Failed to parse python stdout as utf8")?;
     if !output.status.success() {
         let stderr = String::from_utf8(output.stderr)
             .chain_err(|| "Failed to parse python stderr as utf8")?;
@@ -27,8 +27,7 @@ pub fn python_string_to_spec(python_str: String) -> Result<Spec> {
 
 fn get_path() -> Result<String> {
     let current_path = env::var("PATH").chain_err(|| "No PATH env variable")?;
-    let executable_path =
-        env::current_exe().chain_err(|| "Could not get executable path")?;
+    let executable_path = env::current_exe().chain_err(|| "Could not get executable path")?;
     let executable_directory = executable_path
         .parent()
         .chain_err(|| "Could not get exetuable directory")?;

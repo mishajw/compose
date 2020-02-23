@@ -10,18 +10,18 @@ use core::Time;
 use error::*;
 use inputs::Function;
 
-field_decl!(INPUT, Box<Input>, "Input to smooth");
+field_decl!(INPUT, Box<dyn Input>, "Input to smooth");
 field_decl!(SMOOTH_IN, Time, "How long to smooth in for");
 field_decl!(SMOOTH_OUT, Time, "How long to smooth out for");
-field_decl!(SMOOTH_FN, Box<Input>, "Smoothing function", |_| Box::new(
+field_decl!(SMOOTH_FN, Box<dyn Input>, "Smoothing function", |_| Box::new(
     Function::new(Box::new(|x| x))
 )
-    as Box<Input>);
+    as Box<dyn Input>);
 
 /// Smooth a bool transition
 pub struct SmoothBool {
-    bool_input: Box<Input>,
-    smooth_fn: Box<Input>,
+    bool_input: Box<dyn Input>,
+    smooth_fn: Box<dyn Input>,
     smooth_in_duration: Time,
     smooth_out_duration: Time,
     activation: f64,
@@ -30,12 +30,11 @@ pub struct SmoothBool {
 impl SmoothBool {
     #[allow(missing_docs)]
     pub fn bounded(
-        bool_input: Box<Input>,
-        smooth_fn: Box<Input>,
+        bool_input: Box<dyn Input>,
+        smooth_fn: Box<dyn Input>,
         smooth_in_duration: Time,
         smooth_out_duration: Time,
-    ) -> SmoothBool
-    {
+    ) -> SmoothBool {
         // TODO: Enfore smooth_fn limit [0, 1]
         SmoothBool {
             bool_input,
@@ -51,30 +50,31 @@ impl Input for SmoothBool {
     fn get(&mut self, state: &State) -> f64 {
         let input = self.bool_input.get_bool(state);
         if input && self.activation < 1.0 {
-            self.activation +=
-                1.0 / self.smooth_in_duration.to_ticks(&state.consts) as f64;
+            self.activation += 1.0 / self.smooth_in_duration.to_ticks(&state.consts) as f64;
             self.activation = self.activation.min(1.0);
         } else if !input && self.activation > 0.0 {
-            self.activation -=
-                1.0 / self.smooth_out_duration.to_ticks(&state.consts) as f64;
+            self.activation -= 1.0 / self.smooth_out_duration.to_ticks(&state.consts) as f64;
             self.activation = self.activation.max(0.0);
         }
-        self.smooth_fn.get(
-            &state.with_tick(
-                Time::Seconds(self.activation).to_ticks(&state.consts),
-            ),
-        )
+        self.smooth_fn
+            .get(&state.with_tick(Time::Seconds(self.activation).to_ticks(&state.consts)))
     }
 }
 
 impl Tree for SmoothBool {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.bool_input.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.bool_input.to_tree()]
+    }
 }
 
 impl SpecType for SmoothBool {
-    fn name() -> String { "smooth-bool".into() }
+    fn name() -> String {
+        "smooth-bool".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![

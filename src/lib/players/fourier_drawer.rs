@@ -8,7 +8,7 @@ use error::*;
 use gui::Drawable;
 use {fourier, SampleBucketer};
 
-field_decl!(CHILD, Box<Player>, "Fourier of this child is drawn");
+field_decl!(CHILD, Box<dyn Player>, "Fourier of this child is drawn");
 field_decl!(
     BUFFER_SIZE,
     Time,
@@ -18,7 +18,7 @@ field_decl!(
 
 /// Displays the fourier transform of an input child
 pub struct FourierDrawer {
-    player: Box<Player>,
+    player: Box<dyn Player>,
     buffer_size: usize,
     buffer: Vec<i32>,
     sample_bucketer: SampleBucketer,
@@ -26,7 +26,7 @@ pub struct FourierDrawer {
 
 impl FourierDrawer {
     #[allow(missing_docs)]
-    pub fn new(player: Box<Player>, buffer_size: usize) -> FourierDrawer {
+    pub fn new(player: Box<dyn Player>, buffer_size: usize) -> FourierDrawer {
         FourierDrawer {
             player,
             buffer_size,
@@ -59,11 +59,17 @@ impl Player for FourierDrawer {
 }
 
 impl Tree for FourierDrawer {
-    fn to_tree(&self) -> &Tree { self }
+    fn to_tree(&self) -> &dyn Tree {
+        self
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.player.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.player.to_tree()]
+    }
 
-    fn get_drawables(&self) -> Vec<&Drawable> { vec![self] }
+    fn get_drawables(&self) -> Vec<&dyn Drawable> {
+        vec![self]
+    }
 }
 
 impl Drawable for FourierDrawer {
@@ -75,15 +81,16 @@ impl Drawable for FourierDrawer {
         height: u32,
         offset_x: u32,
         offset_y: u32,
-    ) -> Result<()>
-    {
+    ) -> Result<()> {
         self.sample_bucketer
             .draw(window, color, height, offset_x, offset_y)
     }
 }
 
 impl SpecType for FourierDrawer {
-    fn name() -> String { "fourier-drawer".into() }
+    fn name() -> String {
+        "fourier-drawer".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), BUFFER_SIZE.to_description()]

@@ -10,18 +10,18 @@ use core::Player;
 use core::State;
 use error::*;
 
-field_decl!(CHILD, Box<Player>, "Child to change the volume of");
-field_decl!(INPUT, Box<Input>, "Controls the volume level");
+field_decl!(CHILD, Box<dyn Player>, "Child to change the volume of");
+field_decl!(INPUT, Box<dyn Input>, "Controls the volume level");
 
 /// Adjust the volume of a child player
 pub struct Volume {
-    child: Box<Player>,
-    input: Box<Input>,
+    child: Box<dyn Player>,
+    input: Box<dyn Input>,
 }
 
 impl Volume {
     #[allow(missing_docs)]
-    pub fn player(child: Box<Player>, input: Box<Input>) -> Volume {
+    pub fn player(child: Box<dyn Player>, input: Box<dyn Input>) -> Volume {
         Volume { child, input }
     }
 }
@@ -33,15 +33,19 @@ impl Player for Volume {
 }
 
 impl Tree for Volume {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> {
+    fn get_children(&self) -> Vec<&dyn Tree> {
         vec![self.child.to_tree(), self.input.to_tree()]
     }
 }
 
 impl SpecType for Volume {
-    fn name() -> String { "volume".into() }
+    fn name() -> String {
+        "volume".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), INPUT.to_description()]

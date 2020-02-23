@@ -17,14 +17,14 @@ field_decl!(REVERSED, bool, "Whether the function is reversed", |_| {
 
 /// A function input, returns values from a function
 pub struct Function {
-    function: Box<Fn(f64) -> f64 + Send + Sync>,
+    function: Box<dyn Fn(f64) -> f64 + Send + Sync>,
     time_mod: Option<Time>,
     reversed: bool,
 }
 
 impl Function {
     #[allow(missing_docs)]
-    pub fn new(function: Box<Fn(f64) -> f64 + Send + Sync>) -> Function {
+    pub fn new(function: Box<dyn Fn(f64) -> f64 + Send + Sync>) -> Function {
         Function {
             function,
             time_mod: None,
@@ -34,11 +34,10 @@ impl Function {
 
     #[allow(missing_docs)]
     pub fn with_mod(
-        function: Box<Fn(f64) -> f64 + Send + Sync>,
+        function: Box<dyn Fn(f64) -> f64 + Send + Sync>,
         time_mod: Time,
         reversed: bool,
-    ) -> Function
-    {
+    ) -> Function {
         Function {
             function,
             time_mod: Some(time_mod),
@@ -58,22 +57,12 @@ impl Function {
                 Time::Seconds(1.0),
                 reversed,
             ),
-            "saw" => Function::with_mod(
-                Box::new(|x| x),
-                Time::Seconds(1.0),
-                reversed,
-            ),
-            "saw-exp" => Function::with_mod(
-                Box::new(|x| x * x),
-                Time::Seconds(1.0),
-                reversed,
-            ),
+            "saw" => Function::with_mod(Box::new(|x| x), Time::Seconds(1.0), reversed),
+            "saw-exp" => Function::with_mod(Box::new(|x| x * x), Time::Seconds(1.0), reversed),
             function => {
-                return Err(ErrorKind::SpecError(format!(
-                    "Unrecognized function: {}",
-                    function
-                ))
-                .into());
+                return Err(
+                    ErrorKind::SpecError(format!("Unrecognized function: {}", function)).into(),
+                );
             }
         };
 
@@ -82,8 +71,7 @@ impl Function {
 
     #[allow(missing_docs)]
     pub fn default() -> Function {
-        Self::from_string("sine".into(), false)
-            .expect("Failed to create default function")
+        Self::from_string("sine".into(), false).expect("Failed to create default function")
     }
 }
 
@@ -107,11 +95,15 @@ impl Input for Function {
 }
 
 impl Tree for Function {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }
 
 impl SpecType for Function {
-    fn name() -> String { "function".into() }
+    fn name() -> String {
+        "function".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![FN.to_description(), REVERSED.to_description()]
@@ -138,28 +130,16 @@ mod test {
         let mut function = Function::from_string("sine".into(), false).unwrap();
         assert!((0.0 - function.get(&state.with_tick(0))).abs() < 0.001);
         assert!(
-            (1.0 - function
-                .get(&state.with_tick((consts.sample_hz * 0.25) as usize)))
-            .abs()
+            (1.0 - function.get(&state.with_tick((consts.sample_hz * 0.25) as usize))).abs()
                 < 0.001
         );
         assert!(
-            (0.0 - function
-                .get(&state.with_tick((consts.sample_hz * 0.5) as usize)))
-            .abs()
-                < 0.001
+            (0.0 - function.get(&state.with_tick((consts.sample_hz * 0.5) as usize))).abs() < 0.001
         );
         assert!(
-            (-1.0
-                - function
-                    .get(&state.with_tick((consts.sample_hz * 0.75) as usize)))
-            .abs()
+            (-1.0 - function.get(&state.with_tick((consts.sample_hz * 0.75) as usize))).abs()
                 < 0.001
         );
-        assert!(
-            (0.0 - function.get(&state.with_tick(consts.sample_hz as usize)))
-                .abs()
-                < 0.001
-        );
+        assert!((0.0 - function.get(&state.with_tick(consts.sample_hz as usize))).abs() < 0.001);
     }
 }

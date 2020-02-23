@@ -8,20 +8,20 @@ use core::Input;
 use core::State;
 use error::*;
 
-field_decl!(INPUT, Box<Input>, "The input to modify");
+field_decl!(INPUT, Box<dyn Input>, "The input to modify");
 field_decl!(ADD, f64, "Add to the input");
 field_decl!(MULT, f64, "Multiply the input");
 
 /// Modifies an input
 pub struct InputMod {
-    input: Box<Input>,
+    input: Box<dyn Input>,
     add: f64,
     mult: f64,
 }
 
 impl InputMod {
     #[allow(missing_docs)]
-    pub fn new(input: Box<Input>, add: f64, mult: f64) -> InputMod {
+    pub fn new(input: Box<dyn Input>, add: f64, mult: f64) -> InputMod {
         InputMod { input, add, mult }
     }
 }
@@ -33,13 +33,19 @@ impl Input for InputMod {
 }
 
 impl Tree for InputMod {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.input.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.input.to_tree()]
+    }
 }
 
 impl SpecType for InputMod {
-    fn name() -> String { "input-mod".into() }
+    fn name() -> String {
+        "input-mod".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![

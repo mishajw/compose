@@ -12,23 +12,23 @@ use error::*;
 use num::rational::Ratio;
 use num::traits::ToPrimitive;
 
-field_decl!(CHILD, Box<Player>, "Child to adjust the speed of");
+field_decl!(CHILD, Box<dyn Player>, "Child to adjust the speed of");
 field_decl!(SPEED, f64, "Speed adjustment factor");
 
 /// Adjust the speed of a child player
 pub struct Speed {
-    child: Box<Player>,
+    child: Box<dyn Player>,
     scale_numerator: usize,
     scale_denominator: usize,
 }
 
 impl Speed {
     #[allow(missing_docs)]
-    pub fn player(child: Box<Player>, scale: f64) -> Result<Speed> {
+    pub fn player(child: Box<dyn Player>, scale: f64) -> Result<Speed> {
         Ok(Speed::new(child, scale)?)
     }
 
-    fn new(child: Box<Player>, scale: f64) -> Result<Speed> {
+    fn new(child: Box<dyn Player>, scale: f64) -> Result<Speed> {
         let ratio = match Ratio::from_float(scale) {
             Some(ratio) => ratio,
             None => bail!(ErrorKind::SpecError(format!(
@@ -51,8 +51,7 @@ impl Speed {
     }
 
     fn scale(&self, value: usize) -> usize {
-        ((value as u128 * self.scale_numerator as u128)
-            / self.scale_denominator as u128) as usize
+        ((value as u128 * self.scale_numerator as u128) / self.scale_denominator as u128) as usize
     }
 }
 
@@ -64,13 +63,19 @@ impl Player for Speed {
 }
 
 impl Tree for Speed {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 
-    fn get_children(&self) -> Vec<&Tree> { vec![self.child.to_tree()] }
+    fn get_children(&self) -> Vec<&dyn Tree> {
+        vec![self.child.to_tree()]
+    }
 }
 
 impl SpecType for Speed {
-    fn name() -> String { "speed".into() }
+    fn name() -> String {
+        "speed".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![CHILD.to_description(), SPEED.to_description()]
@@ -116,8 +121,7 @@ mod test {
 
     fn test_range(speed: &Speed, start: usize, end: usize, incr: usize) {
         println!("Testing range {}-{} with step {}", start, end, incr);
-        let values: Vec<usize> =
-            (start..end).step_by(incr).map(|v| speed.scale(v)).collect();
+        let values: Vec<usize> = (start..end).step_by(incr).map(|v| speed.scale(v)).collect();
         let value_diffs: Vec<i64> = values
             .iter()
             .zip(values.iter().skip(1))
@@ -132,8 +136,7 @@ mod test {
     #[test]
     fn test_double() {
         let scale = 1.1;
-        let mut speed0 =
-            Speed::new(Box::new(Linear::player(100)), scale * scale).unwrap();
+        let mut speed0 = Speed::new(Box::new(Linear::player(100)), scale * scale).unwrap();
         let mut speed1 = Speed::new(
             Box::new(Speed::new(Box::new(Linear::player(100)), scale).unwrap()),
             scale,

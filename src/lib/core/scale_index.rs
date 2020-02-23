@@ -29,13 +29,9 @@ impl ScaleIndex {
 impl FromStr for ScaleIndex {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        let captures =
-            regex::SCALE_INDEX_REGEX.captures(s).ok_or_else(|| {
-                ErrorKind::SpecError(format!(
-                    "Unrecognized scale index format: {}",
-                    s
-                ))
-            })?;
+        let captures = regex::SCALE_INDEX_REGEX.captures(s).ok_or_else(|| {
+            ErrorKind::SpecError(format!("Unrecognized scale index format: {}", s))
+        })?;
         let step_adjustment_str = captures.get(1).unwrap().as_str();
         let index: usize = captures
             .get(2)

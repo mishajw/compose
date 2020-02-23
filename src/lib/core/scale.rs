@@ -19,11 +19,7 @@ impl Scale {
             .scale_map
             .get(scale_name)
             .ok_or_else(|| -> Error {
-                ErrorKind::SpecError(format!(
-                    "Unrecongnized scale name: {}",
-                    scale_name
-                ))
-                .into()
+                ErrorKind::SpecError(format!("Unrecongnized scale name: {}", scale_name)).into()
             })?
             .clone();
         let steps_total: usize = steps.iter().sum();
@@ -45,7 +41,9 @@ impl Scale {
     }
 
     /// Get the default scale size, typically ranging across an octave
-    pub fn default_size(&self) -> usize { self.steps.len() }
+    pub fn default_size(&self) -> usize {
+        self.steps.len()
+    }
 
     /// Get notes of the scale
     pub fn to_notes(&self, num: usize) -> Vec<Note> {
@@ -60,10 +58,8 @@ impl Scale {
 
     /// Get the note defined by a `ScaleIndex`
     pub fn at_index(&self, scale_index: &ScaleIndex) -> Note {
-        let increment: usize =
-            self.steps.iter().take(scale_index.index - 1).sum();
-        let increment_adjusted =
-            (increment as i8 + scale_index.step_adjustment) as usize;
+        let increment: usize = self.steps.iter().take(scale_index.index - 1).sum();
+        let increment_adjusted = (increment as i8 + scale_index.step_adjustment) as usize;
         self.base.increment(increment_adjusted)
     }
 }

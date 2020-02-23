@@ -14,20 +14,18 @@ use std::thread;
 
 use error_chain::ChainedError;
 
-type WrappedPlayer = Arc<Mutex<Box<Player>>>;
+type WrappedPlayer = Arc<Mutex<Box<dyn Player>>>;
 
 /// Returns a player that will reload in fixed intervals from a spec path
 pub fn get_reloading_player(
     spec_path: String,
     read_type: ReadType,
     consts: Arc<Consts>,
-) -> Result<WrappedPlayer>
-{
+) -> Result<WrappedPlayer> {
     let mut yaml_hash: u64 = 0;
     // Safe to do unwrap, as the first load will always be new
     let yaml_str = load_spec(&spec_path, &mut yaml_hash)?.unwrap();
-    let player =
-        Arc::new(Mutex::new(load_player(yaml_str, read_type, &consts)?));
+    let player = Arc::new(Mutex::new(load_player(yaml_str, read_type, &consts)?));
     start_reload_thread(
         player.clone(),
         consts.clone(),
@@ -44,8 +42,7 @@ fn start_reload_thread(
     spec_path: String,
     read_type: ReadType,
     mut yaml_hash: u64,
-)
-{
+) {
     thread::spawn(move || loop {
         if let Err(err) = reload(
             player.clone(),
@@ -68,8 +65,7 @@ fn reload(
     spec_path: &str,
     read_type: ReadType,
     yaml_hash: &mut u64,
-) -> Result<()>
-{
+) -> Result<()> {
     if let Some(yaml_str) = load_spec(spec_path, yaml_hash)? {
         let new_player = load_player(yaml_str, read_type, consts)?;
         *player.lock().unwrap() = new_player;
@@ -77,11 +73,7 @@ fn reload(
     Ok(())
 }
 
-fn load_spec(
-    spec_path: &str,
-    current_yaml_hash: &mut u64,
-) -> Result<Option<String>>
-{
+fn load_spec(spec_path: &str, current_yaml_hash: &mut u64) -> Result<Option<String>> {
     let yaml_str = read::path_to_string(Path::new(spec_path))?;
     let yaml_hash = {
         let mut hasher = DefaultHasher::new();
@@ -96,12 +88,7 @@ fn load_spec(
     }
 }
 
-fn load_player(
-    yaml_str: String,
-    read_type: ReadType,
-    consts: &Consts,
-) -> Result<Box<Player>>
-{
+fn load_player(yaml_str: String, read_type: ReadType, consts: &Consts) -> Result<Box<dyn Player>> {
     let spec = read::string_to_spec(yaml_str, read_type)?;
     let resolved_macros = spec::resolve_root_macros(spec, consts)?;
     Value::Spec(resolved_macros).into_type(consts)

@@ -14,24 +14,16 @@ pub trait SpecMacro {
 
 /// Resolve macros in the root player
 pub fn resolve_root_macros(spec: Spec, consts: &Consts) -> Result<Spec> {
-    let resolved = resolve_macros(Value::Spec(spec), consts)
-        .chain_err(|| "Failed to resolve macros")?;
+    let resolved =
+        resolve_macros(Value::Spec(spec), consts).chain_err(|| "Failed to resolve macros")?;
     match resolved {
         Value::Spec(spec) => Ok(spec),
-        _ => Err(ErrorKind::SpecError(
-            "Macro-resolved spec was not an object".into(),
-        )
-        .into()),
+        _ => Err(ErrorKind::SpecError("Macro-resolved spec was not an object".into()).into()),
     }
 }
 
 /// Resolve a value in a spec
-pub fn resolve_spec_value(
-    spec: &mut Spec,
-    value_name: String,
-    consts: &Consts,
-) -> Result<()>
-{
+pub fn resolve_spec_value(spec: &mut Spec, value_name: String, consts: &Consts) -> Result<()> {
     let value: Value = spec.consume(&value_name, consts)?;
     let value = resolve_macros(value, consts)?;
     spec.put(value_name, value);
@@ -56,8 +48,8 @@ fn resolve_macros(value: Value, consts: &Consts) -> Result<Value> {
     };
 
     // Resolve this spec
-    let resolved_value = resolve_single_spec(&mut spec, consts)?
-        .unwrap_or_else(|| Value::Spec(spec));
+    let resolved_value =
+        resolve_single_spec(&mut spec, consts)?.unwrap_or_else(|| Value::Spec(spec));
 
     // If resolved to another spec or list, resolve all children
     let resolved_value = match resolved_value {
@@ -76,22 +68,14 @@ fn resolve_macros(value: Value, consts: &Consts) -> Result<Value> {
     Ok(resolved_value)
 }
 
-fn resolve_entry(
-    entry: (String, Value),
-    consts: &Consts,
-) -> Result<(String, Value)>
-{
+fn resolve_entry(entry: (String, Value), consts: &Consts) -> Result<(String, Value)> {
     let (value_name, value) = entry;
     resolve_macros(value, consts)
         .chain_err(|| format!("Error resolving macros for {}", value_name))
         .map(|resolved_value| (value_name, resolved_value))
 }
 
-fn resolve_single_spec(
-    spec: &mut Spec,
-    consts: &Consts,
-) -> Result<Option<Value>>
-{
+fn resolve_single_spec(spec: &mut Spec, consts: &Consts) -> Result<Option<Value>> {
     let name: String = match spec.consume_optional("name", consts)? {
         Some(name) => name,
         None => return Ok(None),
@@ -113,8 +97,7 @@ fn resolve_single_macro<T: SpecMacro>(
     name: &str,
     spec: &mut Spec,
     consts: &Consts,
-) -> Option<Result<Value>>
-{
+) -> Option<Result<Value>> {
     if name == T::name() {
         Some(T::resolve(spec, consts))
     } else {

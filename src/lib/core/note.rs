@@ -43,23 +43,23 @@ impl Note {
 impl std::str::FromStr for Note {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        let captures = regex::NOTE_REGEX.captures(s).ok_or_else(|| {
-            ErrorKind::SpecError(format!("Unrecognized note format: {}", s))
-        })?;
+        let captures = regex::NOTE_REGEX
+            .captures(s)
+            .ok_or_else(|| ErrorKind::SpecError(format!("Unrecognized note format: {}", s)))?;
         let abstract_note_str = captures.get(1).unwrap().as_str();
         let octave_str = captures.get(2).unwrap().as_str();
         let octave = if octave_str.is_empty() {
             DEFAULT_OCTAVE
         } else {
-            octave_str.parse().chain_err(|| {
-                format!("Failed to parse note octave: {}", octave_str)
-            })?
+            octave_str
+                .parse()
+                .chain_err(|| format!("Failed to parse note octave: {}", octave_str))?
         };
 
         Ok(Note {
-            note: abstract_note_str.parse().chain_err(|| {
-                format!("Failed to parse abstract note: {}", abstract_note_str)
-            })?,
+            note: abstract_note_str
+                .parse()
+                .chain_err(|| format!("Failed to parse abstract note: {}", abstract_note_str))?,
             octave,
         })
     }
@@ -136,9 +136,7 @@ impl std::str::FromStr for AbstractNote {
             "a" => Ok(AbstractNote::A),
             "a#" => Ok(AbstractNote::As),
             "b" => Ok(AbstractNote::B),
-            s => {
-                bail!(ErrorKind::SpecError(format!("Unrecognized note: {}", s)))
-            }
+            s => bail!(ErrorKind::SpecError(format!("Unrecognized note: {}", s))),
         }
     }
 }

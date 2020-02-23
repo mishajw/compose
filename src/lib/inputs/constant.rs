@@ -16,19 +16,27 @@ pub struct Constant {
 }
 
 impl Constant {
-    fn new(value: f64) -> Constant { Constant { value } }
+    fn new(value: f64) -> Constant {
+        Constant { value }
+    }
 }
 
 impl Input for Constant {
-    fn get(&mut self, _state: &State) -> f64 { self.value }
+    fn get(&mut self, _state: &State) -> f64 {
+        self.value
+    }
 }
 
 impl Tree for Constant {
-    fn to_tree(&self) -> &Tree { self as &Tree }
+    fn to_tree(&self) -> &dyn Tree {
+        self as &dyn Tree
+    }
 }
 
 impl SpecType for Constant {
-    fn name() -> String { "constant".into() }
+    fn name() -> String {
+        "constant".into()
+    }
 
     fn field_descriptions() -> Vec<SpecFieldDescription> {
         vec![VALUE.to_description()]

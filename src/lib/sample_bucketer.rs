@@ -1,8 +1,6 @@
 use error::*;
 
-use sfml::graphics::{
-    Color, RectangleShape, RenderStates, RenderTarget, RenderWindow, Shape,
-};
+use sfml::graphics::{Color, RectangleShape, RenderStates, RenderTarget, RenderWindow, Shape};
 use sfml::system::Vector2f;
 
 const PADDING_PERC: f64 = 0.1;
@@ -52,10 +50,8 @@ impl SampleBucketer {
 
     /// Create an iterator over the mins and maxes of the buckets
     pub fn iter(&self) -> impl Iterator<Item = &(i32, i32)> + '_ {
-        let first_iter =
-            self.bucket_min_max.iter().skip(self.last_bucket_index);
-        let second_iter =
-            self.bucket_min_max.iter().take(self.last_bucket_index);
+        let first_iter = self.bucket_min_max.iter().skip(self.last_bucket_index);
+        let second_iter = self.bucket_min_max.iter().take(self.last_bucket_index);
         first_iter.chain(second_iter)
     }
 
@@ -67,8 +63,7 @@ impl SampleBucketer {
         height: u32,
         offset_x: u32,
         offset_y: u32,
-    ) -> Result<()>
-    {
+    ) -> Result<()> {
         let (all_min, all_max) = self.all_min_max;
         let scale_to_window = |x: i32| {
             let scaled = (i64::from(x) - i64::from(all_min)) as f64
@@ -81,10 +76,7 @@ impl SampleBucketer {
             let window_min = scale_to_window(*range_min);
             let window_max = scale_to_window(*range_max);
             let range_height = (window_max - window_min).max(1.0);
-            let mut shape = RectangleShape::with_size(Vector2f::new(
-                1.0,
-                range_height as f32,
-            ));
+            let mut shape = RectangleShape::with_size(Vector2f::new(1.0, range_height as f32));
             shape.set_fill_color(&color);
             window.draw_with_renderstates(&shape, {
                 let mut state = RenderStates::default();
