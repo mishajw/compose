@@ -2,6 +2,7 @@
 name = "composer"
 version = "0.1.0"
 authors = ["Misha Wagner <mishajw@gmail.com>"]
+default-run = "composer"
 
 [lib]
 name = "composer"
