@@ -6,3 +6,4 @@ from .frequency_resolver import chord, scale
 from .misc import Time
 from .to_spec import ToSpec
 from .gen import *
+from .util import keyboard
