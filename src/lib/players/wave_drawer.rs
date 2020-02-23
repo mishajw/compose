@@ -90,7 +90,7 @@ impl Drawable for WaveDrawer {
             }
             None => {
                 *self.window_width.lock().unwrap() = Some(width);
-                return Ok(());
+                Ok(())
             }
         }
     }

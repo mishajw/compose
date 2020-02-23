@@ -9,6 +9,9 @@
 
 #![warn(missing_docs)]
 
+// TODO: Rename `new` functions so we don't have to silence this warning.
+#![allow(clippy::new_ret_no_self)]
+
 /// Default configuration file path
 pub const DEFAULT_CONFIG_PATH: &str = "./composer.config";
 

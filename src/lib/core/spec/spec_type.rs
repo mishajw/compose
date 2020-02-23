@@ -19,7 +19,7 @@ pub trait SpecType<CreatedType = Self>: Sized {
     /// Get the description of the type
     fn to_description() -> SpecTypeDescription {
         SpecTypeDescription {
-            name: Self::name().into(),
+            name: Self::name(),
             field_descriptions: Self::field_descriptions(),
         }
     }

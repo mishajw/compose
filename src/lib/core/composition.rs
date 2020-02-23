@@ -46,7 +46,7 @@ impl FromValue for Composition {
         Ok(Composition {
             root_player: Mutex::new(root_player),
             outputs: Mutex::new(outputs),
-            consts: consts,
+            consts,
         })
     }
 }

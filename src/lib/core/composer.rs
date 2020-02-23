@@ -22,7 +22,7 @@ pub fn compose_from_file(
     let consts = Arc::new(consts);
     let reloading_player = get_reloading_player(composition_path, read_type, consts.clone())?;
     gui::start(reloading_player.clone())?;
-    let mut state = State::initial(consts.clone());
+    let mut state = State::initial(consts);
     loop {
         let played = reloading_player.lock().unwrap().play(&state);
         for output in outputs.iter_mut() {

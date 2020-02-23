@@ -70,7 +70,7 @@ fn start_window(player: Arc<Mutex<Box<dyn Player>>>) -> Result<()> {
         }
 
         window.clear(&Color::BLACK);
-        draw_composition(&mut window, &window_size, &*player)?;
+        draw_composition(&mut window, window_size, &*player)?;
         window.display();
 
         last_draw_time = Instant::now();
@@ -79,7 +79,7 @@ fn start_window(player: Arc<Mutex<Box<dyn Player>>>) -> Result<()> {
 
 fn draw_composition(
     window: &mut RenderWindow,
-    window_size: &Vector2u,
+    window_size: Vector2u,
     reloading_player: &Mutex<Box<dyn Player>>,
 ) -> Result<()> {
     // Get what to draw

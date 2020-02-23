@@ -38,7 +38,7 @@ impl<T: FromValue> SpecField<T> {
         SpecFieldDescription {
             name: self.name.clone(),
             description: self.description.clone(),
-            type_name: T::name().to_string(),
+            type_name: T::name(),
             has_default: self.default_fn.is_some(),
         }
     }
