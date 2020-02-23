@@ -1,3 +1,4 @@
+/.env
 /composer.config
 /pycomposer/gen
 /resources/local
