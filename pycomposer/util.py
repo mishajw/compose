@@ -2,9 +2,7 @@ from typing import List
 from . import Player, Timeline, Volume, Combiner, Time, SmoothBool
 
 
-def keyboard(
-    players: List[Player], timeline: str, event_duration: Time
-) -> Player:
+def keyboard(players: List[Player], timeline: str, event_duration: Time) -> Player:
     timeline = [t.strip() for t in timeline.split("\n") if t.strip() != ""]
     return Combiner(
         [

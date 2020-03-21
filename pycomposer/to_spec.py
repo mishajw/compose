@@ -21,8 +21,7 @@ class ToSpec:
                 continue
             if isinstance(value, ToSpec):
                 value = value.to_dict()
-            if isinstance(value, list) \
-                    and all(isinstance(v, ToSpec) for v in value):
+            if isinstance(value, list) and all(isinstance(v, ToSpec) for v in value):
                 value = [v.to_dict() for v in value]
             yield key, value
 
