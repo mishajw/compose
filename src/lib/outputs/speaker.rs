@@ -14,8 +14,8 @@ use core::Consts;
 use portaudio;
 
 const NUM_CHANNELS: i32 = 1;
-const FRAMES: usize = 2048;
-const MAX_UNPLAYED_BUFFERS: usize = 3;
+const FRAMES: usize = 32;
+const MAX_UNPLAYED_BUFFERS: usize = 2;
 
 type Stream = portaudio::stream::Stream<portaudio::stream::NonBlocking, portaudio::Output<i32>>;
 

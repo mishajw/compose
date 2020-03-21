@@ -8,7 +8,6 @@
 //! See [`spec`](spec/) for an overview of how to create a composition.
 
 #![warn(missing_docs)]
-
 // TODO: Rename `new` functions so we don't have to silence this warning.
 #![allow(clippy::new_ret_no_self)]
 

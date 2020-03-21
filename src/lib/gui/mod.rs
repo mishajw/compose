@@ -1,9 +1,5 @@
 //! Draw composition GUI
 
-use core::tree;
-use core::Player;
-use error::*;
-
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -13,8 +9,18 @@ use sfml::graphics::{Color, RenderTarget, RenderWindow};
 use sfml::system::Vector2u;
 use sfml::window::{Event, Key, Style};
 
-mod drawable;
+use core::tree;
+use core::Player;
+use error::*;
+
 pub use self::drawable::Drawable;
+pub use self::window_event::WindowEvent;
+pub use self::window_event::WindowKey;
+pub use self::window_listener::WindowListener;
+
+mod drawable;
+mod window_event;
+mod window_listener;
 
 const MAX_FPS: u32 = 30;
 const WINDOW_WIDTH: u32 = 600;
@@ -60,7 +66,15 @@ fn start_window(player: Arc<Mutex<Box<dyn Player>>>) -> Result<()> {
                 | Event::KeyPressed {
                     code: Key::Escape, ..
                 } => return Ok(()),
-                _ => {}
+                event => {
+                    if let Some(window_event) = WindowEvent::from_event(&event) {
+                        let locked_player = player.lock().unwrap();
+                        tree::flatten_tree(locked_player.to_tree())
+                            .into_iter()
+                            .flat_map(tree::Tree::get_listeners)
+                            .for_each(|p| p.receive(&window_event));
+                    }
+                }
             }
         }
 
