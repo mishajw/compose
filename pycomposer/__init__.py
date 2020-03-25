@@ -2,8 +2,8 @@
 Library for generating specs for composer
 """
 
-from .frequency_resolver import chord, scale
+from .note import Note, AbstractNote
 from .misc import Time
 from .to_spec import ToSpec
 from .gen import *
-from .util import keyboard
+from .util import keyboard, note, chord, scale

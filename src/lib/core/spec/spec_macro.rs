@@ -82,8 +82,6 @@ fn resolve_single_spec(spec: &mut Spec, consts: &Consts) -> Result<Option<Value>
     };
     match resolve_single_macro::<macros::TimelineMulti>(&name, spec, consts)
         .or_else(|| resolve_single_macro::<macros::Map>(&name, spec, consts))
-        .or_else(|| resolve_single_macro::<macros::Scale>(&name, spec, consts))
-        .or_else(|| resolve_single_macro::<macros::Chord>(&name, spec, consts))
     {
         None => {
             spec.put("name".into(), name);

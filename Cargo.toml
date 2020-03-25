@@ -12,10 +12,6 @@ path = "src/lib/lib.rs"
 name = "composer"
 path = "src/main.rs"
 
-[[bin]]
-name = "freq-resolver"
-path = "src/frequency_resolver.rs"
-
 [dependencies]
 error-chain = "*"
 yaml-rust = "*"
