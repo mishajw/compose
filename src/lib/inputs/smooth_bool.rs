@@ -11,8 +11,12 @@ use error::*;
 use inputs::Function;
 
 field_decl!(INPUT, Box<dyn Input>, "Input to smooth");
-field_decl!(SMOOTH_IN, Time, "How long to smooth in for");
-field_decl!(SMOOTH_OUT, Time, "How long to smooth out for");
+field_decl!(SMOOTH_IN, Time, "How long to smooth in for", |_| {
+    Time::Seconds(0.1)
+});
+field_decl!(SMOOTH_OUT, Time, "How long to smooth out for", |_| {
+    Time::Seconds(0.1)
+});
 field_decl!(SMOOTH_FN, Box<dyn Input>, "Smoothing function", |_| Box::new(
     Function::new(Box::new(|x| x))
 )
