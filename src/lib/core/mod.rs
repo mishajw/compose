@@ -14,7 +14,6 @@ mod input;
 mod output;
 mod playable;
 mod player;
-pub mod regex;
 mod reload_player;
 #[macro_use]
 pub mod spec;
