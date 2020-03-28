@@ -1,6 +1,7 @@
 import re
-from typing import List
-from . import Player, Timeline, Volume, Combiner, Time, SmoothBool, Note, AbstractNote
+from typing import List, Iterable
+
+from . import Player, Timeline, Volume, Combiner, Time, Note, AbstractNote, BoundedInput
 from .chord import Chord
 from .scale import Scale, ABSTRACT_SCALES
 from .scale_index import SCALE_INDICES
@@ -18,21 +19,12 @@ _CHORD_REGEX = re.compile(fr"^({_NOTE_NO_GROUP_STR}) ([0-9a-z-]+)$")
 _CHORD_SCALE_INDEXED_REGEX = re.compile(fr"^({_NOTE_NO_GROUP_STR} [0-9a-z-]+) ([0-9]+)$")
 
 
-def keyboard(players: List[Player], timeline: str, event_duration: Time) -> Player:
-    timeline = [t.strip() for t in timeline.split("\n") if t.strip() != ""]
-    return Combiner(
-        [
-            Volume(
-                p,
-                SmoothBool(
-                    Timeline(t.strip(), event_duration),
-                    smooth_in="0.1 seconds",
-                    smooth_out="0.1 seconds",
-                ),
-            )
-            for (p, t) in zip(players, timeline)
-        ]
-    )
+def keyboard(players: Iterable[Player], inputs: Iterable[BoundedInput]) -> Player:
+    return Combiner([Volume(p, i) for p, i in zip(players, inputs)])
+
+
+def timelines(s: str, event_duration: Time) -> List[BoundedInput]:
+    return [Timeline(t.strip(), event_duration) for t in s.split("\n") if t.strip() != ""]
 
 
 def note(s: str) -> float:
