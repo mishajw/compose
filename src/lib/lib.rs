@@ -36,7 +36,6 @@ pub mod error;
 mod fourier;
 pub mod gui;
 pub mod inputs;
-pub mod macros;
 pub mod outputs;
 pub mod players;
 pub mod pycomposer;

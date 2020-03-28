@@ -1,4 +1,3 @@
-use core::spec;
 use core::spec::read;
 use core::spec::read::ReadType;
 use core::spec::Value;
@@ -90,6 +89,5 @@ fn load_spec(spec_path: &str, current_yaml_hash: &mut u64) -> Result<Option<Stri
 
 fn load_player(yaml_str: String, read_type: ReadType, consts: &Consts) -> Result<Box<dyn Player>> {
     let spec = read::string_to_spec(yaml_str, read_type)?;
-    let resolved_macros = spec::resolve_root_macros(spec, consts)?;
-    Value::Spec(resolved_macros).into_type(consts)
+    Value::Spec(spec).into_type(consts)
 }
