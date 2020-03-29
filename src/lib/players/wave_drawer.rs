@@ -17,7 +17,12 @@ use std::sync::Mutex;
 use sfml::graphics::{Color, RenderWindow};
 
 field_decl!(CHILD, Box<dyn Player>, "Wave of this child is drawn");
-field_decl!(DISPLAY_TIME, Time, "How much time is displayed on screen");
+field_decl!(
+    DISPLAY_TIME,
+    Time,
+    "How much time is displayed on screen",
+    |_| Time::Seconds(1.0)
+);
 
 /// Visualize the sound wave of a player
 pub struct WaveDrawer {
