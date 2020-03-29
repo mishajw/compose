@@ -40,8 +40,8 @@ def __parse_note(s: str) -> Note:
     return Note(AbstractNote.from_str(abstract_note), octave)
 
 
-def scale(s: str) -> List[float]:
-    return __parse_scale(s).frequencies()
+def scale(s: str, num: int = 7) -> List[float]:
+    return __parse_scale(s).frequencies(num)
 
 
 def __parse_scale(s: str) -> Scale:

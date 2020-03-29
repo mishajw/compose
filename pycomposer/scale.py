@@ -26,7 +26,7 @@ class Scale(NamedTuple):
             yield note
             note += step
 
-    def frequencies(self, num: int = 7) -> List[float]:
+    def frequencies(self, num) -> List[float]:
         return [note.frequency() for note in itertools.islice(self.notes(), 0, num)]
 
 
